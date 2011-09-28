@@ -1,0 +1,190 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\title{Conception et vérification de programmes}
+inria.fr/prive/fschwarz/cvfp
+\begin{document}
+
+\part{Machines de Turing}
+
+\subsection{Definition} : machine de Turing $M = ( \Sigma , Q , \delta, s)$ tel que \begin{itemize}
+\item $\Sigma$ : alphabet fini
+\item Q : ensemble d'états fini non vide
+\item $\delta \subseteq (Q \times \Sigma) \times (Q \cup \{yes \} \times \Sigma \times \{-1, 0, 1}$
+\item $s \in Q$
+\end{itemize}
+On dit que M est déterministe si $\forall q \in Q, \forall a \in \Sigma, \mid \{ (q', b, d) \mid (q, a, q', b, d) \in \delta \} \mid \leq 1$
+
+\subsection{Executions}
+\subparagraph*{Def} Une configuration est un triplet (q, k, w) où \begin{itemize}
+\item q est un état
+\item $k \in \N$
+\item w est un mot fini sur $\Sigma$
+\end{itemize}
+
+\subparagraph*{Def} $(q, k, w) \rightarrow (q', k', w')$ ssi $(q, \sigma, q', \sigma', dir) \in \delta$ et \begin{itemize}
+\item $w[k] = \sigma$
+\item $w' = w sauf w'[k] = \sigma'$
+\item $k' = k + dir$
+\item $k' \geq 0$
+\end{itemize}
+
+\subparagraph*{Def} Soient c, c' deux configurations, \begin{itemize}
+\item $c \rightarrow^0 c$
+\item $ \forall t \geq 1, c \rightarrow^t c' ssi \exists c''$ configuration et $c \rightarrow^{t-1}C'' ET C'' \rightarrow c'$
+\end{itemize}
+
+\subparagraph*{Def}
+ $c \rightarrow^* c' ssi \exists t \geq 0 / c \rightarrow^ c'$
+ 
+\subsection{Décision} 
+ \subparagraph*{Def} M décide un language $L \subseteq \Sigma^*$ ssi $\forall x \in \Sigma^*, x \in L ssi \exists k \geq 0, w \in \Sigma^* / (s, 0, x) \rightarrow^* (yes, k, w)$
+ 
+ \subparagraph*{Def} Soit $f : \N \rightarrow \N$, M décide L en temps f ssi M décide L et $\forall t \in \n, \forall x in sigma*, (s, 0, x) \rightarrow ^t (q, k, w)$ alors $t \leq f(|x[)$
+ 
+ \subparagraph*{Prop} Soit M qui décide L en temps f, si (s, 0, xà \rightarrow^* (q, k, w), alors |w| \leq max ( |x|, f(|x|)
+ 
+ \subparagraph*{Dem} "Au temps t, \forall k' > max ( |x|, t), w[k'] est vide et le curseur courant k \leq t "
+ 
+ \part{Complexité en temps}
+ 
+ \subparagraph*{Def} \begin{itemize}
+ \item P est la classe des langages L / \exists f, polynôme, M machine det / M décide L en temps f
+\item NP M non det
+\item EXPTIME f polynome, M machine det, M décide L en temps 2^f 
+ \item NEXPTIME M non det
+ \end{itemize}
+ 
+ \subsection{Diffivultés}
+ \subparagraph*{Def} L' réductible en temps polynomial à L ssi \exists f, calculable en temps polnomial / \exits x \in \Sigma ^*, x \in L' \equiv f(x) \in L
+ 
+ \subparagraph*{Def} L est NP dur ssi pour tout L' \in NP, on a L' réductble en temps polyomial à L
+ Lest NP complet ssi L \in NP et L est NP hard
+ 
+ Rem Si L est NP hard, L \in P alors NP = P
+ 
+ \subparagraph*{Prop} L est NP dur, L réductible en temps poly à L', alors L' est NP dur.
+ L' in NP, L réductible à L' \impl L \in NO
+ 
+ \subparagraph*{Def} CONP est l'ensemble des L / \Sigma^* \L \in NP
+ 
+ \part{Pavages et logique proportionnelle}
+ 
+ \subsection{Pavages} Un tyoe de pavé t est un quadruplet < left(t), top(t), right(t), down(t) > \in \N ^4
+ TILING est le problème suivant : \begin{itemize}
+ \item entrée : T esnsemble fini de types de pavé t_1, ..., t_n \in T
+\item sortie : oui si \exists \mu : \{ 1, ..., n} ^2 \rightarrow T / \begin{itemize}
+\item \exists j \in \{1, .., n}, \mu(1,j) = t_j
+\item \forall i < n, \forall j < n, down(\mu(i,j)) = up(\mu(i+1, j))
+\item \forall i \leq n , \forall j leq right mu (i,j) = leftmu (i, j+1))
+\end{itemize}
+\end{itemize}
+
+Theoreme : TILING est NP hard
+
+\subparagraph*{Théorème} SAT est NP-hard
+
+Dem : On transforme une instance du pavage en une formule \Phi de la logique prop. en encodant les contraintes avec les variables $p_{i,j,t}$ pour $\mu(i,j) = t$.
+\end{itemize}
+
+
+\subsection{Complexité en espace}
+\subparagraph*{Def} L est dans PSPACE ssi \exists M machine déterministe, f unpolyname tels que \begin{itemize}
+\item M décide L
+\item \forall x in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w), on a |w| \leq f(|x|)
+\end{itemize}
+\subparagraph*{Def} L est dans NPSPACE ssi \exists M machine non déterministe, f unpolyname tels que \begin{itemize}
+\item M décide L
+\item \forall x in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w), on a |w| \leq f(|x|)
+\end{itemize}
+\subparagraph*{Def} L est dans EXPSPACE ssi \exists M machine déterministe, f unpolyname tels que \begin{itemize}
+\item M décide L
+\item \forall x in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w), on a |w| \leq 2^{f(|x|)}
+\end{itemize}
+\subparagraph*{Def} L est dans NEXPSPACE ssi \exists M machine non déterministe, f unpolyname tels que \begin{itemize}
+\item M décide L
+\item \forall x in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w), on a |w| \leq 2^{f(|x|)}
+\end{itemize}
+\subparagraph*{Rem} Normalement, les classes de complexité en espace se définissent avec une machine de Turing à plusieurs rubans
+
+\subsection{Un autre pavage}
+CORRIDOR TILING est défini par :
+\begin{itemize}
+\item entrée : T ensemble fini de type de pavé, et t_1, ..., t_n, b_1, ..., b_n deux séquanece de types de pavés
+\item sortie : oui si on peut paver \begin{tabular}{c|c[c[c|c[c}
+t_1 & & & & & t_n \hbar \\
+& & & & & \\
+& & & & & \\
+& & & & & \\
+& & & & & \\
+b_1 & & & & & b_n
+\end{tabular} n fois 2^n
+
+\subparagraph*{Def} L \in PSAPCE-hard ssi pour tout L' dans PSAPCE, L' est réductible en temps polynomial à L
+
+\subparagraph*{Theroreme} CORRIDOR TILING est NPSAPCE-hard
+Dem : Soit L dans NPSPACE, il existe M machie non déterministe et f un polynome, tels que \begin{itemize}
+\item M décide L
+\item M utilise un espace mémoire en f
+\end{itemize}
+On suppose de plus que la machine efface son ruban si elle accepte x et arrive suur (yes, 0, \varepsilon)
+Considérons les executions possibles de M sur |x|. Le nombre de configs possibles est au plus |Q| \times f(|x|) \times  (1 + |\Sigma|)^{f|x|)}
+Si M accepte x, il existe alors une exécution de longueur au plus c^{f(|x|)} où c est une constante. On peut donc encoder cette exécution dans un pavage : 
+\begin{tabular}{c||c|c|c|c|c|c||c}
+& t_1 & & & & & t_n & ebcode la config init \hbar \\
+& & & & & & & & \\
+& & & & & & & & \\ 2 ^{log c f(|x|)} = c^{f|x|}
+& & &&  & & & & \\
+& & & & & & & & \hbar\\
+& & & & & & & & encode (yes, 0, \varepsilon)
+\end{tabular}
+log_2 c f|x|
+
+\subsection{Logique proportionnelle quantifiée}
+SAT : est ce qu'il existe une valuation \mu telle que \mu \models \Phi ?
+VALID : est ce que pour toute valuation \mu on a \mu \models \Phi ?
+
+\subparagraph*{def} Une ormule de la logique prop qiantifiée (QBF, quantifiable binary formulaà est une formule de la forme ; 
+il \exists p1, \forall p2, \exists p3 ... Q_np_n \Phi où
+Q_n in { \exists, \forall }
+Phi est formule de la logique propositionnelle.
+\subparagraph*{Def} On définit \mu \models \Phi pour \Phi de la logique prop quantfiée \begin{itemize}
+\item \mu \models \exists p \Phi ssi \mu [ p := 0] \models ou \mu [p := 1] \models \Phi
+\item \mu \models \forall p \Phi ssi \mu [ p := 0] \models et \mu [p := 1] \models \Phi
+\item \mu \models  \Phihabituel pour \Phi propositionnel
+
+\subparagraph*{Theoreme} Le probleme QBF-sat / entrée : 
+\Phi \exists p_1 \forall p_2 Qn pn \Psi où p1 p2 pn sont les variables qui apparaisent dnas \Psi
+sortie : oui si \Phi est vrai(ie \mu \models \Phi, \mu quelconque)
+est NPSAPCE hard
+
+\subparagraph*{dem} 
+\but transormeer un instandce de corridor tiling en Phi de la loguqe prop quantidiée / ..; pavable si Phi est vraie et de plus Phidoit etre de taille polynomiale par rapport à l'instance -> diviser pour régner
+
+On note \vec{p_a} = (p_a, j, t)_{j \in { 1, ..; n}, t \in T} Cela permet de décrire une ligne du pavage.
+
+1ere idée : Définir _Phi_k (p_a, p_b) qui encode le fait qu'il existe un pavage n \times 2^k , p_a 1ere ligne, pb dernier eligne
+On définit \Phi_1 (p_a, p_b) = ...
+Par récurence, \Phi_k(p_a, p_b) = \exists p_c, p_d / phi_k-1 (p_a, p_c) et ph_1(pc, pd) et phi_k-1(p_d, p_b) \forall k \geq 2
+Problème : \Phi_n va etre de taille exponentielle
+
+2eme idée : (la bonne)
+\Phi_1 (p_a, p_b) = ...
+\Phi_k(p_a, p_b) = \exists p_c, p_d / ph_1(pc, pd) et \forall p_q, p_r , (((p_q \equiv p_a) et (p_r \equiv p_c) ou (p_q \equiv p_d) et (p_r \equiv p_b)) implique \phik-1 (p_q, p_r)
+\end{itemize}
+
+Par exemple p_q equiv p_a est un raccourci pour \bigwedgej=1 n \bigwedge t in T (p_{q,j,t} equiv p_{a, j, t}
+
+\subparagraph*{Th} QBF sat \leqslantest PSPACE
+Dem : thèse de church
+fonction qbf sat(\mu, phi)
+	cas  (Phi)
+		Phi = \exists p \Psi : qbf-sat(\mu [p:=0], Psi) ou qbf-sat (\mu[p:=1] Psi)
+		Phi = forall p Psi, qbf-sat(\mu [p:=0], Psi) et qbf-sat (\mu[p:=1] Psi)
+		Phi propositionnel : retourne oui ssi \mu \models Psi
+qbf-sat s'execute en espace polynomial
+\end{document}

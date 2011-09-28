@@ -1,0 +1,36 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{ucs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{pgf}
+\usepackage{tikz}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Prob}{\mathbb{P}}
+
+
+\title{MEPS}
+
+\begin{document}
+\part{Chaînes de Markox à temps discret}
+\section{Définitions et propriétés}
+$n \in \N$ : temps (discret).\\
+$ \{ X_n \} \in E^{\N} $ : états du système, $E$ l'espace des états, dénombrable.\\
+L'état à l'instant $n$ ne dépend que de l'état à l'instant précédent $n-1$.\\
+
+En prenant $\N \times E$ l'espace des états, on peut augmenter la " taille " du présent, jusqu'à inclure tous les états précédents : les chaînes de Markov peuvent en fait modéliser tous les processus stochastiques dont l'état à un instant donné dépend des états passés.\\
+ 
+$\alpha_j = \Prob(X_0 = i_j)$\\
+
+
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick]
+                    \node[state] (0)
+\end{tikzpicture}
+
+
+
+
+\end{document}
+
