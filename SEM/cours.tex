@@ -1,87 +1,64 @@
 \documentclass[10pt,a4paper]{article}
 \usepackage{fullpage}
-
+\usepackage[french]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{ucs}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
-\usepackage{color}
+\usepackage{array}
 
-\newenvironment{definition}[1]{
-	\paragraph{ 	
-		\textcolor{green}{
-			\underline{ \textcolor{black}{Définition : #1}} } }	} {}
 
-\newenvironment{thm}[1]{
-	\paragraph{ 	
-		\textcolor{red}{
-			\underline{ \textcolor{black}{Théorème : #1}} } } } {}
-\newenvironment{rem}[1]{
-	\subparagraph{ 	
-		\textcolor{blue}{
-			\underline{ \textcolor{black}{Remarque : #1}} } } } {}
-\newenvironment{dem}[1]{
-	\paragraph{ 	
-		\textcolor{yellow}{
-			\underline{ \textcolor{black}{Démonstration : #1}} } }} {}		
-\newenvironment{lem}[1]{
-	\subparagraph{ 	
-		\textcolor{magenta}{
-			\underline{ \textcolor{black}{Lemme : #1}} } } } {}		
-\newenvironment{ex}[1]{
-	\subparagraph{ 	
-		\textcolor{magenta}{
-			\underline{ \textcolor{black}{Exemple : #1}} } }} {}
-\newenvironment{prop}[1]{
-	\subparagraph{ 	
-		\textcolor{cyan}{
-			\underline{ \textcolor{black}{Proposition : #1}} } }} {}
-\newenvironment{propriete}[1]{
-	\subparagraph{ 	
-		\textcolor{magenta}{
-			\underline{ \textcolor{black}{Propriété : #1}} } }	} {}
-			
 				
 \title{Sémantique}
 \newcommand{\sem}[1]{$\left[| #1 | \right]$}
 \newcommand{\semm}[1]{\left[| #1 | \right]}
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\Z}{\mathbb{Z}}
+
+\include{defs}	
+
 \begin{document}
+
+
 \part{Introduction}
 \section{Compositionnalité}
 
-La sémantique \sem{\cdot} est compositionnelle si \sem{P} se définit en fonction (par composition) des éléments composant $P$.\\
-ex : \sem{A;B} = \sem{;}(\sem{A},\sem{B}\\
-Reflète la structure syntaxique des programmes
+\begin{definition}{Compositionnalité}
+ La sémantique \sem{\cdot} est compositionnelle si \sem{P} se définit en fonction (par composition) des éléments constituant $P$.\\
+\end{definition}
 
-La compositionnalité est indipensable pour avoir une sémantique utilisable;
-Elle est parfois difficile à obtenir ( branchements, exceptions )
+ex : \sem{A;B} = \sem{;}(\sem{A},\sem{B})\\
+
+\begin{tabular}{l l}
+La compositionnalité : & reflète la structure syntaxique des programmes.\\
+& est indipensable pour avoir une sémantique utilisable;\\
+& est parfois difficile à obtenir ( branchements, exceptions )
+\end{tabular}
+
+
 
 
 
 \section{Equivalence}
 $P \sim Q ?$ : on veut une relation d'équivalence
 $\semm{P} = \semm{Q} \rightarrow$ quelle déf pour \sem{P} ?\\
-
-Si \sem{P} est l'ensemble des suites d'états visités par une exécution, $P \simeq Q$ si toutes les étapes d'éxcution de P et Q sont identiques.
-
-Si \sem{P} = ensemble des suites d'états (...) avec certaines transitions marqués comme observables, $P \sim Q$ ssi les séquences de \sem{P} limités aux transitions observables sont les mêmes que celles de \sem{Q}
-
-Si \sem{P} = états finaux des transitions de P, $P \sim Q$ si P et Q ont les mêmes ensembles d'états finaux
-
+\begin{itemize}
+\item Si \sem{P} est l'ensemble des suites d'états visités par une exécution, $P \simeq Q$ si toutes les étapes d'éxcution de P et Q sont identiques.
+\item Si \sem{P} est l'ensemble des suites d'états (...) avec certaines transitions marquées comme observables, $P \sim Q$ ssi les séquences de \sem{P} limités aux transitions observables sont les mêmes que celles de \sem{Q}.
+\item Si \sem{P} est l'ensemble des états finaux des transitions de P, $P \sim Q$ si P et Q ont les mêmes ensembles d'états finaux.
+\end{itemize}
 \subsection{Equivalence contextuelle}
 $P \sim Q$ si $\semm{\mathcal{C}(P)} = \semm{\mathcal{C}(Q)}$
-\begin{propriete}{compostionnalité}
+\begin{propriete}{Compostionnalité}
 $\semm P = \semm Q  \Rightarrow P \sim Q$
 \end{propriete}
-\paragraph{Biblio}
+\paragraph{Biblio} :
 The formal semantic of programming languages
 
 \part{Sémantique opérationnelle}
 
-\subparagraph*{But} : formaliser les étapes de l'exécution d'un programme.
+\paragraph{But} : formaliser les étapes de l'exécution d'un programme.
 
 \section{Syntaxe}
 Le language WHILE (IMP, TOY, ...) : mini language impératif.
@@ -115,51 +92,54 @@ $c_1 \equiv c_2$ ($x := 2 \neq x := 1 + 1$)
 		\item $ <x, \sigma > \rightarrow \sigma(x)$
 		\item $\displaystyle \frac{ <a_1, \sigma > \rightarrow n_1 ; <a_2, \sigma > \rightarrow n_2}{<a_1 + a_2, \sigma > \rightarrow n_1 \pm n_2}$
 	\end{itemize}
-La sémantique n'est pas l'arbre d'évaluation d'une expression, mais sa conclusion (racine).
+\noindent La sémantique n'est pas l'arbre d'évaluation d'une expression, mais sa conclusion (racine).
 	\item sémantique des expressions booléennes
 		\begin{itemize}
 			\item $<True, \sigma > \rightarrow tt$
 			\item $<a_1 = a_2,  \sigma > \rightarrow tt$ si $a_1 = a_2$, $ff$ sinon
 		\end{itemize}
 \end{itemize}
-\begin{definition}{Equivalence sémnatique :}
-$a_1 \sim a_2$ ssi pour tout $\sigma, n_1, n_2, (<a_1, \sigma> \rightarrow n_1$ et $<a_2, \sigma> \rightarrow n_2 ) \Rightarrow n_1 = n_2$
+\begin{definition}{Equivalence sémantique :}
+$a_1 \sim a_2$ ssi pour tout $\sigma, n_1, n_2,\\ (<a_1, \sigma> \rightarrow n_1$ et $<a_2, \sigma> \rightarrow n_2 ) \Rightarrow n_1 = n_2$\\
 \end{definition}
 \section{Sémantique des commandes}
 
-\begin{definition}{Système de transitions} Un système de transitions est un triplet $(\Gamma, \Gamma_f, \rightarrow )$ \begin{itemize}
+\begin{definition}{Système de transitions} Un système de transitions est un triplet $(\Gamma, \Gamma_f, \rightarrow )$ où :\begin{itemize}
 \item $\Gamma$ est un ensemble de configurations
 \item $\Gamma_f$ est un ensemble de configurations finales
 \item $\rightarrow \subseteq \Gamma \times (\Gamma \bigcup \Gamma_f )$ est une relation de transition $\Leftrightarrow$
-$(\gamma, \gamma' ) \in \rightarrow$ : il existe une transition possible de $\gamma$ à $\gamma'$.
+$(\gamma, \gamma' ) \in \rightarrow$ ssi il existe une transition possible de $\gamma$ à $\gamma'$.
 \end{itemize}
 \end{definition}
-On va avoir deux types de Transitions: \begin{itemize}
+
+On va avoir deux types de transitions: \begin{itemize}
 \item petits pas (SOS)
 \item grands pas (SN)
 \end{itemize}
 
 \subsection{SOS : Structured operationnal semantic}
-notation : $\sigma_i ~ x \mapsto i
-
-\Gamma = Prog \times Etat
-
+\noindent Notation : $\sigma_i ~ x \mapsto i\\
+\Gamma = Prog \times Etat\\
 \Gamma_f = Etat$
 
-Transitions de la forme : $<c, \sigma> \rightarrow <c', \sigma'>$ ou bien $<c, \sigma> \rightarrow \sigma'$\\
+\noindent Transitions de la forme : $<c, \sigma> \rightarrow <c', \sigma'>$ ou bien $<c, \sigma> \rightarrow \sigma'$\\
 \begin{itemize}
 
 
-\item $\displaystyle \overline{ <skip, \sigma > \rightarrow <\sigma> }$
-\item $\displaystyle\frac{<a, \sigma > \rightarrow n }{ < x := \alpha , \sigma > \rightarrow \sigma [x \leftarrow n ] }$
-\item $\displaystyle \frac{ <c, \sigma > \rightarrow \sigma' }{  < c; c' , \sigma > \rightarrow <c', \sigma'> }$
-\item $\displaystyle \frac{< c, \sigma \rightarrow <c'', \sigma''>}{ <c; c', \sigma > \rightarrow <c''; c', \sigma'' > }$
-\item $\displaystyle \frac{ <b, \sigma> \rightarrow tt }{\text{ if b then }  c_1\text{ else }c_2> \rightarrow <c_1, \sigma > }$
-\item while : \\
- solution 1 : $\displaystyle \overline{ < \text{while b do c}, \sigma > \rightarrow < \text{if b then c; while b do c else }skip, \sigma > }$\\
+\item $\displaystyle \overline{ <skip, \sigma > \rightarrow <\sigma> }$\\
+\item $\displaystyle\frac{<a, \sigma > \rightarrow n }{ < x := \alpha , \sigma > \rightarrow \sigma [x \leftarrow n ] }$\\
+\item $\displaystyle \frac{ <c, \sigma > \rightarrow \sigma' }{  < c; c' , \sigma > \rightarrow <c', \sigma'> }$\\
+\item $\displaystyle \frac{< c, \sigma \rightarrow <c'', \sigma''>}{ <c; c', \sigma > \rightarrow <c''; c', \sigma'' > }$\\
+\item $\displaystyle \frac{ <b, \sigma> \rightarrow tt }{<\text{ if b then }  c_1\text{ else }c_2> \rightarrow <c_1, \sigma > }$\\
+\item while : \begin{itemize}
+
+
+ \item solution 1 : $\displaystyle \overline{ < \text{while b do c}, \sigma > \rightarrow < \text{if b then c; while b do c else }skip, \sigma > }$\\
  
-solution 2 : $\displaystyle \frac{ < b, \sigma > \rightarrow \text{ff}}{ < \text{while b do c}, \sigma > \rightarrow \sigma }$
-\item $\displaystyle  \frac{ < b, \sigma > \rightarrow \text{tt}}{ < \text{while b do c}, \sigma > \rightarrow <c;\text{while b do c}, \sigma >}$
+\item solution 2 : $\displaystyle \frac{ < b, \sigma > \rightarrow \text{ff}}{ < \text{while b do c}, \sigma > \rightarrow \sigma }$\\
+
+$\displaystyle  \frac{ < b, \sigma > \rightarrow \text{tt}}{ < \text{while b do c}, \sigma > \rightarrow <c;\text{while b do c}, \sigma >}$\\
+\end{itemize}
 \end{itemize}
 
 Vocabulaire : 
@@ -173,74 +153,202 @@ Le calcul :\begin{itemize}
 \end{definition}
 
 \begin{thm}{}Étant donnés c et $\sigma$, SOS détermine un unique calcul maximal à partir de $<c, \sigma >$\\
- $\rightarrow$ SOS est déterministe
+ $\rightarrow$ SOS est déterministe\\
  \end{thm}
  
+ \begin{definition}{Equivalence : }
+ $ c \sim_{SOS} c'$ ssi $\forall \sigma$, le calcul maximal issu de \sem{c , \sigma} est  identique au calcul maximal issu de \sem{c', \sigma}\\
+ \end{definition}
  
- Equivalence : 
-$ c \sim_{SOS} c'$ ssi $\forall \sigma$, le calcul maximal issu de \sem{c , \sigma} est  identique au calcul maximal issu de \sem{c', \sigma}
 
-Notion de résultat:\\
-\begin{thm}{} soit $(\gamma_i)$ un calcul maximal à partir de $\gamma_0 = \sem{c, \sigma }$
+
+\paragraph*{Notion de résultat:}
+\begin{thm}{} Soit $(\gamma_i)$ un calcul maximal à partir de $\gamma_0 = \semm{c, \sigma }$
 \begin{enumerate}
 \item soit $(\gamma_i)$ est infinie
 \item soit $(\gamma_i )$ est finie, de longueur $n$, et $\gamma_{n-1} = \sigma' \in Etat$
 \end{enumerate}
 Dans le cas 1, on pose $\semm{ c }_{res} \sigma = \perp$\\
-Dans le cas 2, on pose $\semm{ c }_{res} \sigma  = \sigma'$
+Dans le cas 2, on pose $\semm{ c }_{res} \sigma  = \sigma'$\\
 \end{thm}
 
 
 On étends $Etat_{\perp} = (\V \rightarrow \Z) \cup \{ \perp \}$
-[| c |]_res est une fonction de $Etat$ dans $Etat_{\perp}$
-rem : c'est une définition non effective (fonction non calculable)
+$\semm{ c }_{res}$ est une fonction de $Etat$ dans $Etat_{\perp}$
+\begin{rem}{} c'est une définition non effective (fonction non calculable)
+\end{rem}
 
-Equivalence de résultat:
+
+\paragraph{Equivalence de résultat:}
 \begin{definition}{} $c \sim c'$ ssi $\forall \sigma, \semm{ c }_{res} \sigma = \semm{ c }_{res} \sigma$
-(soit c et c' bouclent, soit elles convergent vers le m\^eme état final
+(soit c et c' bouclent, soit elles convergent vers le m\^eme état final.\\
 \end{definition}
-ex : tmp := y ; y := x; x := tmp $\notequiv$ aux := y; y := x ; x := aux
 
-Equivalence modulo V
-\begin{definition}{} $V \in \V$
+ex : tmp := y ; y := x; x := tmp $\not \equiv$ aux := y; y := x ; x := aux
+
+
+\begin{definition}{Equivalence modulo V} Soit $V \in \V$, 
 $c \sim^V_{res}$ ssi $\forall \sigma [| c |]_res \sigma \sim^V [| c' |]_res \sigma$
-avec $\sigma_1 \sim^V \sigma_2$ ssi \begin{itemize}
+avec $\sigma_1 \sim^V \sigma_2$ ssi :\begin{itemize}
 \item $\sigma_1 = \perp$ et $\sigma_2 = \perp$
 \item ou  $\forall x in V, \sigma_1(x) = \sigma_2(x)$
 \end{itemize}
 \end{definition}
+\begin{itemize}
+\item $\semm{skip}_{res} = id_{Etat}$
+\item $\semm{ x := a }_{res} \sigma = \sigma [ x \leftarrow \semm{a} \sigma ]$
+\item $\semm{c_1, c_2 }_{res} \sigma = \semm{c_2 }_{res} (\semm{c_1}_{res} \sigma)$ si on pose  \item $\semm{c}_{res} \perp = \perp$ pour tout c
+\item $\semm{c_1, c_2 }_{res} = \semm{c_2 }_{res} \circ \semm{c_1}_{res}$ : compostion de fonctions
+\item $\semm{\text{if b then }c_1\text{ else }c_2 } \sigma =$ si $\sigma \neq \perp :$
+\begin{itemize}
+\item si$ \semm{b} \sigma = tt$ alors $\semm{c_1}_{res} \sigma$ sinon  $\semm{c_2}_{res} \sigma$
+\item sinon $\perp$
+\end{itemize}
+\item $\semm{\text{ while b do c} } \sigma=$ si $\sigma = \perp$ alors $\perp$, sinon 
+\begin{itemize}
+\item si $\semm{b}\sigma = tt$ alors $(\semm{\text{while b do c} } \circ \semm{c}) \sigma$, 
+\item sinon $\sigma$) $\longrightarrow$ def récursive ???
+\end{itemize}
+\end{itemize}
 
-$\semm{skip}_{res} = id_{Etat}$
-$\semm{ x := a }_{res} \sigma = \sigma [ x \leftarrow \semm{a} \sigma ]$
-$\semm{c_1, c_2 }_{res} \sigma = \semm{c_2 }_{res} (\semm{c_1}_{res} \sigma)$ si on pose  $\semm{c}_{res} \perp = \perp$ pour tout c
-$\semm{c_1, c_2 }_{res} = \semm{c_2 }_{res} \circ \semm{c_1}_{res}$ : compostion de fonctions
-$\semm{\text{if b then }c_1\text{ else }c_2 } \sigma =$ si $\sigma \neq \perp :$
-si$ \semm{b} \sigma = tt$ alors $\semm{c_1}_{res} \sigma$ sinon  $\semm{c_2}_{res} \sigma$
-sinon $\perp$
-$\semm{\text{ while b do c} } \sigma=$ si $\sigma = \perp$ alors $\perp$, sinon 
-si $\semm{b}\sigma = tt$ alors $(\semm{while b do c } \circ \semm{c}) \sigma$, sinon $\sigma$)
-def récursive ???
 
-Quelques équivalences:
-c; skip \sim_{res} c \sim_{res} skip; c " skip est neutre pour ;"
-c; loop \sim_{res} loop \sim_{res} loop; c "loop est absorbant pour ;"
-(c_1; c_2); c_3 \sim_{res} c_1; (c_2;c_3)  " ; est associatif"
- "; n'est pas commutatif"
- 
+Quelques équivalences:\begin{itemize}
+\item c; skip $\sim_{res}$ c $\sim_{res}$ skip; c " skip est neutre pour ;"
+\item c; loop $\sim_{res}$ loop $\sim_{res}$ loop; c "loop est absorbant pour ;"
+\item $(c_1; c_2); c_3 \sim_{res} c_1; (c_2;c_3)$  " ; est associatif"
+\item  "; n'est pas commutatif"\\
+ \end{itemize}
  \subsection{Sémantique naturelle (SN)}
  
- Sémantique à "grands pas".
- Relation de transition \Rightarrow \subseteq (Prog \times Etat) \times Etat
-\overline{ <skip, \sigma > \Rightarrow \sigma }
-\overline{  <x:=a , \sigma > \Rightarrow \sigma [ x \leftarrow \semm{c } \sigma ] }
-\frac{ <c_1, \sigma > , <c_2 , \sigma' > \Rightarrow \sigma'' }{<c_1, c_2, \sigma > \Rightarrow \sigma''}
+ Sémantique à "grands pas".\\
+ Relation de transition $\Rightarrow \subseteq (Prog \times Etat) \times Etat$\\
+$\overline{ <skip, \sigma > \Rightarrow \sigma }$\\
+$\overline{  <x:=a , \sigma > \Rightarrow \sigma [ x \leftarrow \semm{c } \sigma ] }$\\
+$\frac{ <c_1, \sigma > , <c_2 , \sigma' > \Rightarrow \sigma'' }{<c_1, c_2, \sigma > \Rightarrow \sigma''}$\\
 
 On construit un arbre au lieu de construire une suite.
-Def : une exécution de c à partir de \sigma est un arbre de dérivation dont la racine est de la forme <c, \sigma > \Rightarrow \sigma'
+\begin{definition}{Exécution}
+une exécution de c à partir de $\sigma$ est un arbre de dérivation dont la racine est de la forme $<c, \sigma > \Rightarrow \sigma'$.\\
+\end{definition} 
+\begin{rem}{}
+avec cette définition, une exécution termine toujours. Par abus de language, on dira que l'exécution boucle si l'arbre n'existe pas.
+\end{rem}
+\begin{definition}{Equivalence}
+ $c \sim_{SN} c'$ ssi pour tout $\sigma, \sigma', < c, \sigma > \Rightarrow$ ssi $<c', \sigma > \Rightarrow \sigma'$.\\
+\end{definition} 
 
-Rem : avec cette définition, une exécution termine toujours. Par abus de language, on dira que l'exécution boucle si l'arbre n'existe pas.
 
-Equivalence : c \sim_{SN} c' ssi pour tout \sigma, \sigma', < c, \sigma > \Rightarrow ssi <c', \sigma > \Rightarrow \sigma'
+\paragraph*{Résultat:}
+On pose $\semm{c}_{res}^{SN} = \left\{ \begin{array}{ll}
+ \sigma' &\text{ si } <c, \sigma > \Rightarrow \sigma' \\
+ \perp & \text{sinon} \\
+\end{array} \right.$
 
+\begin{thm}{} C'est bien une fonction (déterministe).\\
+\end{thm}
+
+\section{Equivalence}
+\begin{thm}{} $ \semm{ \cdot }_{res}^{SOS} = \semm{ \cdot }_{res}^{SN}$\\
+\end{thm}
+
+\begin{lem}{1} 
+$ \begin{array}{l l}
+\forall c, \forall \sigma, \forall \sigma', & \text{si on a }(<c, \sigma> \Rightarrow \sigma')\\
+											& \text{alors } (<c, \sigma> \rightarrow^* \sigma')
+\end{array}$\\
+Dem : induction sur l'arbre de dérivation de $<c, \sigma> \Rightarrow \sigma'$\\
+\end{lem}
+
+\begin{lem}{2} 
+$ \begin{array}{ll}
+\forall c, \forall \sigma, \forall \sigma', &\text{si on a }(<c, \sigma> \Rightarrow^* \sigma')\\
+											& \text{alors } (<c, \sigma> \Rightarrow \sigma')
+\end{array}$\\
+Dem : récurrence sur la suite de dérivation de $<c, \sigma> \Rightarrow^* \sigma'$\\
+\end{lem}
+
+\begin{rem}{}Attention à l'équivalence de la sémantique des expressions sous la forme $<a, \sigma> \rightarrow n$ (SOS) et $\semm{a} \sigma = n$ (SN)\\
+\end{rem}
+
+\part{Traces}
+On a défini $\semm{c}^{SOS}$ comme une sémantique de résultat\\
+$\longrightarrow$ garder l'ensemble des calculs?\\
+En général, on se fixe un ensemble d'états initiaux $I \subseteq Etats$
+\begin{itemize}
+\item $\semm{c}_{tr} = $ ensemble des calculs maximaux en partant des états initiaux
+\item on peut m\^eme définir l'ensemble des traces partielles : \\
+tous les calculs à partir des états de I
+\end{itemize}
+
+Comment comparer des traces ? \begin{itemize}
+\item les m\^emes états intermédiaires : trop restrictif
+\item la m\^eme longueur : pas assez
+\end{itemize}
+On sélectionne une partie de l'information des états intermédiaires et on la fait passer sur les transitions : transitions étiquetées.
+
+étiquette vide : $\tau$
+
+\begin{definition}{Traces étiquetées}
+C'est une suite de configurations.\\
+$\Pi = \gamma_0 \xrightarrow{l_0} \gamma_1 \xrightarrow{l_1} \cdots \xrightarrow{i-1} \gamma_i \xrightarrow{i} \cdots$\\
+\begin{itemize}
+\item $l_i \not = \tau $ : étiquette (label) visible (observable)
+\item $l_i = \tau$ : transition non observable, muette
+\end{itemize}
+La suite des étiquettes de $\Pi$ (encore appelée trace) est $l_0l_1\cdots l_i$.\\
+\end{definition}
+
+\begin{definition}{Equivalence observable}
+$c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces de c et c' sont identiques.\\
+\end{definition}
+
+\part{Exceptions}
+
+\paragraph*{Sémantique : }
+\begin{itemize}
+\item lever : \begin{itemize}
+\item $\overline{<\text{throw }e, \sigma> \xrightarrow{e} \sigma}$
+\item $\overline{<\text{throw }e ;c , \sigma> \xrightarrow{e} \sigma}$
+\end{itemize}
+\item rattraper : \begin{itemize}
+\item $\dfrac{< c, \sigma > \xrightarrow{\tau} < c'', \sigma' >}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$
+\item  $\dfrac{< c, \sigma > \xrightarrow{e} \sigma}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$ : l'exception est traitée par c'
+\item  $\dfrac{< c, \sigma > \xrightarrow{l} \sigma}{<\text{try c catch }e:c', \sigma > \xrightarrow{l} <\text{try c'' catch }e:c', \sigma > }, l \not = e$
+\end{itemize}
+\end{itemize}
+\begin{rem}{} Les exceptions se propagent de  haut en bas mais pas de gauche à droite :  si toutes les exceptions sont rattrapées, aucune n'est observable pendant l'exécution.\\
+\end{rem}
+
+\begin{thm}{} Un calcul maximal de c à partir de $\sigma$ est de l'une des formes suivantes : 
+\begin{enumerate}
+\item $<c, \sigma> \xrightarrow{\tau}^* \sigma'$
+\item $<c, \sigma> \xrightarrow{\tau}^{\infty}$
+\item $<c, \sigma> \xrightarrow{\tau}^* <c',\sigma'> \xrightarrow{e}^* \sigma'$ avec $e \not = \tau$
+\end{enumerate}
+\begin{enumerate}
+\item on pose $\semm{c}_{res} \sigma = \sigma'$
+\item on pose $\semm{c}_{res} \sigma = \perp$
+\item on pose $\semm{c}_{res} \sigma = \Delta$ état d'erreur
+\end{enumerate}
+\end{thm}
+Pour retrouver la compositionnalité, on crée autant d'états d'erreur que d'exceptions.
+
+\part{Sémantique opérationnelle pour un language non structuré}
+Language non structuré : affectations, sauts conditionnels.
+
+\section{Sémantique opérationnelle}
+Etat = Label $\times$ Environnement\\
+
+\begin{itemize}
+\item $\dfrac{instr\_at(i) \equiv x:=a }{(i, \sigma) \rightarrow (next(i), \sigma[x \leftarrow \semm{a}])}$
+\item $\dfrac{instr\_at(i) \equiv \text{goto j} }{(i, \sigma) \rightarrow (j \sigma)}$
+\end{itemize}
+
+\part{Sémantique dénotationnelle}
+\paragraph{idée:} la sémantique d'un programme est une fonction (partielle) ``état initial $\mapsto$ état final''\\
+On va définir proprement cette fonction.
+
+On garde \sem{a} : Etat $rightarrow \Z$, \sem{b} : Etat $\rightarrow \{tt, ff \}$
 
 \end{document}
+
