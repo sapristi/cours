@@ -1,0 +1,111 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%opening
+\newcommand{\F}{\mathcal{F}}
+
+\begin{document}
+
+
+\subsection{Formule de Sahlquist}
+On définit une construction syntaxique 
+$S ::= X \rightarrow POS$
+où POS est une formule positive et $\chi ::= T | \perp | \Box_{i_1} \cdots \Box_{i_n}p | \chi \wedge \chi | \Diamond_{j_i} \chi$
+La formule générée par S
+\begin{thm}{} Soit $\Phi$ une formule de Sahlquist. Il existe une formule du 1er ordre $\alpha$ qui correspond à $\Phi$ sur les cadres.\\
+Pour tout cadre $\F$, pour tout monde $m$,
+$\F, m \models \Phi$ ssi $\F[x \leftarrow m] \models \alpha(x)$
+\end{thm}
+\begin{exemple}{1}
+ \F, m \models \Phi ssi \forall V, \F, V, m \models \Phi
+ssi \forall V, \F, V, w \models p implique \F, V, w \models \Diamond p
+ssi \forall V, w \in V(p) implique \F, V, m \models \Diamond p
+ssi pour tout V' / V'(p) = {w} implique \F, V, w \models p
+ssi \forall V' / V'(p) = \{ w \} implique \F, V, w \models \Diamond p
+(car \Diamond p est croissante en p car positive)
+(1) ssi \forall V' / V'(p) = w on a \F, V', [x \leftarrow w ] \models \exists y xRy \wedge p(y)
+ssi le prédicat p est interprété avec la fonction 
+\begin{array}{ll}
+ W \longleftarrow \{0, 1\}
+ w \mapsto & 1 si v = w
+	    & 0 sinon
+\end{array}
+On a montré que \forall w \in W
+\F, w \models p \to \Diamond p ssi F[x \leftarrow w] \models x Rx
+
+On a aussi:
+\F \models p \to \Diamond p ssi \forall w, \F[x←w] \models xRx
+			    ssi \F \models \forall x, xRx
+\end{exemple}
+
+1)Traduire \chi → POS en second ordre de la forme
+\forall \vec p, \forall \vec y, [(REL \wedge BOX) → ST_x(POS)
+où RES est une conjoniotn de y_i R_k y_j x R_k y_i
+   BOX est une conjonction de la forme \forall s, y_i R_{\beta} s → p(s)
+2) Retourne la formule \forall \vec y, REL → ST_x(POS) dans laquelle on a remplacé les occurences de p par 
+\sigma(p) par \lambda a . y_{i_1} R_{\beta_1} a \vee \cdots \vee y_{i_k} R_{\beta_k} a
+où chaque y_{i_j} R_{\beta_j} a provient d'une formule \forall s y_{i_j} R_{\beta_j} s → p(s) qui apparaît dans BOX.
+
+\subsection{Théorème de complétude}
+
+Soit S un ensemble de formules . On écrit \vdash_S \Phi pour dire que \hi est prouvable en utilisant 
+\begin{itemize}
+ \item les tautologies
+ \item l'axiome K
+ \item les instances de formules de S
+ \item le modus ponens
+ \item la nécéssitation
+\end{itemize}
+Rem : \vdash \Phi; \vdash_{\empty} \Phi
+Soit \mathcal{C} une classe de cadres.
+\models_{\mathcal{C}} \Phi ssi \forall \F \in \mathcal{C}, \F \models \Phi
+\Sigma \models_{\mathcal{C}} \Phi ssi pour tout modèle \mathcal{M}, w basé sur un cadre de \mathcal{C}, on a :
+Si \mathcal{M}, w \models \Sigma alors \mathcal{M}, w \models \Phi
+
+\begin{thm}{de complétude de Sahlquist}
+Soit S un ensemble de formules de Sahlquist, soit C_s la classe de cadres qui vérifient les propriétés du 1er ordre correspondantes aux formules de S sur les cadres.
+Alors  \Sigma \vdash_S \Phi ssi \Sigma \models_{\mathcal{C}} \Phi (complétude forte}
+(complétude faible : \vdash_S \Phi ssi \models_S \Phi.)
+\end{thm}
+
+Trois techniques pour montrer la décidabilité/compléxité du problème de logique modale.
+
+\subsection{Logique modale S5}
+\begin{tabular}{c | c  }
+ axiomatique & propriété sur les cadres \\
+ \Box p → p & réfléxivité\\
+ \Box p → \Box \Box p & transitivité\\
+ \lnot\Box p \Box \lnot \Box p & euclidianité\\
+ (\Diamond \Box p → \Box p)\\
+\end{tabular}
+\subparagraph{Application : } Logique epistémique
+
+euclidianité : \forall x, y, z, (x R y \wedge xRz) → y R z
+
+\begin{prop}
+ Si R est réfléxive, transitive, alors R euclidienne ssi R symétrique
+\end{prop}
+\begin{prop}
+ \Phi satisfiable dans un modèle où R est une rel d'équivalence 
+\Leftrightarrow \Phi satisfiable dans un modèle M = (W, R, V) où R = W \times W
+\end{prop}
+Dem \vbox{\Leftarrow} : trivial
+\vbox{\Rightarrow} Si il existe M, w où M  = (W, R, V) tq
+\begin{itemize}
+ \item R est une relation d'équivalence
+ \item M, w \models \Phi
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
