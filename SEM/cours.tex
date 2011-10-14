@@ -213,16 +213,20 @@ avec $\sigma_1 \sim^V \sigma_2$ ssi :\begin{itemize}
 \item $\semm{ x := a }_{res} \sigma = \sigma [ x \leftarrow \semm{a} \sigma ]$
 \item $\semm{c_1, c_2 }_{res} \sigma = \semm{c_2 }_{res} (\semm{c_1}_{res} \sigma)$ si on pose  \item $\semm{c}_{res} \perp = \perp$ pour tout c
 \item $\semm{c_1, c_2 }_{res} = \semm{c_2 }_{res} \circ \semm{c_1}_{res}$ : compostion de fonctions
-\item $\semm{\text{if b then }c_1\text{ else }c_2 } \sigma =$ si $\sigma \neq \perp :$
-\begin{itemize}
-\item si$ \semm{b} \sigma = tt$ alors $\semm{c_1}_{res} \sigma$ sinon  $\semm{c_2}_{res} \sigma$
-\item sinon $\perp$
-\end{itemize}
-\item $\semm{\text{ while b do c} } \sigma=$ si $\sigma = \perp$ alors $\perp$, sinon 
-\begin{itemize}
-\item si $\semm{b}\sigma = tt$ alors $(\semm{\text{while b do c} } \circ \semm{c}) \sigma$, 
-\item sinon $\sigma$) $\longrightarrow$ def récursive ???
-\end{itemize}
+\item $
+\begin{array}{lll}
+ \semm{\text{if b then }c_1\text{ else }c_2 } \sigma =&$si $\sigma \neq \perp :& \\
+&&$si$ \semm{b} \sigma = tt$ alors $\semm{c_1}_{res} \sigma\\
+&&$sinon  $\semm{c_2}_{res} \sigma\\
+&$sinon $\perp\\
+\end{array}${ll}
+\item $\begin{array}{lll}
+\semm{\text{ while b do c} } \sigma=&$si $\sigma \not= \perp:\\
+&&$si $\semm{b}\sigma = tt$ alors $(\semm{\text{while b do c} } \circ \semm{c}) \sigma,\\ 
+&&$sinon $\sigma\\
+& $sinon$\perp\\
+\quad \hookrightarrow$ def récursive ???$
+\end{array}$
 \end{itemize}
 
 
@@ -238,9 +242,13 @@ Quelques équivalences:
  
  Sémantique à "grands pas".\\
  Relation de transition $\Rightarrow \subseteq (Prog \times Etat) \times Etat$\\
+
 $\overline{ <skip, \sigma > \Rightarrow \sigma }$\\
+
 $\overline{  <x:=a , \sigma > \Rightarrow \sigma [ x \leftarrow \semm{c } \sigma ] }$\\
-$\frac{ <c_1, \sigma > , <c_2 , \sigma' > \Rightarrow \sigma'' }{<c_1, c_2, \sigma > \Rightarrow \sigma''}$\\
+
+$\dfrac{ <c_1, \sigma > , <c_2 , \sigma' > \Rightarrow \sigma'' }{<c_1, c_2, \sigma > \Rightarrow \sigma''}$\\
+
 
 On construit un arbre au lieu de construire une suite.
 \begin{definition}{Exécution}
@@ -315,7 +323,7 @@ La suite des étiquettes de $\Pi$ (encore appelée trace) est $l_0l_1\cdots l_i$
 \end{definition}
 
 \begin{definition}{Equivalence observable}
-$c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces de c et c' sont identiques.\\
+$c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces de $c$ et $c'$ sont identiques.\\
 \end{definition}
 
 \part{Exceptions}
@@ -327,8 +335,8 @@ $c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces d
 \item $\overline{<\text{throw }e ;c , \sigma> \xrightarrow{e} \sigma}$
 \end{itemize}
 \item rattraper : \begin{itemize}
-\item $\dfrac{< c, \sigma > \xrightarrow{\tau} < c'', \sigma' >}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$
-\item  $\dfrac{< c, \sigma > \xrightarrow{e} \sigma}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$ : l'exception est traitée par c'
+\item $\dfrac{< c, \sigma > \xrightarrow{\tau} < c'', \sigma' >}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$\\
+\item  $\dfrac{< c, \sigma > \xrightarrow{e} \sigma}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$ : l'exception est traitée par $c'$\\
 \item  $\dfrac{< c, \sigma > \xrightarrow{l} \sigma}{<\text{try c catch }e:c', \sigma > \xrightarrow{l} <\text{try c'' catch }e:c', \sigma > }, l \not = e$
 \end{itemize}
 \end{itemize}
@@ -357,7 +365,7 @@ Language non structuré : affectations, sauts conditionnels.
 Etat = Label $\times$ Environnement\\
 
 \begin{itemize}
-\item $\dfrac{instr\_at(i) \equiv x:=a }{(i, \sigma) \rightarrow (next(i), \sigma[x \leftarrow \semm{a}])}$
+\item $\dfrac{instr\_at(i) \equiv x:=a }{(i, \sigma) \rightarrow (next(i), \sigma[x \leftarrow \semm{a}])}$\\
 \item $\dfrac{instr\_at(i) \equiv \text{goto j} }{(i, \sigma) \rightarrow (j \sigma)}$
 \end{itemize}
 
@@ -513,11 +521,24 @@ On reprend les domaines sémantiques :
  \item sequence : $c'' = \mathcal{C}\semm{P} c' = \mathcal{C}\semm{P}(\mathcal{C}\semm{Q} c)$\\
 		  $\mathcal{C}\semm{P, Q} = \mathcal{C}\semm{P} \circ \mathcal{C}\semm{Q}$\\
  \item affectations :  $\mathcal{C}\semm{x:=a} c = c'$ avec $c' \sigma = \sigma'' = c \sigma' = c \sigma[x \leftarrow \semm{a} \sigma])$\\
- \item choix : $\mathcal{C}\semm{\text{if v then P else Q}} c = c'\text{ avec }c' \sigma =\text{ si }\semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} c) \sigma \text{ sinon } (\mathcal{C}\semm{Q} c) \sigma$\\
-   $\mathcal{C}\semm{\text{if v then P else Q}} = \lambda c. \lambda \sigma. \text{ si } \semm{b} \sigma = tt\text{ alors } \mathcal{C}\semm{P} c \sigma  \text{ sinon } \mathcal{C}\semm{Q} c \sigma$\\
- \item boucle : $\mathcal{C}\semm{w} c \sigma = \text{ si } \semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} \mathcal{C}\semm{w}) c \sigma \text{ sinon } c \sigma$\\
- $\mathcal{C}\semm{w} = Fix F \text{ où } F = \lambda \Phi . ( \lambda c. \lambda \sigma. \text{ si } \semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} \circ \Phi) c \sigma \text{ sinon } c \sigma$\\
-$F = \lambda \Phi \lambda c . Cond ( \semm{b},  (\mathcal{C}\semm{P} \circ \Phi) c, c)$\\
+ \item choix : 
+$\begin{array}{ll}
+\mathcal{C}\semm{\text{if v then P else Q}} c = c'\text{ avec }c' \sigma =&\text{si }\semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} c) \sigma \\
+ &\text{sinon } (\mathcal{C}\semm{Q} c) \sigma\\
+   \mathcal{C}\semm{\text{if v then P else Q}} = \lambda c. \lambda \sigma. &\text{si } \semm{b} \sigma = tt\text{ alors } \mathcal{C}\semm{P} c \sigma  \\
+ &\text{sinon } \mathcal{C}\semm{Q} c \sigma\\
+\end{array}$
+ \item boucle : \\$
+\begin{array}{ll}
+ \mathcal{C}\semm{w} c \sigma = &\text{si } \semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} \mathcal{C}\semm{w}) c \sigma \\
+  &\text{sinon } c \sigma\\
+\end{array}\\
+\begin{array}{ll}
+ \mathcal{C}\semm{w} = Fix F \text{ où } F = \lambda \Phi .  \lambda c. \lambda \sigma. &\text{si } \semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} \circ \Phi) c \sigma \\
+&\text{sinon } c \sigma\\ 
+\end{array}\\
+F = \lambda \Phi \lambda c . Cond ( \semm{b},  (\mathcal{C}\semm{P} \circ \Phi) c, c)\\
+$
 \end{itemize}
 CPO utilisé : $[C_{cont} \to C_{cont}]$ fonctions continues
 
