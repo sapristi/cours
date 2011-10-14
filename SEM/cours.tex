@@ -15,8 +15,10 @@
 \newcommand{\semm}[1]{\left[| #1 | \right]}
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
 
-\include{defs}	
+
+\input{defs}	
 
 \begin{document}
 
@@ -228,7 +230,7 @@ $\frac{ <c_1, \sigma > , <c_2 , \sigma' > \Rightarrow \sigma'' }{<c_1, c_2, \sig
 
 On construit un arbre au lieu de construire une suite.
 \begin{definition}{Exécution}
-une exécution de c à partir de $\sigma$ est un arbre de dérivation dont la racine est de la forme $<c, \sigma > \Rightarrow \sigma'$.\\
+Une exécution de c à partir de $\sigma$ est un arbre de dérivation dont la racine est de la forme $<c, \sigma > \Rightarrow \sigma'$.\\
 \end{definition} 
 \begin{rem}{}
 avec cette définition, une exécution termine toujours. Par abus de language, on dira que l'exécution boucle si l'arbre n'existe pas.
@@ -276,13 +278,13 @@ $\longrightarrow$ garder l'ensemble des calculs?\\
 En général, on se fixe un ensemble d'états initiaux $I \subseteq Etats$
 \begin{itemize}
 \item $\semm{c}_{tr} = $ ensemble des calculs maximaux en partant des états initiaux
-\item on peut m\^eme définir l'ensemble des traces partielles : \\
+\item on peut même définir l'ensemble des traces partielles : \\
 tous les calculs à partir des états de I
 \end{itemize}
 
 Comment comparer des traces ? \begin{itemize}
-\item les m\^emes états intermédiaires : trop restrictif
-\item la m\^eme longueur : pas assez
+\item les mêmes états intermédiaires : trop restrictif
+\item la même longueur : pas assez
 \end{itemize}
 On sélectionne une partie de l'information des états intermédiaires et on la fait passer sur les transitions : transitions étiquetées.
 
@@ -344,11 +346,131 @@ Etat = Label $\times$ Environnement\\
 \item $\dfrac{instr\_at(i) \equiv \text{goto j} }{(i, \sigma) \rightarrow (j \sigma)}$
 \end{itemize}
 
-\part{Sémantique dénotationnelle}
+\section{Sémantique dénotationnelle}
 \paragraph{idée:} la sémantique d'un programme est une fonction (partielle) ``état initial $\mapsto$ état final''\\
 On va définir proprement cette fonction.
 
 On garde \sem{a} : Etat $rightarrow \Z$, \sem{b} : Etat $\rightarrow \{tt, ff \}$
 
-\end{document}
 
+
+
+\subsection{Points fixes dans un CPO}
+
+\paragraph{Rappel :} on cherche à définir une fonction $\Phi : Etat \to Etat_{\perp}$, point fixe d'une fonctionnelle F.\\
+On va avoir besoin de propriétés sur la fonction F.
+
+\begin{definition}{} Une fonction F : D $\to$ E où D et E sont des CPO est monotone ssi $\forall d, d' \in D, d \sqsubseteq_D d' \Rightarrow F(d) \sqsubseteq_E F(d')$
+\end{definition}
+
+\subparagraph{Intuition :} $\sqsubseteq$ va représenter un ``ordre d'information''.\\
+$\Phi \sqsubseteq \Phi' : \Phi$ contient plus d'information que $\Phi'$.\\
+
+\begin{definition}{}
+ $\Phi \sqsubseteq \Phi'$ ssi $\forall \sigma, \Phi(\sigma) \sqsubseteq \Phi'(\sigma).$\\
+On peut voir $\Phi$ comme un ensemble de couples 
+$\begin{array}{ll}
+ (\sigma, \sigma')$ avec $& \sigma \in Etat\\
+& \sigma' \in Etat \\
+& \Phi(\sigma) = \sigma'\\
+\end{array}
+\begin{array}{l l}
+\Phi \sqsubseteq \Phi'$ ssi $\forall \sigma \in Etat$,  si $\Phi(\sigma) = \sigma' \in Etat$, alors $\Phi'(\sigma) = \sigma'\\
+& si \Phi(\sigma) = \perp, alors \Phi'(\sigma) =$  n'importe quel élément de Etat$
+\end{array}$
+\end{definition}
+
+
+La fonction qui contient le moins de couples: $\lambda \sigma . \perp =^{def} \perp$.\\
+Monotonie de F : F préserve l'ordre d'information.
+
+On va calculer $\Phi$ par approximations succéssives, en ajoutant au fur et à mesure des couples grâce à F.
+$\Phi = \bigsqcup (\text{borne sup})$ d'une chaîne croissante d'ensembles de couples.
+
+\begin{definition}{} Une fonction $F : D \to E$ monotone est continue ssi pour toute chaîne croissante $d_0 \sqsubseteq_D d_1 \sqsubseteq_D d_2 \cdots  \sqsubseteq_D \sqsubseteq \cdots $
+$\bigsqcup_n F (d_n) = F( \bigsqcup_n d_n)$
+\end{definition}
+
+\begin{definition}{}
+ soit $F : D \to D$ une fonction continue sur une CPO D.
+ Un point fixe de F est un élément d de D tel que F(d) = d.
+\end{definition}
+
+\begin{thm}{Kleene}
+ Soit F une fonction continue sur un CPO D avec plus petit élément. On pose 
+ $\phi = \bigsqcup_n F^n(\perp)$
+Alors $\phi$ est le plus petit point fixe de F.
+\end{thm}
+
+\subsection{Sémantique de while}
+\sem{\text{while b do c}} = fix F = $\bigsqcup_n F^n(\perp)$ avec $\perp = \lambda \sigma. \perp$
+avec F = $\lambda \Phi . Cond( \semm{b}, \Phi \circ \semm{c}, id)$
+
+$\Phi_0 = \perp \equiv \empty$
+$\Phi_1 = F^1(\perp) = Cond( \semm{x \geq 0}, \perp \circ \semm{x :=x -1}, id) = \lambda \sigma. \text{si }\sigma(c) \geq 0\text{ alors } \perp \text{ sinon } \sigma.$
+$\equiv \{ (\sigma, \sigma) / \sigma(x) < 0 \}$
+représente : si $x < 0$ avant l'exécution, on n'entre pas dans la boucle (0 itérations) et on renvoie l'état de départ.
+
+\begin{align*}
+\Phi_2 = F^2(\perp) & = F(\Phi_1)\\
+		    & = Cond( \semm{x \geq 0}, \Phi_1 \circ \semm{x :=x -1}, id)\\
+		    & = \lambda \sigma. &\text{ si }\sigma(x) \geq 0 \\
+				       &&\text{  alors si }\sigma(x) -1 \geq 0 &\text{  alors }\perp\\
+									&&&\text{  sinon }\sigma[x \leftarrow \sigma(x) -1]\\
+					&&\text{  sinon }\sigma
+\end{align*}
+$\equiv \{(\sigma, \sigma) / \sigma(x) < 0 \} \bigcup \{(\sigma, \sigma(x \leftarrow \sigma(x)-1 / 0 \leq \sigma(x) \leq 1 \}$
+
+\begin{thm}{} Soit \sem{b} : Etat $\to \{ff, tt \}, \semm{c} : Etat \to Etat_{\perp}$
+alors $\lambda \Phi Cond( \semm{b}, \Phi \circ c, id)$ est une fonction continue de $(Etat \to Etat_{perp}) \to (Etat \to Etat_{perp})$
+\end{thm}
+
+\section{Équivalence avec la sémantique opérationnelle}
+\begin{thm}{} $\forall c \in Com, \forall \sigma, \sigma' \in Etat
+\semm{c} \sigma = \sigma'$ ssi $<c, \sigma> \Rightarrow \sigma'$
+\end{thm}
+\subparagraph{idée de la preuve}(Winskel)
+\vbox{$\Leftarrow$} On définit $R(c, \sigma, \sigma')$ ssi $\semm{c} \sigma = \sigma'$
+SN $(\Rightarrow)$ est la plus petite relation sur $Com \times Etat \times Etat$ qui vérifie les règles d'inférence de SN.
+Il suffit de vérifiier que R vérifie toutes les règles de SN.
+On a alors $\Rightarrow \subseteq R$, ce qui nous donne $(<c, \sigma> \Rightarrow \sigma') \Longrightarrow (\semm{c} \sigma = \sigma')$
+\vbox{$\Rightarrow$} Par récurrence sur le nombre d'itérations qui ont servi à construire un couple $(\sigma, \sigma')$ dans la sémantique dénotationnelle.
+
+
+\section{Sémantique dénotationnelle par continuation}
+
+La sémantique dénotationnelle vue jusqu'à présent est dite directe : $ \sigma \rightsquigarrow^{\semm{c}} \sigma'$
+$c_1;c_2$ : exécuter $c_1$ puis $c_2$ (composition de fonctions) : on ne peut pas changer le flôt de contrôle.
+$\longrightarrow $ pb avec les exceptions.
+Lever une exception = changer de futur.
+Futur = continuation.
+
+On reprend les domaines sémantiques : 
+\begin{itemize}
+ \item $\sigma \in Etat = \V \to \N$
+ \item $c \in Cont = Etat \to Etat_{\perp}$
+ \item $\mathcal{C} \semm{P} \in Cont \to Cont$
+\end{itemize}
+
+\subsection{Sémantique de WHILE}
+
+\begin{itemize}
+ \item skip : $\mathcal{C}\semm{skip} c = c$ : $\mathcal{C}\semm{skip} = id_{cont}$
+ \item sequence : $c'' = \mathcal{C}\semm{P} c' = \mathcal{C}\semm{P}(\mathcal{C}\semm{Q} c)$
+		  $\mathcal{C}\semm{P, Q} = \mathcal{C}\semm{P} \circ \mathcal{C}\semm{Q}$
+ \item affectations :  $\mathcal{C}\semm{x:=a} c = c'$ avec $c' \sigma = \sigma'' = c \sigma' = c \sigma[x \leftarrow \semm{a} \sigma])$
+ \item choix : $\mathcal{C}\semm{\text{if v then P else Q}} c = c' avec c' \sigma =\text{ si }\semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} c) \sigma \text{ sinon } (\mathcal{C}\semm{Q} c) \sigma$
+   $\mathcal{C}\semm{\text{if v then P else Q}} = \lambda c. \lambda \sigma. \text{ si } \semm{b} \sigma = tt\text{ alors } \mathcal{C}\semm{P} c \sigma  \text{ sinon } \mathcal{C}\semm{Q} c \sigma$
+ \item boucle : $\mathcal{C}\semm{w} c \sigma = \text{ si } \semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} \mathcal{C}\semm{w}) c \sigma \text{ sinon } c \sigma$
+ $\mathcal{C}\semm{w} = Fix F \text{ où } F = \lambda \Phi . ( \lambda c. \lambda \sigma. \text{ si } \semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} \circ \Phi) c \sigma \text{ sinon } c \sigma$
+$F = \lambda \Phi \lambda c . Cond ( \semm{b},  (\mathcal{C}\semm{P} \circ \Phi) c, c)$
+\end{itemize}
+CPO utilisé : $[C_{cont} \to C_{cont}]$ fonctions continues 
+
+
+
+
+
+
+
+\end{document}

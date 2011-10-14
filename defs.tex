@@ -4,6 +4,15 @@
 
 \newcommand{\HRule}{\rule[2mm]{0.66\linewidth}{0.5pt}}
 
+
+\makeatletter
+\renewcommand\paragraph{%
+   \@startsection{paragraph}{4}{0mm}%
+      {-\baselineskip}%
+      {.5\baselineskip}%
+      {\normalfont\normalsize\bfseries}}
+\makeatother
+
 \newenvironment{definition}[1]
 {	\paragraph{ \textcolor{green}{	\underline{ \textcolor{black}{Définition : #1}} } }	}
 {  \textcolor{green}{\HRule} \medskip}
