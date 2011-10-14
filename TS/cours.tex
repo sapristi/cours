@@ -1,0 +1,56 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+
+
+\input{../defs}
+%opening
+\title{}
+\author{}
+
+\begin{document}
+
+\maketitle
+
+\begin{definition}{} Un processus aléatoire sur (\Omega, \tau, P) indéxé sur \R est une famille X_t , t \in \R de V. A. sur (\Omega, \tau, P).\\
+Variante: indéxé sur \Z : (X_n)_n, n \in \Z
+\end{definition}
+
+Loi de X_t, t \in \R: c'est ka donnée des lois de tous les vecteurs.
+Sauf cas particulier importants (Gauss, Markov), difficile à calculer et à manipuler
+
+\paragraph{Notion de trajectoire} (correspond à la réalisation pour les variables aléatoires.\\
+Vecteur aléatoire X : \Omega \rightarrow \R^{\N}
+  \omega \mapsto X(w) : réalisation de la V.A. X
+
+\subparagraph{Signal aléatoire :} \Omega \times T (domaine temporel) \R
+(w,t) \mapsto \rightarrow X(w,t)
+→ fonction de 2 variables
+
+Si on fixe \omega : X_{\omega} : T \rightarrow \R
+t \mapsto X_{\omega}(t) 
+Trajectoire → revient à un signal déterministe.
+
+
+\subparagraph{Description simplifiée} de X : \Omega \times T \to \R : ne retenir que des moments jusqu'à un certain ordre.
+
+\begin{definition}{Moment d'ordre 1} On appelle moyenne du signal aléatoire X sur (\Omega, \tau, P) l'applications :\\
+T \rightarrow \R
+t  \mapsto m_X(t) = \E (X_t) 
+\end{definition}
+\begin{definition}{Moment d'ordre 2} On appelle covariance centrée \\
+C_{X_c} : (t_1, t_2) \in T² → \E(C_{X_c}(t_1)C_{X_c}(t_2))\\
+On appelle covariance (non centrée) 
+E_X : (t_1, t_2) → E_X (t_1, t_2 ) = E(X(t_1)X(t_2))
+\end{definition}
+
+\begin{rem}
+ VAR(X_t) = E((X_c(t))²) = C_{X_c}(t,t) : puissance moyenne du signal centré à l'instant t.
+\rho_{X_{t_1}, X_{t_2}} = \dfrac{E(X_c(t_1)X_c(t_2))}{\sqrt(VAR(X_{t_1}) VAR(X_{t_2})}
+      =	
+
+\end{rem}
+
+
+
+\end{document}
