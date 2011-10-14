@@ -2,36 +2,46 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{color}
 
-\newcommand{\HRule}{\rule[2mm]{0.66\linewidth}{0.5pt}}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+
+\newcommand{\HRule}{\rule[2mm]{0.4\linewidth}{0.5pt}}
 
 
 \makeatletter
-\renewcommand\paragraph{%
+\newcommand\parag{%
    \@startsection{paragraph}{4}{0mm}%
       {-\baselineskip}%
       {.5\baselineskip}%
       {\normalfont\normalsize\bfseries}}
+
+
 \makeatother
 
+
+
+
 \newenvironment{definition}[1]
-{	\paragraph{ \textcolor{green}{	\underline{ \textcolor{black}{Définition : #1}} } }	}
-{  \textcolor{green}{\HRule} \medskip}
+{	\parag{ \textcolor{green}{	\underline{ \textcolor{black}{Définition : #1}} } } \noindent}
+{ \textcolor{green}{\HRule} \bigskip}
 
 \newenvironment{thm}[1]{
-	\paragraph{ 	
+	\parag{ 	
 		\textcolor{red}{
-			\underline{ \textcolor{black}{Théorème : #1}} } } } 
-			{ \textcolor{red}{\HRule} }
+			\underline{ \textcolor{black}{Théorème : #1}} } }  \noindent} 
+			{  \textcolor{red}{\HRule}\bigskip }
 			
 \newenvironment{rem}[1]{
-	\subparagraph{ 	
+	\subparagraph{
 		\textcolor{blue}{
-			\underline{ \textcolor{black}{Remarque : #1}} } } } {}
+			\underline{\textcolor{black}{Remarque #1}}}}} {}
 			
 \newenvironment{dem}[1]{
-	\paragraph{ 	
+	\parag{
 		\textcolor{yellow}{
-			\underline{ \textcolor{black}{Démonstration : #1}} } }} {}		
+			\underline{ \textcolor{black}{Démonstration : #1}} } }} {\textcolor{yellow}{\HRule} \bigskip}	
 \newenvironment{lem}[1]{
 	\subparagraph{ 	
 		\textcolor{magenta}{
@@ -39,7 +49,12 @@
 \newenvironment{ex}[1]{
 	\subparagraph{ 	
 		\textcolor{magenta}{
-			\underline{ \textcolor{black}{Exemple : #1}} } }} {}
+			\underline{ \textcolor{black}{Exemple #1}} } }} {}
+\newenvironment{exs}[1]{
+	\subparagraph{ 	
+		\textcolor{magenta}{
+			\underline{ \textcolor{black}{Exemples #1}} } }} {}
+
 \newenvironment{prop}[1]{
 	\subparagraph{ 	
 		\textcolor{cyan}{
