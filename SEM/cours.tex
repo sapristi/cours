@@ -2,15 +2,23 @@
 \usepackage{fullpage}
 \usepackage[french]{babel}
 \usepackage[utf8x]{inputenc}
-\usepackage{ucs}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{array}
+\usepackage{hyperref}
+
+\hypersetup{colorlinks, linkcolor=black, urlcolor=black,%
+pdfauthor={Jean Dupond},%
+pdftitle={{Magnifique et splendide titre}},%
+pdfsubject={{Titre ou sous-titre}},%
+pdfcreator={LaTeX},%
+}	 
 
 
 \title{Sémantique}
 \date{}
+
 
 \newcommand{\sem}[1]{$\left[| #1 | \right]$}
 \newcommand{\semm}[1]{\left[| #1 | \right]}
@@ -20,15 +28,26 @@
 
 \input{../defs}	
 
+
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\openbullet$}
+\renewcommand{\labelitemiii}{$\openbullet$}
+\renewcommand{\labelitemiv}{$\openbullet$}
+
 \begin{document}
+
+
+
+
+
 
 \makeatletter
 \@addtoreset{section}{part}
 \makeatother
 
-
-
 \maketitle
+
+
 \begin{center}
 \begin{tabular}{c c c}
 opérationnelle & dénotationnelle & axiomatique \\
@@ -100,7 +119,7 @@ $c_1 \equiv c_2$ ($x := 2 \neq x := 1 + 1$)
 	$ \sigma \in Etat = Env$ 
 \item valeur attachée à la variable x dans l'état $\sigma : \sigma(x) \left( \in \mathbb{Z} \right)$
 \item modifier un état : $\sigma ' = \sigma[x \leftarrow v]$ avec $v \in \mathbb{Z}$
-\item sémantique des expressions : évalutation dirigée par la syntaxe
+\item sémantique des expressions : évalutation dirigée par la syntaxe\\
 	\begin{itemize}
 		\item $ <a, \sigma > \rightarrow n$ \\
 		\item $ <n, \sigma > \rightarrow n$	\\
@@ -201,17 +220,19 @@ $\semm{ c }_{res}$ est une fonction de $Etat$ dans $Etat_{\perp}$
 ex : tmp := y ; y := x; x := tmp $\not \equiv$ aux := y; y := x ; x := aux
 
 
-\begin{definition}{Equivalence modulo V} Soit $V \in \V$, \\
-$c \sim^V_{res}$ ssi $\forall \sigma \quad \semm{c}_{res} \sigma \sim^V \semm{c}_res \sigma$
-avec $\sigma_1 \sim^V \sigma_2$ ssi :\begin{itemize}
-\item $\sigma_1 = \perp$ et $\sigma_2 = \perp$
-\item ou  $\forall x in V, \sigma_1(x) = \sigma_2(x)$
-\end{itemize}
+\begin{definition}{Equivalence modulo V} Soit $V \subseteq \V$, \\
+$c \sim^V_{res} c'$ ssi $\forall \sigma, \quad \semm{c}_{res} \sigma \sim^V \semm{c'}_{res} \sigma$, \quad
+avec $\sigma_1 \sim^V \sigma_2$ ssi : 
+$\left\{ \begin{array}{c}
+\sigma_1 = \perp$ et $\sigma_2 = \perp\\
+$ou$  \\
+\forall x \in V, \sigma_1(x) = \sigma_2(x)\\
+\end{array}\right.$\\
 \end{definition}
 \begin{itemize}
 \item $\semm{skip}_{res} = id_{Etat}$
 \item $\semm{ x := a }_{res} \sigma = \sigma [ x \leftarrow \semm{a} \sigma ]$
-\item $\semm{c_1, c_2 }_{res} \sigma = \semm{c_2 }_{res} (\semm{c_1}_{res} \sigma)$ si on pose  \item $\semm{c}_{res} \perp = \perp$ pour tout c
+\item $\semm{c_1, c_2 }_{res} \sigma = \semm{c_2 }_{res} (\semm{c_1}_{res} \sigma)$ si on pose $\semm{c}_{res} \perp = \perp$ pour tout c
 \item $\semm{c_1, c_2 }_{res} = \semm{c_2 }_{res} \circ \semm{c_1}_{res}$ : compostion de fonctions
 \item $
 \begin{array}{lll}
@@ -219,7 +240,7 @@ avec $\sigma_1 \sim^V \sigma_2$ ssi :\begin{itemize}
 &&$si$ \semm{b} \sigma = tt$ alors $\semm{c_1}_{res} \sigma\\
 &&$sinon  $\semm{c_2}_{res} \sigma\\
 &$sinon $\perp\\
-\end{array}${ll}
+\end{array}$
 \item $\begin{array}{lll}
 \semm{\text{ while b do c} } \sigma=&$si $\sigma \not= \perp:\\
 &&$si $\semm{b}\sigma = tt$ alors $(\semm{\text{while b do c} } \circ \semm{c}) \sigma,\\ 
@@ -232,8 +253,8 @@ avec $\sigma_1 \sim^V \sigma_2$ ssi :\begin{itemize}
 
 Quelques équivalences:
 \begin{itemize}
-\item c; skip $\sim_{res}$ c $\sim_{res}$ skip; c " skip est neutre pour ;"
-\item c; loop $\sim_{res}$ loop $\sim_{res}$ loop; c "loop est absorbant pour ;"
+\item $c; skip \sim_{res}$ c $\sim_{res} skip; c$ " skip est neutre pour ;"
+\item $c; loop \sim_{res}$ loop $\sim_{res} loop; c$ "loop est absorbant pour ;"
 \item $(c_1; c_2); c_3 \sim_{res} c_1; (c_2;c_3)$  " ; est associatif"
 \item  "; n'est pas commutatif"
 \end{itemize}
@@ -245,9 +266,9 @@ Quelques équivalences:
 
 $\overline{ <skip, \sigma > \Rightarrow \sigma }$\\
 
-$\overline{  <x:=a , \sigma > \Rightarrow \sigma [ x \leftarrow \semm{c } \sigma ] }$\\
+$\overline{  <x:=a , \sigma > \Rightarrow \sigma [ x \leftarrow \semm{a } \sigma ] }$\\
 
-$\dfrac{ <c_1, \sigma > , <c_2 , \sigma' > \Rightarrow \sigma'' }{<c_1, c_2, \sigma > \Rightarrow \sigma''}$\\
+$\dfrac{ <c_1, \sigma > \Rightarrow \sigma' \quad <c_2 , \sigma' > \Rightarrow \sigma'' }{<c_1, c_2, \sigma > \Rightarrow \sigma''}$\\
 
 
 On construit un arbre au lieu de construire une suite.
@@ -291,10 +312,10 @@ $ \begin{array}{ll}
 Dem : récurrence sur la suite de dérivation de $<c, \sigma> \Rightarrow^* \sigma'$\\
 \end{lem}
 
-\begin{rem}{}Attention à l'équivalence de la sémantique des expressions sous la forme $<a, \sigma> \rightarrow n$ (SOS) et $\semm{a} \sigma = n$ (SN)\\
+\begin{rem}{}Attention à l'équivalence de la sémantique des expressions sous la forme \\$<a, \sigma> \rightarrow n$ (SOS) et $\semm{a} \sigma = n$ (SN)\\
 \end{rem}
 
-\part{Traces}
+\section{Traces}
 On a défini $\semm{c}^{SOS}$ comme une sémantique de résultat\\
 $\longrightarrow$ garder l'ensemble des calculs?\\
 En général, on se fixe un ensemble d'états initiaux $I \subseteq Etats$
@@ -314,7 +335,7 @@ On sélectionne une partie de l'information des états intermédiaires et on la 
 
 \begin{definition}{Traces étiquetées}
 C'est une suite de configurations.\\
-$\Pi = \gamma_0 \xrightarrow{l_0} \gamma_1 \xrightarrow{l_1} \cdots \xrightarrow{i-1} \gamma_i \xrightarrow{i} \cdots$\\
+$\Pi = \gamma_0 \xrightarrow{l_0} \gamma_1 \xrightarrow{l_1} \cdots \xrightarrow{i-1} \gamma_i \xrightarrow{i} \cdots$\medskip
 \begin{itemize}
 \item $l_i \not = \tau $ : étiquette (label) visible (observable)
 \item $l_i = \tau$ : transition non observable, muette
@@ -326,7 +347,7 @@ La suite des étiquettes de $\Pi$ (encore appelée trace) est $l_0l_1\cdots l_i$
 $c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces de $c$ et $c'$ sont identiques.\\
 \end{definition}
 
-\part{Exceptions}
+\section{Exceptions}
 
 \paragraph*{Sémantique : }
 \begin{itemize}
