@@ -46,11 +46,94 @@ E_X : (t_1, t_2) → E_X (t_1, t_2 ) = E(X(t_1)X(t_2))
 
 \begin{rem}
  VAR(X_t) = E((X_c(t))²) = C_{X_c}(t,t) : puissance moyenne du signal centré à l'instant t.
-\rho_{X_{t_1}, X_{t_2}} = \dfrac{E(X_c(t_1)X_c(t_2))}{\sqrt(VAR(X_{t_1}) VAR(X_{t_2})}
-      =	
-
+\rho_{X_{t_1}, X_{t_2}} = \dfrac{E(X_c(t_1)X_c(t_2))}{\sqrt(VAR(X_{t_1}) VAR(X_{t_2})}\\
+      =	\dfrac{C_{X_c}(t_1, t_2)}{\sqrt{C_{X_c}(t_1, t_1)C_{X_c}(t_2, t_2)}}
 \end{rem}
 
+\begin{definition}{} X sur (\Omega, \tau, P) est stationnaire au sens strict si 
+\forall N: \forall t_1, \dots, \t_N : loi de (X_{t_1 + \tau}, \dots, X_{t_N + \tau})^T ne dépend pas de \tau
+\end{definition}
 
+\begin{definition}{} 
+On dit que moyenne m_X est stationnaire si m_X(t) ) cste (indep de t).
+On dit que moyenne C_{X_c} est stationnaire si C_{X_c}(t_1 + \tau, t_2 + \tau) est indep de \tau (à t_1, t_2 fixés) ssi C_{X_c}(t_1, t_2) = f(t_1, t_2)
+On dit que moyenne C_{X_c} est stationnaire si
+X est stationnaire au sens lagre (SSL) si m_X stat et C_X stat.
+\end{definition}
+
+
+Ex : processus gaussien 
+\forall N, \forall t_1, \dots, \t_N, 
+\begin{matrix} X(t_1)\\ \dots \\ X(t_N) \end{matrix}
+\sim \mathcal{N}\begin{matrix} m_X(t_1) \\ \dots \\ m_X(t_N) \end{matrix}, C_{[X_c(t_1), \dots, X_c(t_N)]^T} = 
+particulièrement, si la loi de \begin{matrix} X(t_1)\\ \dots \\ X(t_N) \end{matrix} est absolument continue, on sait que 
+p(x_1, \dots, x_N) = \frac{1}{2\Pi= (det[C
+
+
+\begin{prop}
+Si X gaussien, il suffit de connaître m_X(t), t \in \R et C_{X_c} (t_1, t_2) ,  (t_1, t_2) \in \R² pour connaître la loi.
+\end{prop}
+
+Exemples : 
+Soit X(t) = A, A V.A. sur (\Omega, \tau, P).
+X(\omega, t) = A(\omega) (indep de t)
+m_X (t) = E(A) = m_A ) = cte
+C_{X_c}(t_1, t_2) = E( X_c(t_1) X_c(t_2)) = E([A_c]²) = VAR(A)
+\forall t_1, t_2 : \rho_{X(t_1)X(t_2)} = \rho_A = 1
+
+X(\omega, t) = A(\omega)cos(2 \Pi \Phi_0 t + \phi(\omega)), t \in \R, \omega \in \Omega, \Phi_0 cste \not = 0
+avec m_A, \sigma_A² connues
+\phi et A indep
+\phi de loi uniforme sue [0, 2\Pi]
+
+\forall t, m_X(t) = E(Acos(2\Pi\Phi_0t + \phi))
+ = E(A) E(cos(2\Pi\Phi_0t + \phi))
+ = m_A E (f(\phi))
+ = m_A \int f(u) p_{\phi} du = m_A \frac{1}{2\Pi}\int_0^{2\Pi}cos(2 \Pi \Phi_0 t + \phi)dt
+ = 0
+ 
+
+Remarque : si \phi est quelconque, on n'aura pas m_X(t) = 0
+
+Covariance : C_{X_c}(t_1, t_2) = C_X(t_1, t_2) = E (A \cos(2\Pi f_0 t_1 + \phi)(A \cos(2\Pi f_0 t_2 + \phi)
+ = E(A²) E(\cos(2\Pi f_0 t_1 + \phi) E(\cos(2\Pi f_0 t_2 + \phi) 
+ = (m_A^2 + \sigma_A²) E( \frac{1}{2} [\cos(2\Pi f_0(t_1 + t_2) + 2 \phi) + \cos(2\Pi f_0 (t_1 - t_2))]
+ = \frac{(m_A^2 + \sigma_A²) }{2} \cos(2\Pi f_0(t_1 + t_2)) + x \int_0^{2\Pi} \cos( \alpha + 2u)du
+
+\Rightarrow C_X = C_{X_c} est stationnaire (fonction de t_1 - t_2)
+On écrira : \Gamma_X(\tau) = \frac{(m_A^2 + \sigma_A²) }{2} \cos(2\Pi f_0 \tau), \tau \in \R : fonction d'auto-corrélation (statistique) de X.
+
+
+
+Rappels (Processus Poisson)
+Loi de Poisson \mathcal{P}(\lambda)
+X \sim \mathcal{P}(\lambda) : 
+P(X = k) = ...
+Processus aléatoires ponctuel de poisson
+\mathcal{N}_{(t_1, t_2)} = V.A. = nb d'évenements dans (t_1, t_2)
+\sim \mathcal{P}(\lambda |t_1 - t_2 |)
+(t_1, t_2), (t'_1, t'_2), \dots intervalles disjoints \rightarrow \mathcal{N}_{(t_1, t_2)}, \mathcal{N}_{(t_1, t_2)} mutuellement indépendants
+
+
+Ex: Basculur Poissonien
+(t_i) : instant d'un processus Poisson de densité constant \lambda \in \R^+
+ P(X_0 = 1 ) = P(X_0 = 0 ) = \frac{1}{2}
+\forall t, X_t à valeurs dans \{0, 1\}
+
+t > 0,
+E(X(t)) = 1 \times P(X(t) = 1) + 0 = P(X(t) = 1)
+P(X(t) = 1) = P(X(t) = 1 / X(0) = 1) P(X(0) = 1) + P(X(t) = 1 / X(0) = 0) P(X(0) = 0)
+
+C_X(t_1, t_2) = E(X(t_1), X(t_2)) = 1 \times P(X(t_1) = 1 , X(t_2) = 1) 
+  = P(X(t_2) = 1 / X(t_1) = 1) P(X(t_1) = 1)
+ = P( N_{]t_1; t_2]} pair) \times \frac{1}{2} 
+
+N_{]t_1; t_2]} \sim \mathcal{P}(\lambda(t_2 - t_1) \Rightarrow (N_{]t_1; t_2]} = \sum_{n=0}^{\infty} e^{-\lambda \tau} \frac{(\lambda \tau)^{2n}}{2n!} = e^{-\lambda \tau} \sum_{n=0}^{\infty} \frac{(\lambda \tau)^{2n}}{2n!} = e^{-\lambda \tau} ch(\lambda \tau), \tau = |t_1 - t_2|
+
+
+C_X(t_1, t_2) = \frac{1}{2} \times e^{-\lambda \tau} \frac{e^{\lambda \tau} + e^{-\lambda \tau}}{2}
+ = \frac{1}{4} [1 + e^{-2\lambda \tau}], \tau \in \R
+
+Propriété  : C_X(t_1,t_2 )  = C_{X_c}(t_1,t_2 ) + m_X(t_1)m_X(t_2), t_1, t_2 \in \R
 
 \end{document}

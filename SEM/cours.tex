@@ -6,19 +6,24 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{array}
-\usepackage{hyperref}
+%\usepackage{hyperref}
+\usepackage{multirow}
 
-\hypersetup{colorlinks, linkcolor=black, urlcolor=black,%
-pdfauthor={Jean Dupond},%
-pdftitle={{Magnifique et splendide titre}},%
-pdfsubject={{Titre ou sous-titre}},%
-pdfcreator={LaTeX},%
-}	 
+%\hypersetup{colorlinks, linkcolor=black, urlcolor=black,%
+%pdfauthor={Jean Dupond},%
+%pdftitle={{Magnifique et splendide titre}},%
+%pdfsubject={{Titre ou sous-titre}},%
+%pdfcreator={LaTeX},%
+%}	 
+
+\usepackage{pstricks}
+ 
 
 
 \title{Sémantique}
 \date{}
 
+\newcommand{\E}{\mathcal{E}}
 
 \newcommand{\sem}[1]{$\left[| #1 | \right]$}
 \newcommand{\semm}[1]{\left[| #1 | \right]}
@@ -563,6 +568,116 @@ $
 \end{itemize}
 CPO utilisé : $[C_{cont} \to C_{cont}]$ fonctions continues
 
+
+\subsection{Continuation d'expressions}
+On regarde ce qui se passe avec $x:=a$:
+\begin{itemize}
+ \item Calcul de la valeur de $a$
+ \item affectation proprement dite
+ \item $k$ : continuation d'expression \begin{tabular}{l}
+                                        arguments : une valeur et un état \\
+					$ECont : \Z \rightarrow Etat \rightarrow Etat_{\perp}$\\
+					$\mathcal{C}\semm{x:=a} = \mathcal{E}\semm{a} k$\\
+					avec $k = \lambda v. \lambda \sigma' . (c \sigma'[x\leftarrow v])$
+                                       \end{tabular}
+
+\end{itemize}
+
+
+\begin{definition}{$\mathcal{E}\semm{a}$}
+ \begin{tabular}{c l}
+    & $\sigma$ \\
+  \fbox{
+ \begin{minipage}{3cm}
+ \centering a
+ \end{minipage}} & \\
+   & $n, \sigma$\\
+ \fbox{ \begin{minipage}{3cm}
+ \vspace{3cm} \quad
+ \end{minipage}} & $\downarrow k$ \\
+ & $\sigma``$ 
+\end{tabular}
+
+
+$\E\semm{x} k \sigma = \sigma' = c \sigma = k \sigma(x) \sigma$
+$\E\semm{x} = \lambda k. \lambda \sigma (k \sigma(x) \sigma)$
+$\E\semm{a_1 + a_2} k \sigma = $
+
+
+\end{definition}
+
+
+Effet de bord : 
+
+\begin{tabular}{c l l}
+ & $\sigma$ & \multirow{5}{*}{  \psline{->}(0,1)(0,-3.5) \quad c } \\
+ \fbox{
+ \begin{minipage}{3cm}
+ \centering $x++$
+ \end{minipage}} & \\
+& $\sigma(x), \sigma[x \leftarrow \sigma(x)+1]$ & \\
+\fbox{
+ \begin{minipage}{3cm}
+\vspace{3cm} \quad
+ \end{minipage}} & \psline{->}(0,1.5	)(0,-1.5) \quad  k& \\
+& $\sigma''$ & \\
+\end{tabular}
+
+$\E\semm{x++} = \lambda k \lambda \sigma . (k \sigma(x) \sigma[x \leftarrow \sigma(x) +1])$
+
+affectation avec effet de bord
+$\mathcal{C}\semm{x:=a} c \sigma = \E\semm{c} k \sigma$ avec $k \, v\,  \sigma' = c \, \sigma'[x \leftarrow v]$ 
+
+Tests : on définit $\E \semm{b}$ e la même façon que  $\E \semm{a}$
+
+\subsection{Portée des variables}
+Ajouter des variables locales : notion de bloc \\
+$P ::=$ $begin$ $var$ $x; P$ $end$
+
+\begin{tabular}{c c c c}
+ var x \\
+& \fbox{
+ \begin{minipage}{3cm}
+ P \vspace{1cm}
+ \end{minipage}}\\
+restorer x & &$\sigma'$ & \multirow{2}{*}{\psline{->}(0,1.5)(0,-1.5) \quad  c' } \\
+& \fbox{
+ \begin{minipage}{3cm}
+\vspace{3cm} \quad
+ \end{minipage}} & \psline{->}(0,1.5)(0,-1.5) \quad  c \\
+\end{tabular}
+$\mathcal{C}\semm{\text{begin var x; P end}} c \sigma =  \mathcal{C}\semm{P} c' \sigma[x \leftarrow default]$ avec $c' \sigma'  = c \sigma'[x \leftarrow \sigma(x)]$
+
+
+
+\subsection{Notion de réponse}
+Pour l'instant :  $\begin{array}{cl}
+                   Ccont &= Etat \leftarrow Etat_{\perp}\\
+		    & $résultat = état final$\\
+		    &\downarrow \\
+		    & $réponse$\\
+                  \end{array}$
+
+Cas généralisé : $Ccont : Etat \leftarrow R\acute{e}ponse$
+
+\begin{ex}{1} état final, Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
+\end{ex}
+\begin{ex}{2}  Réponse = $\Z \quad \mathcal{C}\semm{P} ( \lambda \sigma . \sigma(x)$
+\end{ex}
+\begin{ex}{3}  Réponse = \{ok, erreur\} $\E\semm{\text{sqrt a}} = \E\semm{a} k' \sigma$ 
+\begin{tabular}{ll}
+ avec $k' v \sigma' = $ & si $v \geq 0$ alors $ k \sqrt{v} \sigma'$\\
+  & sinon erreur\\
+\end{tabular}
+On calcule $\mathcal{C}\semm{P} c_p$ avec $c_p = \lambda \sigma . OK$
+\end{ex}
+\begin{ex}{4 : affichage} On ajoute P ::= print a\\
+Réponse : ensemble des suites d'entiers : $\Z^*$
+$\mathcal{C}\semm{print a} c \sigma = \E\semm{a} k \sigma$ avec $k v \sigma' = v::(c \sigma')$
+On calcule ${C}\semm{P} (\lambda \sigma [])$
+
+, Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
+\end{ex}
 
 
 
