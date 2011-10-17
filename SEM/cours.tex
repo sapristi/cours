@@ -356,14 +356,14 @@ $c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces d
 
 \paragraph*{Sémantique : }
 \begin{itemize}
-\item lever : \begin{itemize}
-\item $\overline{<\text{throw }e, \sigma> \xrightarrow{e} \sigma}$
-\item $\overline{<\text{throw }e ;c , \sigma> \xrightarrow{e} \sigma}$
-\end{itemize}
+\item lever : $\overline{<\text{throw }e; c,\sigma> \xrightarrow{e} <\sigma>}$\\
+
+\item propager :$\dfrac{<c, \sigma > \xrightarrow{e} <\sigma>}{<c;c', \sigma > \rightarrow <\sigma>}$ \\
+
 \item rattraper : \begin{itemize}
-\item $\dfrac{< c, \sigma > \xrightarrow{\tau} < c'', \sigma' >}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$\\
-\item  $\dfrac{< c, \sigma > \xrightarrow{e} \sigma}{<\text{try c catch }e:c', \sigma > \xrightarrow{\tau} <\text{try c'' catch }e:c', \sigma > }$ : l'exception est traitée par $c'$\\
-\item  $\dfrac{< c, \sigma > \xrightarrow{l} \sigma}{<\text{try c catch }e:c', \sigma > \xrightarrow{l} <\text{try c'' catch }e:c', \sigma > }, l \not = e$
+\item $\dfrac{< c, \sigma > \xrightarrow{\tau} < c', \sigma' >}{<\text{try }c\text{ catch }e;c'', \sigma > \xrightarrow{\tau} <\text{try }c'\text{ catch }e:c'', \sigma > }$\\
+\item  $\dfrac{< c, \sigma > \xrightarrow{e} \sigma}{<\text{try }c\text{ catch }e;c', \sigma > \xrightarrow{\tau} <c', \sigma > }$ : l'exception est traitée par $c'$\\
+\item  $\dfrac{< c, \sigma > \xrightarrow{l} \sigma}{<\text{try }c\text{ catch }e;c', \sigma > \xrightarrow{l} < \sigma > }, l \not = e$
 \end{itemize}
 \end{itemize}
 \begin{rem}{} Les exceptions se propagent de  haut en bas mais pas de gauche à droite :  si toutes les exceptions sont rattrapées, aucune n'est observable pendant l'exécution.\\
