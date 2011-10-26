@@ -31,8 +31,7 @@
 \newcommand{\V}{\mathbb{V}}
 
 
-\input{../defs}	
-
+\input{../nthmdefs}
 
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\openbullet$}
@@ -40,11 +39,6 @@
 \renewcommand{\labelitemiv}{$\openbullet$}
 
 \begin{document}
-
-
-
-
-
 
 \makeatletter
 \@addtoreset{section}{part}
@@ -66,7 +60,7 @@ chaque instruction & le résultat & une propriété \\
 \part{Introduction}
 \section{Compositionnalité}
 
-\begin{definition}{Compositionnalité}
+\begin{definition}[Compositionnalité]
  La sémantique \sem{\cdot} est compositionnelle si \sem{P} se définit en fonction (par composition) des éléments constituant $P$.\\
 \end{definition}
 
@@ -89,7 +83,7 @@ $\semm{P} = \semm{Q} \rightarrow$ quelle déf pour \sem{P} ?\\
 \end{itemize}
 \subsection{Equivalence contextuelle}
 $P \sim Q$ si $\semm{\mathcal{C}(P)} = \semm{\mathcal{C}(Q)}$
-\begin{propriete}{Compostionnalité}
+\begin{propriete}[Compostionnalité] 
 $\semm P = \semm Q  \Rightarrow P \sim Q$
 \end{propriete}
 \paragraph{Biblio} :
@@ -116,7 +110,7 @@ $c_1 \equiv c_2$ ($x := 2 \neq x := 1 + 1$)
 \end{itemize}
 
 \section{Sémantique des expressions}
-\subparagraph*{} Sens attaché à une expression, valeur
+\subparagraph* Sens attaché à une expression, valeur
 \begin{itemize}
 \item valeur des constantes : facile
 \item valeur des variables : environnement \\
@@ -138,12 +132,12 @@ $c_1 \equiv c_2$ ($x := 2 \neq x := 1 + 1$)
 			\item $<a_1 = a_2,  \sigma > \rightarrow tt$ si $a_1 = a_2$, $ff$ sinon
 		\end{itemize}
 \end{itemize}
-\begin{definition}{Equivalence sémantique :}
-$a_1 \sim a_2$ ssi pour tout $\sigma, n_1, n_2,\\ (<a_1, \sigma> \rightarrow n_1$ et $<a_2, \sigma> \rightarrow n_2 ) \Rightarrow n_1 = n_2$.\\
+\begin{definition}[Equivalence sémantique] 
+$a_1 \sim a_2$ ssi pour tout $\sigma, n_1, n_2,\\ (<a_1, \sigma> \rightarrow n_1$ et $<a_2, \sigma> \rightarrow n_2 ) \Rightarrow n_1 = n_2$.
 \end{definition}
 \section{Sémantique des commandes}
 
-\begin{definition}{Système de transitions} Un système de transitions est un triplet $(\Gamma, \Gamma_f, \rightarrow )$ où :\begin{itemize}
+\begin{definition}[Système de transitions] Un système de transitions est un triplet $(\Gamma, \Gamma_f, \rightarrow )$ où :\begin{itemize}
 \item $\Gamma$ est un ensemble de configurations
 \item $\Gamma_f$ est un ensemble de configurations finales
 \item $\rightarrow \; \subseteq \; \Gamma \times (\Gamma \bigcup \Gamma_f )$ est une relation de transition: \\
@@ -181,7 +175,7 @@ $\displaystyle  \frac{ < b, \sigma > \rightarrow \text{tt}}{ < \text{while b do 
 \end{itemize}
 \end{itemize}
 
-\begin{definition}{Calcul} Un calcul de c à partir de $\sigma$ est une suite finie ou infinie 
+\begin{definition}[Calcul] Un calcul de c à partir de $\sigma$ est une suite finie ou infinie 
 $\tau = \semm{c, \sigma} \rightarrow \gamma_1 \rightarrow \gamma_2 \rightarrow \dotsc \rightarrow \gamma_i \rightarrow \dotsc$.\\
 Le calcul :\begin{itemize}
 \item boucle si la suite est infinie
@@ -190,18 +184,18 @@ Le calcul :\begin{itemize}
 \end{itemize}
 \end{definition}
 
-\begin{thm}{}Étant donnés c et $\sigma$, SOS détermine un unique calcul maximal à partir de $<c, \sigma >$.\\
+\begin{thm}Étant donnés c et $\sigma$, SOS détermine un unique calcul maximal à partir de $<c, \sigma >$.\\
  $\rightarrow$ SOS est déterministe.\\
  \end{thm}
  
- \begin{definition}{Equivalence : }
- $ c \sim_{SOS} c'$ ssi $\forall \sigma$, le calcul maximal issu de \sem{c , \sigma} est  identique au calcul maximal issu de \sem{c', \sigma}.\\
+ \begin{definition}[Equivalence]
+ $ c \sim_{SOS} c'$ ssi $\forall \sigma$, le calcul maximal issu de \sem{c , \sigma} est  identique au calcul maximal issu de \sem{c', \sigma}.
  \end{definition}
  
 
 
 \paragraph*{Notion de résultat:}
-\begin{thm}{} Soit $(\gamma_i)$ un calcul maximal à partir de $\gamma_0 = \semm{c, \sigma }$
+\begin{thm} Soit $(\gamma_i)$ un calcul maximal à partir de $\gamma_0 = \semm{c, \sigma }$
 \begin{enumerate}
 \item soit $(\gamma_i)$ est infinie
 \item soit $(\gamma_i )$ est finie, de longueur $n$, et $\gamma_{n-1} = \sigma' \in Etat$
@@ -213,26 +207,26 @@ Dans le cas 2, on pose $\semm{ c }_{res} \sigma  = \sigma'$\\
 
 On étends $Etat_{\perp} = (\V \rightarrow \Z) \cup \{ \perp \}$
 $\semm{ c }_{res}$ est une fonction de $Etat$ dans $Etat_{\perp}$
-\begin{rem}{} c'est une définition non effective (fonction non calculable)
+\begin{rem} c'est une définition non effective (fonction non calculable)
 \end{rem}
 
 
 \paragraph{Equivalence de résultat:}
-\begin{definition}{} $c \sim c'$ ssi $\forall \sigma, \; \semm{ c }_{res} \sigma = \semm{ c }_{res} \sigma$\\
-(soit c et c' bouclent, soit elles convergent vers le même état final.)\\
+\begin{definition} $c \sim c'$ ssi $\forall \sigma, \; \semm{ c }_{res} \sigma = \semm{ c }_{res} \sigma$\\
+(soit c et c' bouclent, soit elles convergent vers le même état final.)
 \end{definition}
 
 ex : tmp := y ; y := x; x := tmp $\not \equiv$ aux := y; y := x ; x := aux
 
 
-\begin{definition}{Equivalence modulo V} Soit $V \subseteq \V$, \\
+\begin{definition}[Equivalence modulo V] Soit $V \subseteq \V$, \\
 $c \sim^V_{res} c'$ ssi $\forall \sigma, \quad \semm{c}_{res} \sigma \sim^V \semm{c'}_{res} \sigma$, \quad
 avec $\sigma_1 \sim^V \sigma_2$ ssi : 
 $\left\{ \begin{array}{c}
 \sigma_1 = \perp$ et $\sigma_2 = \perp\\
 $ou$  \\
 \forall x \in V, \sigma_1(x) = \sigma_2(x)\\
-\end{array}\right.$\\
+\end{array}\right.$
 \end{definition}
 \begin{itemize}
 \item $\semm{skip}_{res} = id_{Etat}$
@@ -277,14 +271,14 @@ $\dfrac{ <c_1, \sigma > \Rightarrow \sigma' \quad <c_2 , \sigma' > \Rightarrow \
 
 
 On construit un arbre au lieu de construire une suite.
-\begin{definition}{Exécution}
-Une exécution de c à partir de $\sigma$ est un arbre de dérivation dont la racine est de la forme $<c, \sigma > \Rightarrow \sigma'$.\\
+\begin{definition}[Exécution]
+Une exécution de c à partir de $\sigma$ est un arbre de dérivation dont la racine est de la forme $<c, \sigma > \Rightarrow \sigma'$.
 \end{definition} 
-\begin{rem}{}
+\begin{rem}
 avec cette définition, une exécution termine toujours. Par abus de language, on dira que l'exécution boucle si l'arbre n'existe pas.
 \end{rem}
-\begin{definition}{Equivalence}
- $c \sim_{SN} c'$ ssi pour tout $\sigma, \sigma', < c, \sigma > \Rightarrow \sigma$ ssi $<c', \sigma > \Rightarrow \sigma'$.\\
+\begin{definition}[Equivalence]
+ $c \sim_{SN} c'$ ssi pour tout $\sigma, \sigma', < c, \sigma > \Rightarrow \sigma$ ssi $<c', \sigma > \Rightarrow \sigma'$.
 \end{definition} 
 
 
@@ -294,30 +288,38 @@ On pose $\semm{c}_{res}^{SN} = \left\{ \begin{array}{ll}
  \perp & \text{sinon} \\
 \end{array} \right.$
 
-\begin{thm}{} C'est bien une fonction (déterministe).\\
+\begin{thm} C'est bien une fonction (déterministe).\\
 \end{thm}
 
 \section{Equivalence}
-\begin{thm}{} $ \semm{ \cdot }_{res}^{SOS} = \semm{ \cdot }_{res}^{SN}$\\
+\begin{thm} $ \semm{ \cdot }_{res}^{SOS} = \semm{ \cdot }_{res}^{SN}$
 \end{thm}
 
-\begin{lem}{1} 
+\begin{lem}[1] 
 $ \begin{array}{l l}
 \forall c, \forall \sigma, \forall \sigma', & \text{si on a }(<c, \sigma> \Rightarrow \sigma')\\
 											& \text{alors } (<c, \sigma> \rightarrow^* \sigma')
-\end{array}$\\
-Dem : induction sur l'arbre de dérivation de $<c, \sigma> \Rightarrow \sigma'$\\
+\end{array}$
 \end{lem}
 
-\begin{lem}{2} 
+\begin{dem}
+ induction sur l'arbre de dérivation de $<c, \sigma> \Rightarrow \sigma'$
+\end{dem}
+
+
+\begin{lem}
 $ \begin{array}{ll}
 \forall c, \forall \sigma, \forall \sigma', &\text{si on a }(<c, \sigma> \Rightarrow^* \sigma')\\
-											& \text{alors } (<c, \sigma> \Rightarrow \sigma')
-\end{array}$\\
-Dem : récurrence sur la suite de dérivation de $<c, \sigma> \Rightarrow^* \sigma'$\\
+											& \text{alors } (<c, \sigma> \rightarrow \sigma')
+\end{array}$
 \end{lem}
 
-\begin{rem}{}Attention à l'équivalence de la sémantique des expressions sous la forme \\$<a, \sigma> \rightarrow n$ (SOS) et $\semm{a} \sigma = n$ (SN)\\
+\begin{dem}
+ récurrence sur la suite de dérivation de $<c, \sigma> \Rightarrow^* \sigma'$
+\end{dem}
+
+
+\begin{rem}Attention à l'équivalence de la sémantique des expressions sous la forme \\$<a, \sigma> \rightarrow n$ (SOS) et $\semm{a} \sigma = n$ (SN)
 \end{rem}
 
 \section{Traces}
@@ -338,18 +340,18 @@ On sélectionne une partie de l'information des états intermédiaires et on la 
 
 étiquette vide : $\tau$
 
-\begin{definition}{Traces étiquetées}
+\begin{definition}[Traces étiquetées]
 C'est une suite de configurations.\\
 $\Pi = \gamma_0 \xrightarrow{l_0} \gamma_1 \xrightarrow{l_1} \cdots \xrightarrow{i-1} \gamma_i \xrightarrow{i} \cdots$\medskip
 \begin{itemize}
 \item $l_i \not = \tau $ : étiquette (label) visible (observable)
 \item $l_i = \tau$ : transition non observable, muette
 \end{itemize}
-La suite des étiquettes de $\Pi$ (encore appelée trace) est $l_0l_1\cdots l_i$.\\
+La suite des étiquettes de $\Pi$ (encore appelée trace) est $l_0l_1\cdots l_i$.
 \end{definition}
 
-\begin{definition}{Equivalence observable}
-$c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces de $c$ et $c'$ sont identiques.\\
+\begin{definition}[Equivalence observable]
+$c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces de $c$ et $c'$ sont identiques.
 \end{definition}
 
 \section{Exceptions}
@@ -358,7 +360,7 @@ $c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces d
 \begin{itemize}
 \item lever : $\overline{<\text{throw }e; c,\sigma> \xrightarrow{e} <\sigma>}$\\
 
-\item propager :$\dfrac{<c, \sigma > \xrightarrow{e} <\sigma>}{<c;c', \sigma > \rightarrow <\sigma>}$ \\
+\item propager :$\dfrac{<c, \sigma > \xrightarrow{e} <\sigma>}{<c;c', \sigma > \xrightarrow{e} <\sigma>}$ \\
 
 \item rattraper : \begin{itemize}
 \item $\dfrac{< c, \sigma > \xrightarrow{\tau} < c', \sigma' >}{<\text{try }c\text{ catch }e;c'', \sigma > \xrightarrow{\tau} <\text{try }c'\text{ catch }e:c'', \sigma > }$\\
@@ -366,10 +368,10 @@ $c \equiv_{OB} c'$ si les suites des étiquettes visibles extraites des traces d
 \item  $\dfrac{< c, \sigma > \xrightarrow{l} \sigma}{<\text{try }c\text{ catch }e;c', \sigma > \xrightarrow{l} < \sigma > }, l \not = e$
 \end{itemize}
 \end{itemize}
-\begin{rem}{} Les exceptions se propagent de  haut en bas mais pas de gauche à droite :  si toutes les exceptions sont rattrapées, aucune n'est observable pendant l'exécution.\\
+\begin{rem} Les exceptions se propagent de  haut en bas mais pas de gauche à droite :  si toutes les exceptions sont rattrapées, aucune n'est observable pendant l'exécution.
 \end{rem}
 
-\begin{thm}{} Un calcul maximal de c à partir de $\sigma$ est de l'une des formes suivantes : 
+\begin{thm} Un calcul maximal de c à partir de $\sigma$ est de l'une des formes suivantes : 
 \begin{enumerate}
 \item $<c, \sigma> \xrightarrow{\tau}^* \sigma'$
 \item $<c, \sigma> \xrightarrow{\tau}^{\infty}$
@@ -406,22 +408,22 @@ On garde \sem{a} : Etat $rightarrow \Z$, \sem{b} : Etat $\rightarrow \{tt, ff \}
 
 \subsection{Ordres partiels complets}
 On veut donner un ordre sur les fonctions $Etat \rightarrow Etat_{\perp}$ afin d'être capable de définir un plus petit point fixe.
-\begin{definition}{Ordre partiel}
+\begin{definition}[Ordre partiel]
  Un ordre partiel $(E,\sqsubseteq)$ est un ensemble muni d'une relation réflexive, transitive, anti-symétrique.\\
 \end{definition}
-\begin{definition}{Borne Sup}
+\begin{definition}[Borne Sup]
  Une borne supérieure de $X \subseteq E$ est un élément $m$ de $E$ tel que \\
 \indent $\forall x \in X, \quad x \sqsubseteq m$.\\
 $p$ est la plus petite borne supérieure de $X$ si $p$ est une borne sup de $X$ et $\forall \: p'$ borne sup de $X$, $p \sqsubseteq p'$.
 
-Notation : $p = \sqcup X$\\
+Notation : $p = \sqcup X$
 \end{definition}
-\begin{definition}{Ordre partiel complet (CPO)}
+\begin{definition}[Ordre partiel complet (CPO)]
  Un ordre partiel complet $(E,\sqsubseteq)$ est un ordre partiel tel que toute chaîne croissante $e_1 \sqsubseteq \dots \sqsubseteq e_n \sqsubseteq \dots $ a une borne supérieure $\sqcup \{ e_n \}$ dans $E$.
 
- Cas particulier : CPO avec plus petit élément : $\perp$.\\
+ Cas particulier : CPO avec plus petit élément : $\perp$.
 \end{definition}
-\begin{exs}{de CPO :}
+\begin{exs}[de CPO :]
  \begin{itemize}
   \item CPO plat : identité $\oplus \perp \sqsubseteq x \forall x$ 
   \\ $\hookrightarrow Etat_{\perp}$ est un CPO plat
@@ -438,16 +440,16 @@ Notation : $p = \sqcup X$\\
 \paragraph{Rappel :} on cherche à définir une fonction $\Phi : Etat \to Etat_{\perp}$, point fixe d'une fonctionnelle $\mathcal{F}$.\\
 On va avoir besoin de propriétés sur la fonction $\mathcal{F}$.
 
-\begin{definition}{Monotonie} Une fonction $\mathcal{F} : D\to E$ où $D$ et $E$ sont des CPO est monotone ssi \\
+\begin{definition}[Monotonie] Une fonction $\mathcal{F} : D\to E$ où $D$ et $E$ sont des CPO est monotone ssi \\
 \indent$\forall d, d' \in D, \quad d \sqsubseteq_D d' \; \Rightarrow \mathcal{F}(d) \; \sqsubseteq_E \mathcal{F}(d')$.\\
 \end{definition}
 
 \subparagraph{Intuition :} $\sqsubseteq$ va représenter un ``ordre d'information''.
 
 
-$\Phi \sqsubseteq \Phi' : \Phi$ contient plus d'information que $\Phi'$.\\
+$\Phi \sqsubseteq \Phi' : \Phi$ contient plus d'information que $\Phi'$.
 
-\begin{definition}{}
+\begin{definition}
  $\Phi \sqsubseteq \Phi'$ ssi $\forall \sigma, \; \Phi(\sigma) \sqsubseteq \Phi'(\sigma).$\\
 On peut voir $\Phi$ comme un ensemble de couples \\
 $\begin{array}{ll}
@@ -458,7 +460,7 @@ $\begin{array}{ll}
 \begin{array}{l l l}
 \Phi \sqsubseteq \Phi'$ ssi $\forall \sigma \in Etat,&$  si $\Phi(\sigma) = \sigma' \in Etat,&$ alors $\Phi'(\sigma) = \sigma'\\
 &$ si $\Phi(\sigma) = \perp,&$ alors $\Phi'(\sigma) =$  n'importe quel élément de $Etat
-\end{array}$\\
+\end{array}$
 \end{definition}
 
 
@@ -467,19 +469,19 @@ Monotonie de $\mathcal{F}$ : $\mathcal{F}$ préserve l'ordre d'information.\\
 On va calculer $\Phi$ par approximations successives, en ajoutant au fur et à mesure des couples grâce à $\mathcal{F}$.\\
 $\Phi = \bigsqcup (\text{borne sup})$ d'une chaîne croissante d'ensembles de couples.
 
-\begin{definition}{Continuité} Une fonction $\mathcal{F} : D \to E$ monotone est continue ssi\\ pour toute chaîne croissante $d_0 \sqsubseteq_D d_1 \sqsubseteq_D d_2 \cdots  \sqsubseteq_D \sqsubseteq \cdots ,$\\
-\indent$\displaystyle\bigsqcup_n \mathcal{F} (d_n) = \mathcal{F}( \bigsqcup_n d_n)$\\
+\begin{definition}[Continuité] Une fonction $\mathcal{F} : D \to E$ monotone est continue ssi\\ pour toute chaîne croissante $d_0 \sqsubseteq_D d_1 \sqsubseteq_D d_2 \cdots  \sqsubseteq_D \sqsubseteq \cdots ,$\\
+\indent$\displaystyle\bigsqcup_n \mathcal{F} (d_n) = \mathcal{F}( \bigsqcup_n d_n)$
 \end{definition}
 
-\begin{definition}{Point fixe}
+\begin{definition}[Point fixe]
  Soit $\mathcal{F} : D \to D$ une fonction continue sur une CPO $D$.\\
- Un point fixe de $\mathcal{F}$ est un élément $d$ de $D$ tel que $\mathcal{F}(d) = d$.\\
+ Un point fixe de $\mathcal{F}$ est un élément $d$ de $D$ tel que $\mathcal{F}(d) = d$.
 \end{definition}
 
-\begin{thm}{Kleene}
+\begin{thm}[Kleene]
  Soit $\mathcal{F}$ une fonction continue sur un CPO $D$ avec plus petit élément. \\
 On pose  $\displaystyle\phi = \bigsqcup_n \mathcal{F}^n(\perp).$\\
-$\phi$ est le plus petit point fixe de $\mathcal{F}$.\\
+$\phi$ est le plus petit point fixe de $\mathcal{F}$.
 \end{thm}
 
 \subsection{Sémantique de while}
@@ -506,22 +508,22 @@ $\Phi = \bigsqcup F^n(\perp) = \lambda \sigma . \left\{ \begin{array}{ll}
 						      \sigma[x \leftarrow -1] & $si $\sigma(x)>0
                                                      \end{array} \right.$
 
-\begin{thm}{} Soient \sem{b} : Etat $\to \{ff, tt \}, \; \semm{c} : Etat \to Etat_{\perp}$\\
-$\lambda \Phi . \: Cond( \semm{b}, \Phi \circ c, id)$ est une fonction continue de $(Etat \to Etat_{\perp}) \to (Etat \to Etat_{\perp})$.\\
+\begin{thm} Soient \sem{b} : Etat $\to \{ff, tt \}, \; \semm{c} : Etat \to Etat_{\perp}$\\
+$\lambda \Phi . \: Cond( \semm{b}, \Phi \circ c, id)$ est une fonction continue de $(Etat \to Etat_{\perp}) \to (Etat \to Etat_{\perp})$.
 \end{thm}
 
 \section{Équivalence avec la sémantique opérationnelle}
-\begin{thm}{} $\forall c \in Com, \; \forall \sigma, \sigma' \in Etat\\
+\begin{thm} $\forall c \in Com, \; \forall \sigma, \sigma' \in Etat\\
 \semm{c} \sigma = \sigma'$ ssi $<c, \sigma> \Rightarrow \sigma'$.\\
 \end{thm}
 
-\begin{dem}{Winskel} \fbox{$\Leftarrow$} On définit $R(c, \sigma, \sigma')$ ssi $\semm{c} \sigma = \sigma'$
+\begin{dem}[Winskel] \fbox{$\Leftarrow$} On définit $R(c, \sigma, \sigma')$ ssi $\semm{c} \sigma = \sigma'$
 SN $(\Rightarrow)$ est la plus petite relation sur $Com \times Etat \times Etat$ qui vérifie les règles d'inférence de SN.
 Il suffit de vérifiier que R vérifie toutes les règles de SN.
 On a alors $\Rightarrow \subseteq R$, ce qui nous donne $(<c, \sigma> \Rightarrow \sigma') \Longrightarrow (\semm{c} \sigma = \sigma')$
 
 
-\fbox{$\Rightarrow$} Par récurrence sur le nombre d'itérations qui ont servi à construire un couple $(\sigma, \sigma')$ dans la sémantique dénotationnelle.\\
+\fbox{$\Rightarrow$} Par récurrence sur le nombre d'itérations qui ont servi à construire un couple $(\sigma, \sigma')$ dans la sémantique dénotationnelle.
 \end{dem}
 
 
@@ -584,7 +586,7 @@ On regarde ce qui se passe avec $x:=a$:
 \end{itemize}
 
 
-\begin{definition}{$\mathcal{E}\semm{a}$}
+\begin{definition}[$\mathcal{E}\semm{a}$]
  \begin{tabular}{c l}
     & $\sigma$ \\
   \fbox{
@@ -660,18 +662,18 @@ Pour l'instant :  $\begin{array}{cl}
 
 Cas généralisé : $Ccont : Etat \leftarrow R\acute{e}ponse$
 
-\begin{ex}{1} état final, Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
+\begin{ex}[1] état final, Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
 \end{ex}
-\begin{ex}{2}  Réponse = $\Z \quad \mathcal{C}\semm{P} ( \lambda \sigma . \sigma(x)$
+\begin{ex}[2]  Réponse = $\Z \quad \mathcal{C}\semm{P} ( \lambda \sigma . \sigma(x)$
 \end{ex}
-\begin{ex}{3}  Réponse = \{ok, erreur\} $\E\semm{\text{sqrt a}} = \E\semm{a} k' \sigma$ 
+\begin{ex}[3]  Réponse = \{ok, erreur\} $\E\semm{\text{sqrt a}} = \E\semm{a} k' \sigma$ 
 \begin{tabular}{ll}
  avec $k' v \sigma' = $ & si $v \geq 0$ alors $ k \sqrt{v} \sigma'$\\
   & sinon erreur\\
 \end{tabular}
 On calcule $\mathcal{C}\semm{P} c_p$ avec $c_p = \lambda \sigma . OK$
 \end{ex}
-\begin{ex}{4 : affichage} On ajoute P ::= print a\\
+\begin{ex}[4 : affichage] On ajoute P ::= print a\\
 Réponse : ensemble des suites d'entiers : $\Z^*$
 $\mathcal{C}\semm{print a} c \sigma = \E\semm{a} k \sigma$ avec $k v \sigma' = v::(c \sigma')$
 On calcule ${C}\semm{P} (\lambda \sigma [])$
