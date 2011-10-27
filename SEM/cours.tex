@@ -288,7 +288,7 @@ On pose $\semm{c}_{res}^{SN} = \left\{ \begin{array}{ll}
  \perp & \text{sinon} \\
 \end{array} \right.$
 
-\begin{thm} C'est bien une fonction (déterministe).\\
+\begin{thm} C'est bien une fonction (déterministe).
 \end{thm}
 
 \section{Equivalence}
@@ -297,6 +297,7 @@ On pose $\semm{c}_{res}^{SN} = \left\{ \begin{array}{ll}
 
 \begin{lem}[1] 
 $ \begin{array}{l l}
+\\
 \forall c, \forall \sigma, \forall \sigma', & \text{si on a }(<c, \sigma> \Rightarrow \sigma')\\
 											& \text{alors } (<c, \sigma> \rightarrow^* \sigma')
 \end{array}$
@@ -309,6 +310,7 @@ $ \begin{array}{l l}
 
 \begin{lem}
 $ \begin{array}{ll}
+\\
 \forall c, \forall \sigma, \forall \sigma', &\text{si on a }(<c, \sigma> \Rightarrow^* \sigma')\\
 											& \text{alors } (<c, \sigma> \rightarrow \sigma')
 \end{array}$
@@ -342,7 +344,7 @@ On sélectionne une partie de l'information des états intermédiaires et on la 
 
 \begin{definition}[Traces étiquetées]
 C'est une suite de configurations.\\
-$\Pi = \gamma_0 \xrightarrow{l_0} \gamma_1 \xrightarrow{l_1} \cdots \xrightarrow{i-1} \gamma_i \xrightarrow{i} \cdots$\medskip
+$\Pi = \gamma_0 \xrightarrow{l_0} \gamma_1 \xrightarrow{l_1} \cdots \xrightarrow{i-1} \gamma_i \xrightarrow{i} \cdots$
 \begin{itemize}
 \item $l_i \not = \tau $ : étiquette (label) visible (observable)
 \item $l_i = \tau$ : transition non observable, muette
@@ -409,7 +411,7 @@ On garde \sem{a} : Etat $rightarrow \Z$, \sem{b} : Etat $\rightarrow \{tt, ff \}
 \subsection{Ordres partiels complets}
 On veut donner un ordre sur les fonctions $Etat \rightarrow Etat_{\perp}$ afin d'être capable de définir un plus petit point fixe.
 \begin{definition}[Ordre partiel]
- Un ordre partiel $(E,\sqsubseteq)$ est un ensemble muni d'une relation réflexive, transitive, anti-symétrique.\\
+ Un ordre partiel $(E,\sqsubseteq)$ est un ensemble muni d'une relation réflexive, transitive, anti-symétrique.
 \end{definition}
 \begin{definition}[Borne Sup]
  Une borne supérieure de $X \subseteq E$ est un élément $m$ de $E$ tel que \\
@@ -441,7 +443,7 @@ Notation : $p = \sqcup X$
 On va avoir besoin de propriétés sur la fonction $\mathcal{F}$.
 
 \begin{definition}[Monotonie] Une fonction $\mathcal{F} : D\to E$ où $D$ et $E$ sont des CPO est monotone ssi \\
-\indent$\forall d, d' \in D, \quad d \sqsubseteq_D d' \; \Rightarrow \mathcal{F}(d) \; \sqsubseteq_E \mathcal{F}(d')$.\\
+\indent$\forall d, d' \in D, \quad d \sqsubseteq_D d' \; \Rightarrow \mathcal{F}(d) \; \sqsubseteq_E \mathcal{F}(d')$.
 \end{definition}
 
 \subparagraph{Intuition :} $\sqsubseteq$ va représenter un ``ordre d'information''.
