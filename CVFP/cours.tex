@@ -1,4 +1,5 @@
 \documentclass[10pt,a4paper]{article}
+\usepackage[french]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage{ucs}
 \usepackage{amsmath}
@@ -6,20 +7,51 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{pstricks}
+\usepackage{mathrsfs}
+\usepackage{soul}
+\usepackage{newalg}
 
-\title{Conception et vérification de programmes}
 
-\input{../defs}
+\usepackage{concrete}
+%\usepackage[mathcal,mathbf]{euler}
+%\usepackage{ccfonts,eulervm}
+
+\makeatletter
+\@addtoreset{section}{part}
+\makeatother
+
 \input{../nthmdefs}
 
+
+
+
 \newcommand{\F}{\mathcal{F}}
+\newcommand{\M}{\mathcal{M}}
 \newcommand{\ssi}{$ ssi $}
 
+\newcommand{\tq}[1][]{\text{ tel#1 que }}
+
+\DeclareMathOperator{\bisim}{\underline{\leftrightarrow}}
+\DeclareMathOperator{\Ro}{R}
+\DeclareMathOperator{\Bo}{B}
+\DeclareMathOperator{\Cl}{\mathscr{C}l}
+\DeclareMathOperator{\Oo}{\bigcirc}
+\DeclareMathOperator{\Fo}{F}
+\DeclareMathOperator{\Go}{G}
+\DeclareMathOperator{\Uo}{U}
+
+\title{Conception et vérification de programmes}
+\author{François Schwartzentrüber\\
+\url{inria.fr/prive/fschwarz/cvfp}}
+\date{}
+
+
 \begin{document}
+\renewcommand{\labelitemi}{$\bullet$}
 
+\maketitle
 
-\url{inria.fr/prive/fschwarz/cvfp}
-
+\part{Petite introduction}
 
 \section{Machines de Turing}
 
@@ -29,20 +61,21 @@
 \item $\delta \subseteq (Q \times \Sigma) \times (Q \cup \{yes \} \times \Sigma \times \{-1, 0, 1\}$
 \item $s \in Q$
 \end{itemize}
-On dit que M est déterministe si $\forall q \in Q, \forall a \in \Sigma,\\
- \mid \{ (q', b, d) \mid (q, a, q', b, d) \in \delta \} \mid \leq 1$
+On dit que M est déterministe si $\forall q \in Q, \forall a \in \Sigma,$
+
+$\mid \{ (q', b, d) \mid (q, a, q', b, d) \in \delta \} \mid \leq 1$
 \end{definition}
 
 \subsection{Executions}
-\begin{definition}{Configuration}
+\begin{definition}[Configuration]
 Une configuration est un triplet $(q, k, w)$ où \begin{itemize}
 \item $q$ est un état
-\item $k \in \N$
+\item $k \in \Ns$
 \item $w$ est un mot fini sur $\Sigma$
 \end{itemize}
 \end{definition}
 
-\begin{definition}{Transition}
+\begin{definition}[Transition]
 $(q, k, w) \rightarrow (q', k', w')$ ssi $(q, \sigma, q', \sigma', dir) \in \delta$ et \begin{itemize}
 \item $w[k] = \sigma$
 \item $w' = w$ sauf $w'[k] = \sigma'$
@@ -50,99 +83,125 @@ $(q, k, w) \rightarrow (q', k', w')$ ssi $(q, \sigma, q', \sigma', dir) \in \del
 \item $k' \geq 0$
 \end{itemize}\end{definition}
 
-\begin{definition}{} Soient c, c' deux configurations, \begin{itemize}
+\begin{definition} Soient c, c' deux configurations, \begin{itemize}
 \item $c \rightarrow^0 c$
-\item $ \forall t \geq 1, c \rightarrow^t c' \ssi \exists c''$ configuration, $c \rightarrow^{t-1}c''$ et $c'' \rightarrow c'$
-\item $c \rightarrow^* c'$ ssi $\exists t \geq 0 / c \rightarrow^* c'$
+\item $ \forall t \geq 1, \; c \rightarrow^t c' $ ssi $ \exists c'' \tq c \rightarrow^{t-1}c''$ et $c'' \rightarrow c'$
+\item $c \rightarrow^* c'$ ssi $\exists t \geq 0 \tq c \rightarrow^t c'$
 \end{itemize} \end{definition}
 
 \subsection{Décision} 
 
- \begin{definition}{}
-M décide un language $L \subseteq \Sigma^*$ ssi $\forall x \in \Sigma^*, x \in L ssi \exists k \geq 0, w \in \Sigma^* / (s, 0, x) \rightarrow^* (yes, k, w)$\\
+ \begin{definition}
+M décide un language $L \subseteq \Sigma^*$ ssi 
+
+$\forall x \in \Sigma^*, x \in L$ ssi $\exists k \geq 0, w \in \Sigma^* \tq[s] (s, 0, x) \rightarrow^* (yes, k, w)$\\
   \end{definition}
 
- \begin{definition}{}
- Soit $f : \N \rightarrow \N$, M décide L en temps f ssi M décide L et $\forall t \in \N, \forall x in \sigma^*, (s, 0, x) \rightarrow ^t (q, k, w)$ alors $t \leq f(|x|)$\\
+ \begin{definition}
+ Soit $f : \Ns\to \Ns$, $M$ décide $L$ en temps $f$ ssi $M$ décide $L$ et 
+
+$\forall t \in \Ns, \forall x \in \sigma^*, \quad (s, 0, x) \rightarrow ^t (q, k, w) \Rightarrow t \leq f( | x | )$\\
  \end{definition}
 
-\begin{prop}{}
- Soit M qui décide L en temps f, si $(s, 0, x \rightarrow^* (q, k, w)$, alors $|w| \leq max ( |x|, f(|x|)$
+\begin{prop}
+ Soit $M$ qui décide $L$ en temps $f$, si $(s, 0, x \rightarrow^* (q, k, w)$, alors 
+
+$ | w |  \leq max (  | x | , f( | x | )$
 \end{prop}
- \begin{dem}{}
-  Au temps t, $\forall k' > max ( |x|, t), w[k'] )$ est vide et le curseur courant $k \leq t$\\
+ \begin{dem}
+  Au temps $t$, $\forall k' > max (  | x | , t), w[k'] )$ est vide et le curseur courant $k \leq t$\\
  \end{dem}
 
- \part{Complexité en temps}
+ \section{Complexité en temps}
  
  \begin{definition}{}\begin{itemize}
- \item P est la classe des langages $L / \exists f$, polynôme, M machine det / M décide L en temps f
-\item NP M non det
-\item EXPTIME f polynome, M machine det, M décide L en temps $2^f$
- \item NEXPTIME M non det
+ \item $P$ est la classe des langages $L$ tels qu'il existe $f$ polynôme et $M$ machine déterministe\tq[s] $M$ décide L en temps $f$
+\item $NP$ : $M$ non detéterministe
+\item $EXPTIME$ : $f$ polynome, $M$ machine déterministe, $M$ décide $L$ en temps~$2^f$
+ \item $NEXPTIME$ : $M$ non déterministe
  \end{itemize}
  \end{definition}
 
 
  \subsection{Difficultés}
- \begin{definition}{}L' réductible en temps polynomial à L ssi $\exists f$, calculable en temps polynomial $/ \exists x \in \Sigma ^*, x \in L' \Leftrightarrow f(x) \in L$
+ \begin{definition}{}$L'$ réductible en temps polynomial à $L$ ssi il existe $f$, calculable en temps polynomial $\tq[le] \forall x \in \Sigma ^*, \; x \in L' \Leftrightarrow f(x) \in L$
  \end{definition}
- \begin{definition}{}L est NP dur ssi pour tout $L' \in NP$, on a L' réductble en temps polyomial à L
- Lest NP complet ssi $L \in NP$ et L est NP hard
+ \begin{definition}{}$L$ est $NP$-dur ssi pour tout $L' \in NP$, on a $L'$ réductble en temps polyomial à~$L$.\\
+ $L$ est $NP$-complet ssi $L \in NP$ et $L$ est $NP$-hard.
  \end{definition}
- Rem Si L est NP hard, $L \in P$ alors NP = P
+\begin{rem} 
+Si $L$ est $NP$-hard et  $L \in P$, alors $NP = P$
+\end{rem}
  
- \subparagraph*{Prop} L est NP dur, L réductible en temps poly à L', alors L' est NP dur.
- L' in NP, L réductible à $L' \Leftrightarrow L \in NO$
+\begin{prop}
+ Soit $L \in NP$-dur, si $L$ réductible en temps polynomial à $L'$, alors $L'$ est $NP$-dur.\\
+Soit $L' \in NP$, $L$ réductible à $L' \Leftrightarrow L \in NP$
+\end{prop}
  
- \begin{definition}{}CONP est l'ensemble des $L / \Sigma^* L \in NP$
+ \begin{definition}$CONP$ est l'ensemble des $L \tq \Sigma^* \setminus L \in NP$
  \end{definition}
- \part{Pavages et logique proportionnelle}
+ \section{Pavages et logique proportionnelle}
  
- \subsection{Pavages} Un tyoe de pavé t est un quadruplet $< left(t), top(t), right(t), down(t) > \in \N ^4$
- TILING est le problème suivant : \begin{itemize}
- \item entrée : T esnsemble fini de types de pavé $t_1, ..., t_n \in T$
-\item sortie : oui si $\exists \mu : \{ 1, ..., n\} ^2 \rightarrow T /$ \begin{itemize}
+ \subsection{Pavages} 
+\begin{definition}
+Un type de pavé t est un quadruplet 
+
+$< left(t), top(t), right(t), down(t) >~ \in~ \Ns^4$.\\
+ $TILING$ est le problème suivant : \begin{itemize}
+ \item entrée : $T$ ensemble fini de types de pavé $t_1, ..., t_n \in T$
+\item sortie : oui si $\exists \mu : \{ 1, ..., n\} ^2 \rightarrow T \tq$ 
+\begin{itemize}
 \item $\exists j \in \{1, .., n\}, \mu(1,j) = t_j$
-\item $\forall i < n, \forall j < n, down(\mu(i,j)) = up(\mu(i+1, j))$
-\item $\forall i \leq n , \forall j leq right mu (i,j) = leftmu (i, j+1))$
+\item $\forall i < n, \forall j < n, \; down(\mu(i,j)) = up(\mu(i+1, j))$
+\item $\forall i \leq n , \forall j < n, \; right (\mu (i,j)) = left( \mu (i, j+1))$
 \end{itemize}
 \end{itemize}
+\end{definition}
 
-Theoreme : TILING est NP hard
+\begin{thm}
+ TILING est NP hard
+\end{thm}
 
-\subparagraph*{Théorème} SAT est NP-hard
+\begin{thm}
+  SAT est NP-hard
+\end{thm}
 
-Dem : On transforme une instance du pavage en une formule $\Phi$ de la logique prop. en encodant les contraintes avec les variables $p_{i,j,t}$ pour $\mu(i,j) = t$.
+
+\begin{dem}
+ On transforme une instance du pavage en une formule $\Phi$ de la logique prop. en encodant les contraintes avec les variables $p_{i,j,t}$ pour $\mu(i,j) = t$.
+\end{dem}
 
 
 
-\subsection{Complexité en espace}
-\begin{definition}{}L est dans PSPACE ssi $\exists M$ machine déterministe, f un polynome tels que \begin{itemize}
-\item M décide L
-\item $\forall x in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w)$, on a $|w| \leq f(|x|)$
+\section{Complexité en espace}
+\begin{definition}{}$L$ est dans PSPACE ssi $\exists M$ machine déterministe et $f$ un polynome tels que \begin{itemize}
+\item $M$ décide $L$
+\item $\forall x \in \Sigma^*, \quad (s,0,x) \rightarrow^* (q, k, w) \Longrightarrow  | w |  \leq f( | x | )$
 \end{itemize}\end{definition}
-\begin{definition}{}L est dans NPSPACE ssi $\exists M$ machine non déterministe, f un polynome tels que \begin{itemize}
-\item M décide L
-\item $\forall x \in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w), on a |w| \leq f(|x|)$
+\begin{definition}{}L est dans NPSPACE ssi $\exists M$ machine non déterministe, $f$ un polynome tels que \begin{itemize}
+\item $M$ décide $L$
+\item $\forall x \in \Sigma^*, \quad (s,0,x) \rightarrow^* (q, k, w) \Longrightarrow  | w |  \leq f( | x | )$
 \end{itemize}\end{definition}
-\begin{definition}{}L est dans EXPSPACE ssi $\exists M$ machine déterministe, f un polynome tels que \begin{itemize}
-\item M décide L
-\item $\forall x in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w)$, on a $|w| \leq 2^{f(|x|)}$
+\begin{definition}{}L est dans EXPSPACE ssi $\exists M$ machine déterministe, $f$ un polynome tels que \begin{itemize}
+\item $M$ décide $L$
+\item $\forall x \in \Sigma^*, \quad (s,0,x) \rightarrow^* (q, k, w) \Longrightarrow  | w |  \leq 2^{f( | x | )}$
 \end{itemize}\end{definition}
-\begin{definition}{}L est dans NEXPSPACE ssi $\exists M$ machine non déterministe, f un polynome tels que \begin{itemize}
-\item M décide L
-\item $\forall x in \Sigma^x, (s,0,x) \rightarrow^* (q, k, w), on a |w| \leq 2^{f(|x|)}$
+\begin{definition}{}L est dans NEXPSPACE ssi $\exists M$ machine non déterministe, $f$ un polynome tels que \begin{itemize}
+\item $M$ décide $L$
+\item $\forall x \in \Sigma^*,  \quad (s,0,x) \rightarrow^* (q, k, w) \Longrightarrow  | w |  \leq 2^{f( | x | )}$
 \end{itemize}\end{definition}
-\subparagraph*{Rem} Normalement, les classes de complexité en espace se définissent avec une machine de Turing à plusieurs rubans
+\begin{rem}
+ Normalement, les classes de complexité en espace se définissent avec une machine de Turing à plusieurs rubans.
+\end{rem}
 
-\subsection{Un autre pavage}
+\section{Un autre pavage}
 CORRIDOR TILING est défini par :
 \begin{itemize}
-\item entrée : T ensemble fini de type de pavé, et $t_1, ..., t_n, b_1, ..., b_n$ deux séquences de types de pavés
+\item entrée : $T$ ensemble fini de type de pavé, et $t_1, ..., t_n, b_1, ..., b_n$ deux séquences de types de pavés
 \item sortie : oui si on peut paver 
-$\begin{array}{c|c|c|c|c|c}
-t_1 & & & & & t_n \hbar \\
+$\begin{array}{c| c| c | c | c | c}
+t_1 & & & & & t_n\\
+ \hline
 & & & & & \\
 & & & & & \\
 & & & & & \\
@@ -151,111 +210,655 @@ b_1 & & & & & b_n
 \end{array}$ n fois $2^n$
 \end{itemize}
 
-\begin{definition}{}$L \in PSAPCE-hard$ ssi pour tout L' dans PSAPCE, L' est réductible en temps polynomial à L
+\begin{definition}{}$L \in PSPACE$-hard ssi pour tout $L'$ dans $PSPACE, L'$ est réductible en temps polynomial à $L$
 \end{definition}
-\subparagraph*{Theroreme} CORRIDOR TILING est NPSAPCE-hard
-Dem : Soit L dans NPSPACE, il existe M machie non déterministe et f un polynome, tels que \begin{itemize}
-\item M décide L
-\item M utilise un espace mémoire en f
-\end{itemize}
-On suppose de plus que la machine efface son ruban si elle accepte x et arrive sur $(yes, 0, \varepsilon)$\\
-Considérons les executions possibles de M sur |x|. Le nombre de configs possibles est au plus $|Q| \times f(|x|) \times  (1 + |\Sigma|)^{f|x|)}$\\
-Si M accepte x, il existe alors une exécution de longueur au plus $c^{f(|x|)}$ où c est une constante. On peut donc encoder cette exécution dans un pavage : 
-$\begin{array}{c||c|c|c|c|c|c||c |c}
-& t_1 & & & & & t_n & $encode la config init$ \hbar \\
-& & & & & & & & \\
-& & & & & & & & 2 ^{log c f(|x|)} = c^{f|x|} \\
-& & &&  & & & & \\
-& & & & & & & & \hbar\\
-& & & & & & & & encode (yes, 0, \varepsilon)
-\end{array}$
-$\log_2 c f|x|$
+\begin{thm}
+ CORRIDOR TILING est $NPSAPCE$-hard
+\end{thm}
 
-\subsection{Logique proportionnelle quantifiée}
+\begin{dem}
+ 
+ Soit $L$ dans NPSPACE, il existe $M$ machine non déterministe et $f$ un polynome, tels que \begin{itemize}
+\item $M$ décide $L$
+\item $M$ utilise un espace mémoire en $f$
+\end{itemize}
+On suppose de plus que la machine efface son ruban si elle accepte x et arrive sur $(yes, 0, \varepsilon)$.\\
+Considérons les exécutions possibles de $M$ sur $ | x | $. Le nombre de configs possibles est au plus $  |  Q  |  \times f( | x | ) \times  (1 +  | \Sigma | )^{ f ( | x |) }$\\
+Si $M$ accepte $x$, il existe une exécution de longueur au plus $c^{f( | x | )}$ où $c$ est une constante. On peut donc encoder cette exécution dans un pavage :\\
+\[2 ^{\log_2( c) f( | x | )} = c^{f (| x |) } \underbrace{
+\left\{
+\begin{array}{ |c c c| }
+\cline{1-3}
+t_1 &\dots & t_n \\
+ \cline{1-3}
+&& \\
+&& \\
+\cline{1-3}
+& & \\
+\cline{1-3}
+\end{array}
+\right. }_{\log_2 (c) f(|x|)}
+\begin{array}{l }
+←\text{encode la config initiale} \\
+\\
+\\
+ ← \text{encode }(yes, 0, \varepsilon)\\
+\end{array} \\
+\]
+
+\end{dem}
+
+\section{Logique proportionnelle quantifiée}
 SAT : est ce qu'il existe une valuation $\mu$ telle que $\mu \models \Phi$ ?
+
 VALID : est ce que pour toute valuation $\mu$ on a $\mu \models \Phi$ ?
 
-\subparagraph*{def} Une ormule de la logique prop qiantifiée (QBF, quantifiable binary formulaà est une formule de la forme ; 
-il $\exists p1, \forall p2, \exists p3 ... Q_np_n \Phi$ où
-$Q_n \in { \exists, \forall }$
-Phi est formule de la logique propositionnelle.
-\begin{definition}{}On définit $\mu \models \Phi$ pour $\Phi$ de la logique prop quantfiée \begin{itemize}
-\item $\mu \models \exists p \Phi$ ssi $\mu [ p := 0] \models$ ou $\mu [p := 1] \models \Phi$
-\item $\mu \models \forall p \Phi$ ssi $\mu [ p := 0] \models$ et $\mu [p := 1] \models \Phi$
+\begin{definition}
+ 
+ Une formule de la logique prop quantifiée (QBF, quantifiable binary formula) est une formule de la forme :
+
+ $\exists p1, \forall p2, \exists p3 ... Q_np_n \Phi$ où
+$\begin{array}{l}
+Q_n \in \{ \exists, \forall \}\\
+\Phi$ est formule de la logique propositionnelle.$
+\end{array}$
+
+\end{definition}
+
+\begin{definition}On définit $\mu \models \Phi$ pour $\Phi$ de la logique prop quantfiée \begin{itemize}
+\item $\mu \models \exists p \,\Phi$ ssi $\mu [ p := 0] \models\Phi$ ou $\mu [p := 1] \models \Phi$
+\item $\mu \models \forall p \, \Phi$ ssi $\mu [ p := 0] \models\Phi$ et $\mu [p := 1] \models \Phi$
 \item $\mu \models  \Phi$ habituel pour $\Phi$ propositionnel
 \end{itemize}\end{definition}
-\subparagraph*{Theoreme} Le probleme QBF-sat / entrée : 
-$\Phi \exists p_1 \forall p_2 Q_n p_n \Psi$ où p1 p2 pn sont les variables qui apparaisent dans $\Psi$
-sortie : oui si $\Phi$ est vrai(ie $\mu \models \Phi, \mu$ quelconque)
-est NPSAPCE hard
 
-\subparagraph*{dem} 
-but:  transormer un instance de corridor tiling en $\Phi$ de la logique prop quantifiée / ..; pavable si $\Phi$ est vraie et de plus Phidoit etre de taille polynomiale par rapport à l'instance -> diviser pour régner
+\begin{thm}
 
-On note $\vec{p_a} = (p_a, j, t)_{j \in { 1, ..; n}, t \in T}$ Cela permet de décrire une ligne du pavage.
+Le problème QBF-sat tel que
+\begin{itemize}
+ \item L'entrée est $\Phi = \exists p_1 \forall p_2 \dots Q_n p_n \, \Psi$, \\
+où $p_1 p_2 \dots p_n$ sont les variables qui apparaisent dans $\Psi$.
+\item La sortie est oui si $\Phi$ est vrai(ie $\mu \models \Phi, \mu$ quelconque)
+\end{itemize}
+est $NPSPACE$-hard.
+\end{thm}
+
+\begin{dem}[diviser pour régner]
+
+but:  transformer une instance de CORRIDOR TILING en $\Phi$ de la logique prop quantifiée telle que
+$ 2^n  \left\updownarrow
+\begin{array}{|ccc|}
+ \hline
+t_1 & \dots & t_n \\
+\hline
+&&\\
+&&\\
+\hline
+b_1 & \dots & b_n \\
+\hline
+\end{array} \right. $
+ pavable ssi $\Phi$ est vraie.\\
+De plus $\Phi$ doit être de taille polynomiale par rapport à l'instance:\\ → c'est là que DPR est nécéssaire.
+
+On note $\vec{p_a} = (p_a, j, t)_{j \in { 1, ..; n}, t \in T}$ : cela permet de décrire une ligne du pavage.
 
 1ere idée : Définir $\Phi_k (p_a, p_b)$ qui encode le fait qu'il existe un pavage $n \times 2^k , p_a$ 1ere ligne, $p_b$ dernière ligne.
-On définit $\Phi_1 (p_a, p_b) = \dots$
-Par récurence, $\Phi_k(p_a, p_b) = \exists p_c, p_d / phi_k-1 (p_a, p_c)$ et $ph_1(pc, pd)$ et $\Phi_k-1(p_d, p_b) \forall k \geq 2$
+On définit $\Phi_1 (p_a, p_b) = \dots$\\
+Par récurence, $\Phi_k(p_a, p_b) = \exists p_c, p_d \tq \Phi_{k-1} (p_a, p_c) \wedge \Phi_1(pc, pd) \wedge\Phi_{k-1}(p_d, p_b) \forall k \geq 2$
+
 Problème : $\Phi_n$ va être de taille exponentielle
 
-2eme idée : (la bonne)
-$\Phi_1 (p_a, p_b) = ...$
-$\Phi_k(p_a, p_b) = \exists p_c, p_d / ph_1(pc, pd)$ et $\forall p_q, p_r , (((p_q \Leftrightarrow p_a) et (p_r \Leftrightarrow p_c)$ ou $(p_q \Leftrightarrow p_d) et (p_r \Leftrightarrow p_b))$ implique $\Phi_k-1 (p_q, p_r)$
+2eme idée : (la bonne)\\
+$\Phi_1 (p_a, p_b) = ...$\\
+$\Phi_k(p_a, p_b) = \exists p_c, p_d \tq \Phi_1(pc, pd)$ et $\forall p_q, p_r , (((p_q \Leftrightarrow p_a) et (p_r \Leftrightarrow p_c)$ ou $(p_q \Leftrightarrow p_d) et (p_r \Leftrightarrow p_b))\\
+ \Rightarrow \Phi_{k-1} (p_q, p_r)$
 
 
 Par exemple $p_q \Leftrightarrow p_a$ est un raccourci pour $\bigwedge_{j=1}^n \bigwedge t \in T (p_{q,j,t} equiv p_{a, j, t}$
+\end{dem}
+\begin{thm}
+$QBF sat$ est $PSPACE$
+\end{thm}
 
-\subparagraph*{Th} $QBF sat \leqslant est PSPACE$
-Dem : thèse de church\\
-fonction qbf $sat(\mu, phi)$
-	cas  (Phi)
-		$\Phi = \exists p \Psi : qbf-sat(\mu [p:=0], \Psi)$ ou $qbf-sat (\mu[p:=1] \Psi)$
-		$\Phi = \forall p \Psi, qbf-sat(\mu [p:=0], \Psi)$ et $qbf-sat (\mu[p:=1] \Psi)$
-		$\Phi$ propositionnel : retourne oui ssi $\mu \models Psi$
-qbf-sat s'execute en espace polynomial
+\begin{center}\begin{minipage}{1pt}
+\begin{algorithm}{qbf-sat}{\mu, \Phi}
+\begin{SWITCH}
+ \item{\Phi = \exists p \, \Psi} \\
+  \RETURN \CALL{qbf-sat}(\mu [p:=0], \Psi) \text{ ou }\CALL{qbf-sat} (\mu[p:=1], \Psi)
+  \item{\Phi = \forall p \, \Psi} \\
+  \RETURN  \CALL{qbf-sat}(\mu [p:=0], \Psi)$ et $\CALL{qbf-sat} (\mu[p:=1] \Psi)
+\item{\Phi$ propositionnel $}\\
+  \RETURN $oui ssi $\mu \models \Phi
+\end{SWITCH}
+\end{algorithm}
+\end{minipage}\end{center}
+
+\begin{dem} [thèse de church]
+
+\textsc{qbf-sat} s'exécute en espace polynomial
+
+\end{dem}
+
+Bilan : 
+\begin{thm}[de Savitch]
+ $PSPACE = NPSPACE$
+\end{thm}
+\begin{dem}
+ Soit $L \in NPSPACE$. Comme \textsc{qbf-sat} est $NPSPACE$-hard, il existe une fonction $f$ calculable en temps polynomial telle que
+ $\forall c \in \Sigma^*, x \in L$ ssi la QBF $f(x)$ est vraie.
+
+Voici une machine déterministe qui décide de $L$ en espace polynomial :
+
+\begin{algorithm}{décider L}{x}
+ \RETURN \CALL{qbf-sat}{(f(x))}
+\end{algorithm}
+
+Donc $L \in PSPACE$.
+\end{dem}
+
+
+\part{Logique modale}
+
+\section{La logique modale K (Kripke)}
+
+\subsection{Syntaxe}
+
+Soit $ATM$ un ensemble dénombrable de propositions atomiques.
+\begin{definition}
+ Le langage de la logique modale K est défini par la BNF suivante :
+
+$\Phi ::= \perp  |  p  |  \lnot \Phi  |  \Phi \vee \Phi  |  \Box \Phi$ où $p \in ATM$
+\end{definition}
+
+\begin{definition}
+ L'axiomatique de la logique K est constituée
+\begin{itemize}
+ \item d'axiomes : \begin{itemize}
+                  \item tautologies de la logique classique
+                  \item $\Box (\Phi \rightarrow \Psi) \rightarrow ( \Box \Phi \rightarrow \Box \Psi)$ (Axiome K) 
+                 \end{itemize}
+ \item de règles : \begin{itemize}
+                 \item le modus ponens : $ \dfrac{ \Phi \qquad \Phi \rightarrow \Psi }{ \Psi}$
+                 \item la nécessitation : $ \dfrac{ \Phi }{ \Box \Phi }$
+                \end{itemize}
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+ $\Phi$ est prouvable ssi il existe $ \Phi_1 \cdots \Phi_n \tq \forall i \in \{1, \cdots , n \},$
+\begin{itemize}
+ \item soit $ \Phi_i$ est l'instance d'un axiome
+ \item soit $ \Phi_i$  est obtenue à partir d'une des règles et de $ \Phi_j$, où $j < i$ et $ \Phi_n = \Phi$
+\end{itemize}
+On écrit $ \models \Phi$ pour $ \Phi$ est prouvable ( $ \Phi $ est un théorème).
+\end{definition}
+
+\begin{definition}[$\vdash$]
+ Soit $ \Sigma$ un ensemble de formules, $ \Phi$ une formule. 
+
+$ \Sigma \vdash \Phi$ ssi $ \exists \Psi_1, \cdots, \Psi_n \in \Sigma \tq \\
+\vdash ( \Psi_1 \wedge \cdots \wedge \Psi_n) \rightarrow \Psi$
+\end{definition}
+
+\subsection{Sémantique de Kripke}
+
+\begin{definition}[Cadre de Kripke]
+ Un cadre de Kripke est un couple $\F = (W, R)$ où :
+\begin{itemize}
+ \item $W$ est un ensemble non vide de mondes possibles
+ \item $ R \subseteq W \times W$
+\end{itemize}
+\end{definition}
+
+\begin{rem}
+ Si on a plusieurs opérateurs \fbox{$\,i\,$}, $i \in I$ dénombrable, $R$ est remplacé par une collection de relations $(R_i)_{i \in I}$
+\end{rem}
+
+\begin{definition}[Modèle de Kripke]
+ Un modèle de Kripke est un couple $ \M = (\F, V)$ où
+\begin{itemize}
+ \item $ \F$ est un cadre
+ \item $ V : ATM \rightarrow 2^W$
+\end{itemize}
+\end{definition}
+
+\begin{definition}[$\models$]
+ Soient $ \M = (W,R,V)$ un modèle de Kripke, $w \in W$ et $ \Phi$ une formule.
+
+On définit $ \M, w \models \Psi$ par induction sur $ \Psi$ :
+\begin{itemize}
+ \item $ \M, w \not \models \perp$
+ \item $ \M, w \models p$ ssi $w \in V(p)$
+ \item $ \M, w \models \Psi \vee \Phi$ ssi $ \M,w \models \Psi$ ou $ \M, w \models \Phi$
+ \item $ \M, w \models \fbox{\,i\,} \Phi$ ssi $ \forall v \in R_i(w), \M, v \models \Phi$
+\end{itemize}
+
+\end{definition}
+
+
+\begin{itemize}
+ \item La donnée de $ \M, w $ s'appelle un modèle pointé.
+ \item On dit que $ \Phi $ est satisfiable ssi \\il existe un modèle pointé $ \M, w  \tq \M, w \models \Phi$
+ \item On dit que $ \Phi $ est valide ssi pour tout modèle pointé $\M, w$, on a $\M, w \models \Phi$
+ \item Soit $ \Sigma$ un ensemble de formules. On écrit $ \M, w \models \Sigma$ pour tout que $ \forall \Phi \in \Sigma$, on a $\M, w \models \Phi$.
+ \item On dit que $ \Phi$ est conséquence de $ \Sigma$ ssi pour tout modèle pointé $ \M, w$, on a $\M, w \models \Sigma$ implique $\M, w \models \Phi$.
+\end{itemize}
+
+
+
+\begin{prop}
+ Si $ \vdash \Phi$ alors $ \models \Phi$
+\end{prop}
+\begin{dem}
+ Par induction sur la longueur de la preuve : \\
+on montre que les axiomes sont valides et que les règles préservent la validité.
+\end{dem}
+
+
+\textbf{Expressivité :}
+
+\begin{ques}[1]
+Est-ce qu'il existe $ \Phi$ modale telle que $ \M, w \models \Phi \Leftrightarrow R(w) = \empty $ ?\\
+$\hookrightarrow$ oui : $ \Phi = \lnot \Diamond \top$ ou $ \Phi = \Box \bot$\end{ques}
+\begin{ques}[2]Est-ce qu'il existe $ \Phi$ modale telle que $ \M, w \models \Phi \Leftrightarrow w R w$ ?\\
+$\hookrightarrow$ plus dur, on va voir ça.\end{ques}
+
+\section{Bisimulations}
+
+\begin{definition}[bounded morphism] Soient $ \M = (W,R,V)$ et $ \M' = (W',R',V')$ deux modèles.\\
+ $ f : W \to W'$ est un \og bounded morphism \fg  ssi
+\begin{enumerate}
+ \item $ \forall w \in W, \quad w$ et $f(w)$ satisfont les mêmes propositions
+ \item $ \forall w,u \in W,\quad w R u \Rightarrow f(w) R' f(u)$
+ \item $\forall w \in W, u \in W',\quad  f(w) R' u' \Rightarrow \exists u \in R(w)$ et $u' = f(u)$
+\end{enumerate}
+\end{definition}
+
+On va montrer que si il existe un \og bounded morphism \fg $f$ de $W$ dans $W'$, alors $ \M,w$ et $ \M',w'$ satisfont les mêmes formules modales.
+
+\begin{definition}[bisimulation]
+ Soient $ \M = (W,R,V)$ et $ \M' = (W',R',V')$ deux modèles.\\
+Une relation non vide $ B \subseteq W \times W'$ est une bisimulation ssi :
+\begin{itemize}
+ \item $ w   \Bo w' \Rightarrow w$ et $w'$ satisfont les mêmes propositions.
+ \item $w   \Bo w' \wedge w   \Ro u \Rightarrow \exists u'$ tel que $w'   \Ro u'$ et $u   \Bo u'$
+ \item $w   \Bo w' \wedge w'   \Ro u' \Rightarrow \exists u$ tel que $w   \Ro u$ et $u   \Bo u'$
+\end{itemize}
+
+\end{definition}
+
+\begin{definition}
+ $ \M,w$ et  $ \M',w'$ sont bisimilaires ssi $ \exists B$ bisimulation entre $ \M$ et $ \M' \tq w   \Bo w'$.\\
+On note $ \M,w \bisim \M', w'$
+\end{definition}
+
+\begin{thm}
+ Si $ \M,w \bisim \M', w'$, alors ils satisfont les mêmes formules modales.
+\end{thm}
+
+\begin{dem}
+ Par induction sur $ \Phi$, on montre\\
+$ \mathcal{P}( \Phi)= $ \og Si $ \M,w \bisim \M', w'$ alors $ \M,w \models \Phi$ ssi $ \M',w' \models \Phi$ \fg
+\end{dem}
+
+\begin{definition}[modèle à images finies]
+ Soit $ \M = (W,R,V), \M$ est à images finies ssi $ \forall w \in W, R(w)$ est fini.
+\end{definition}
+
+\begin{prop}
+ Soient $ \M, \M'$ à images finies,
+si $ \M, w$ et $ \M', w'$ satisfont les mêmes formules modales, alors  $ \M,w \bisim \M', w'$.
+\end{prop}
+\begin{dem}
+ Soit $ \leftrightsquigarrow$ la relation définie par $w \leftrightsquigarrow w'$ ssi $ \M, w$ et $ \M', w'$ satisfont les mêmes formules modales.\\
+Montrons que $ \leftrightsquigarrow$ est une bisimulation :
+
+\end{dem}
+
+\section{Logique modale et premier ordre}
+
+On définit une traduction de la logique modale dans la logique du premier ordre (avec deux variables) :
+
+Soient $x,y$ deux variables, on définit $ST_x, ST_y$ de la façon suivante :\\
+\begin{center}
+ 
+$ \begin{array}{l | l}
+  ST_x( \bot) = \bot & ST_y( \bot) = \bot \\
+  ST_x( p) = p(x) & ST_y( p) = p(x) \\
+  ST_x( \lnot \Phi) = \lnot ST_x( \Phi) & ST_y( \lnot \Phi) = \lnot ST_y( \Phi) \\
+  ST_x( \Phi \wedge \Psi) = ST_x( \Phi) \wedge ST_x(\Psi) & ST_y( \Phi \wedge \Psi) = ST_y( \Phi) \wedge ST_y(\Psi)\\
+  ST_x( \Box \Phi) = \forall y, x R y \rightarrow ST_y( \Phi) & ST_y( \Box \Phi) = \forall x, y R x \rightarrow ST_x( \Phi) \\
+  \end{array}
+$
+
+\end{center}
+
+\begin{prop}
+ Soient $ \M = (W,R,V)$ et $ \Phi$ modale. \\
+On a $ \M,w \models \Phi$ ssi $ \M [x \Leftarrow w] \models_{\text{ \tiny{1\ier ordre}}} ST_y( \Phi)$
+\end{prop}
+\begin{rem}
+ $\M [x \Leftarrow w]$ est un modèle du 1\ier ordre, avec 
+\begin{itemize}
+ \item $W$ comme domaine 
+ \item le prédicat $R$ est interprété par $R$
+ \item les prédicats $p(.)$ s'interprètent avec $V$
+\end{itemize}
+
+\end{rem}
+
+\begin{rem}
+ Le problème de la satisfiabilité du 1\ier ordre avec deux variables est décidable et $NEXPTIME$-complet.\\
+$ \hookrightarrow$ le problème $sat$ de K est décidable.
+\end{rem}
+
+\begin{thm}[caractérisation de Von Benthem]
+ Soit $ \alpha(x)$ une formule du 1\ier ordre (avec $x$ une variable libre) formée à partir de $R$ (prédicat binaire) et de prédicats unaires.\\
+On a équivalence entre
+\begin{itemize}
+ \item $ \alpha(x)$ est équivalente, par bisimulation , i.e. : \\
+( Si $ \M,w \bisim \M', w'$, alors \\
+$ \M [x \Leftarrow w] \models  \alpha(x)$ ssi $ \M' [x \Leftarrow w'] \models  \alpha(x)$ )
+\item $ \alpha(x)$ est équivalente à $ST_x( \Phi)$ où $ \Phi$ modale.
+\end{itemize}
+\end{thm}
+
+\paragraph{Problème sat}:
+\begin{description}
+ \item[entrée : ] $ \Phi $ modale
+ \item[sortie : ]oui ssi $ \Phi $ est satisfiable
+\end{description}
+
+\begin{definition}[degré modal]
+ Soit $d(.)$ le degré modal défini par 
+\begin{itemize}
+ \item $d( \bot) = d( p) = 0$
+ \item $ d( \lnot \Phi) = d( \Phi)$
+ \item $ d( \Phi \vee \Psi) = \max( d( \Phi), d( \Psi)$
+ \item $ d( \Box \Phi) = 1 + d( \Phi)$
+\end{itemize}
+
+\end{definition}
+
+\begin{definition}[ensemble clos]
+ Un ensemble est dit clos ssi il est clos par sous formule et par négation (après simplification des $\lnot \lnot$).\\
+On note $\Cl(\Gamma)$ le plus petit ensemble clos contenant $ \Gamma$.
+\end{definition}
+
+\begin{prop}
+ $\displaystyle \Cl(\Gamma) \leq 2 \sum_{\Phi \in \Gamma}  |  \Phi  | $  
+\end{prop}
+
+\begin{definition}[ensemble de Hinitkka]
+Soit $\Sigma$ un ensemble clos. $H$ est un ensemble de Hintikka ssi H maximal et vérifie :
+\begin{itemize}
+ \item $H \subseteq \Sigma$
+ \item $\bot \not \in H$
+ \item $\forall \lnot \Phi \in \Sigma, \; \lnot \Phi \in H$ ssi $\Phi \not \in H$
+ \item $\Phi \vee \Psi \in H$ ssi $\Psi \in H$ ou $\Phi \in H$
+\end{itemize}
+
+\end{definition}
+
+Voici un algorithme non déterministe pour décider la satisfiabilité de $\Gamma$, un ensemble fini de formules  :
+
+\begin{algorithm}{satK}{\Gamma}
+ H \= \CALL{saturerHintikka}(\Gamma)\\
+    \begin{FOR}{$tout $ \lnot \Box \Phi \in H}
+	 \CALL{satK}( \{ \lnot \Phi \} \cup \Box^{-1} H)
+    \end{FOR}\\
+    \RETURN $Succès$
+\end{algorithm}\\
+où $\Box^{-1} H = \{ \Phi, \Box \Phi \in H\}$\\
+\begin{algorithm}{saturerHintikka}{\Gamma}
+  H \= \CALL{choisir}_{ND} \;\Gamma \subseteq H \subseteq \Cl(\Gamma)\\
+  \begin{IF}{H$ est un ensemble de Hintikka$}
+      $Succès$
+  \ELSE
+      $Echec$
+\end{IF}
+\end{algorithm}
+
+\begin{dem}[$NPSPACE$]
+ On pose $d(\Gamma) = max (d (\Phi))$
+\end{dem}
+\begin{thm}
+ L'algo termine
+\end{thm}
+\begin{dem}
+ $d( { \lnot \Phi } \cup \Box^{-1} H) < d( \Gamma)$
+\end{dem}
+
+\begin{thm}
+ Si $satK(\Gamma)$ réussit alors $\Gamma$ satisfiable
+\end{thm}
+\begin{dem}
+ Cas de base : $d(\Gamma) = 0 : \Gamma$ propositionnel !
+
+Soit $\mu :
+\begin{array}{ccl}
+ ATM & \rightarrow&  {0,1}\\
+	p & \mapsto&  1$ ssi $p \in H
+\end{array}$\\
+
+On montre que $\mu \models \Phi$ ssi $\Phi \in H$.
+
+Cas inductif : \\
+Considérons un appel $satK(\Gamma)$ qui réussit. Par induction, tous les appels $satK( \{ \lnot \Phi \} \cup \Box^{-1} H)$ ayant réussi, les formules sont satisfiables.\\
+On construit un modèle $\M$= $(\M_i)$ modèles des appels récursifs et $w$ défini à partir de $H$.
+
+On montre que $\M,w \models \Gamma$.
+\end{dem}
+
+\begin{thm}
+ $\Gamma$ satisfiable $\Rightarrow satK( \Gamma)$ réussit.
+\end{thm}
+
+\begin{dem}
+ On part d'un modèle $(\M,w)$:\\
+ Considérons l'exécution où $H = \{\Phi \in CL(\Gamma) \tq[s] \M,w \models \Phi \}$
+(c'est un ensemble de Hintikka).\\
+Chaque $\Gamma' = \{ \lnot \Phi \} \cup \Box^{-1} H$ est satisfiable dans un successeur de $w$.\\
+$\Rightarrow$ les appels récursifs réussissent.\\
+$\Rightarrow satK( \Gamma)$ réussit.
+\end{dem}
+
+\part{Correspondance sur les cadres}
+
+\section{Définissabilité}
+
+\begin{definition}[cadre]
+ Un cadre est un couple $\F = W, R$ où $W$ est un ensemble de mondes possibles, et $R \subseteq W \times W$
+(c'est un modèle sans la valuation)
+\end{definition}
+
+\begin{definition}[$\models_{\text{cadre}}$]
+ Soient $\F = (W,R)$ un cadre et $w \in W$.
+\begin{itemize}
+ \item $\F, w \models \Phi$ ssi pour tout modele $\M = (\F, V)$ basé sur $\F$, on a $\M,w \models \Phi$
+ \item $\F \models \Phi$ ssi pour tout $w \in W, \; \F, w \models \Phi$
+\end{itemize}
+\end{definition}
+On va s'intéresser à des classes de cadres,  par exemple : 
+$C_{\text{réflexifs}}$ = classe des cadres où $R$ est réflexive.
+
+\begin{definition}
+ Soient $C$ une classe de cadres et $\Phi$ une formule.
+
+$\Phi$ définit $C$ ssi pour tout cadre $\F,\F \in C \Leftrightarrow \F \models \Phi$
+\end{definition}
+
+\begin{ex}
+ $p \Rightarrow \Diamond p ($ ou $\Box p \rightarrow p)$ définit $C_{\text{réflexifs}}  $
+\end{ex}
+
+
+\section{Premier / Second ordre}
+
+\begin{prop}
+ Soit $Phi$ une formule modale
+$\F,w \models Phi$ ssi $\F[x \leftarrow w] \models \forall p_1, \dots, p_n ST_x (\Phi)$
+\end{prop}
+
+\begin{ex}
+ $\F,w \models p \rightarrow \Diamond p$ ssi $\F[x \leftarrow w] \models \forall p, p(x)  \rightarrow \exists y, x   \Ro y \wedge p(y)$.\\
+Mais on a aussi $\F,w \models p  \rightarrow \Diamond p$ ssi $\F[x \leftarrow w] \models \forall y , y   \Ro y$.\\
+On dit que $p \rightarrow \Diamond p$ correspond à une propriété du 1\ier ordre, à savoir $\forall y , y   \Ro y$.
+\end{ex}
+
+\begin{ques}
+ est ce que $\Phi$ modale correspond toujours à une formule du 1\ier ordre ? 
+\end{ques}
+
+\section{Des formules récalcitrantes}
+
+\subsection{Formule de Löb}
+$\Phi = \Box ( \Box p \rightarrow p) \rightarrow \Box p$
+(provient de la logique de la prouvabilité : $\Box p$ signifie $p$ prouvable).\\
+$C_{\text{Löb}}$ = classe des cadres où $R$ est transitive et $R^{-1}$ est bien fondée (i.e. il n'existe pas de séquence infinie $w_0   \Ro w_1   \Ro w_2   \Ro \dots$ )
+
+\begin{prop}
+$ \F \models \Phi$ ssi $\F \in C_{\text{Löb}}$
+\end{prop}
+\begin{dem}
+ 
+\end{dem}
+
+\begin{prop}
+ Il n'existe pas de formule $\alpha$ du 1\ier ordre telle que
+
+$\F \in C_{\text{Löb}} \Leftrightarrow \F \models \alpha$
+\end{prop}
+\begin{dem}
+ 
+\end{dem}
+
+\subsection{Formule de Mc Kinsey}
+\begin{prop}
+ Soit $\Phi = \Box \Diamond p \rightarrow \Diamond \Box p, \Phi$ ne correspond à aucune propriété du 1 ier ordre \\( $\not \exists \alpha  \tq \forall \F, \F \models \Phi$ ssi $\F \models \alpha$)
+\end{prop}
+
+\begin{dem}
+ T.D.
+\end{dem}
+
+
+\section{Propriété du premier ordre non définissable}
+\begin{prop}
+ $\exists x, x   \Ro x$ n'a pas de correspondance en logique modale, ie $\not \exists \Phi$ modale tq $\F \models \exists x, x   \Ro x \Leftrightarrow \F \models \Phi$
+\end{prop}
+
+\begin{dem}
+ T.D.
+\end{dem}
+
+
+\section{Vers un algo pour trouver l'équivalent en 1\ier ordre}
+
+\subsection{Un fragment stupide}
+
+\begin{prop}
+ Si $\Phi$ ne contient pas de proposition, alors $\F, w \models \Phi$ ssi $\F[x \leftarrow w ] \models ST_x(\Phi)$
+\end{prop}
+
+\subsection{Les formules uniformes}
+
+\begin{definition}[occurence positive]
+une occurence de $p$ est positive si elle est dans la portée d'un nombre pair de négations.\\
+$\Phi$ est positive en $p$ ssi toutes les occurences de $p$ sont positives.
+\end{definition}
+
+\begin{definition}[formule croissante]
+ $\Phi$ est croissante en $p$ ssi $\forall \,\F = W, R, \;\forall \, V, V'$, on a :\\
+$V(p) \subseteq V'(P)$ et $\forall q \not = p, V(q) \subseteq V'(q) $
+
+ $ \Rightarrow \F, V, w \models \Phi$ implique $\F, V', w \models \Phi$
+\end{definition}
+
+\begin{prop}
+ $\Phi$ positive en $p \Rightarrow \Phi$ croissante en $p$\\
+$\Phi$ négative en $p \Rightarrow \Phi$ décroissante en $p$
+\end{prop}
+\begin{dem}
+ T.D.
+\end{dem}
+
+\begin{rem}
+ ça roule ??? idem sur le second ordre.
+\end{rem}
+
+
+\begin{cor}
+Soit $\Phi$ négative en $p, \\
+\begin{array}{ll}
+ & (\F, w, \models \Phi )\\
+\Leftrightarrow & (\forall V, (V(p) = W) \Rightarrow \F, V, W \models \Phi)\\
+\Leftrightarrow & (\F, w \models \Phi [p \leftarrow \top])
+\end{array}$
+\end{cor}
+
+
+\begin{definition}[formule uniforme]
+ Une formule $\Phi$ est uniforme ssi $\forall p, \Phi$ est soit positive, soit négative en $p$
+\end{definition}
+
+\begin{prop}
+ Si $\Phi$ est uniforme, alors $\Phi$ correspond à une formule modale $\Psi$  où on a remplacé les occurences positives par $\bot$ et négatives par $\top$. $\Phi$ correspond à $\forall x, ST_x( \Phi)$
+\end{prop}
+
 
 
 \subsection{Formule de Sahlquist}
-On définit une construction syntaxique 
-$S ::= X \rightarrow POS$
-où POS est une formule positive et $\chi ::= T | \perp | \Box_{i_1} \cdots \Box_{i_n}p | \chi \wedge \chi | \Diamond_{j_i} \chi$
+On définit une construction syntaxique $S ::= X \Rightarrow POS$\\
+où POS est une formule positive et $\chi ::= \top  |  \bot  |  \Box_{i_1} \cdots \Box_{i_n}p  |  \chi \wedge \chi  |  \Diamond_{j_i} \chi$.
 La formule générée par S
-\begin{thm}{} Soit $\Phi$ une formule de Sahlquist. Il existe une formule du 1er ordre $\alpha$ qui correspond à $\Phi$ sur les cadres.\\
-Pour tout cadre $\F$, pour tout monde $m$,
-$\F, m \models \Phi$ ssi $\F[x \leftarrow m] \models \alpha(x)$
+\begin{thm} Soit $\Phi$ une formule de Sahlquist. Il existe une formule du 1er ordre $\alpha$ qui correspond à $\Phi$ sur les cadres.\\
+Pour tout cadre $\F$, pour tout monde $w$,
+
+$\F, w \models \Phi$ ssi $\F[x \leftarrow w] \models \alpha(x)$
 \end{thm}
-\begin{ex}{1}
-$ \F, m \models \Phi$ ssi $\forall V, \F, V, m \models \Phi$
-ssi $\forall V, \F, V, w \models p$ implique $\F, V, w \models \Diamond p$
-ssi $\forall V, w \in V(p)$ implique $\F, V, m \models \Diamond p$
-ssi $\forall V' / V'(p) = {w}$ implique $\F, V, w \models p$
-ssi $\forall V' / V'(p) = \{ w \}$ implique $\F, V, w \models \Diamond p$
-(car $\Diamond p$ est croissante en p car positive)
-(1) ssi $\forall V' / V'(p) = w$ on a $\F, V', [x \leftarrow w ] \models \exists y xRy \wedge p(y)$
+
+\begin{ex}{1}\\
+$ \F, m \models \Phi$ \\
+ssi $\forall V, \; \F, V, m \models \Phi$\\
+ssi $\forall V, \;\F, V, w \models p$ implique $\F, V, w \models \Diamond p$\\
+ssi $\forall V, \; w \in V(p)$ implique $\F, V, m \models \Diamond p$\\
+ssi $\forall V',\; V'(p) = {w}$ implique $\F, V, w \models p$\\
+ssi $\forall V', \; V'(p) = \{ w \}$ implique $\F, V, w \models \Diamond p$
+(car $\Diamond p$ est croissante en p car positive)\\
+(1) ssi $\forall V' \tq V'(p) = w$, on a $\F[x \leftarrow w ], V' \models \exists y, x  \Ro y \wedge p(y)$\\
 ssi le prédicat p est interprété avec la fonction 
-$\begin{array}{ll}
- W \longleftarrow \{0, 1\}\\
- w \mapsto & 1 si v = w\\
-	    & 0 sinon
-\end{array}$
-On a montré que $\forall w \in W$
-$\F, w \models p \to \Diamond p ssi F[x \leftarrow w] \models x Rx$
+$\left |  \begin{array}{lcl}
+ W & \longrightarrow& \{0, 1\}\\
+ w & \mapsto & \left\{ \begin{array}{l}
+                1$ si $v = w\\
+		0$ sinon$
+               \end{array}\right.
+\end{array} \right.$\\
+On a montré que $\forall w \in W$,
 
-On a aussi:
-$\F \models p \to \Diamond p ssi \forall w, \F[x←w] \models xRx
-			    ssi \F \models \forall x, xRx$
+$\F, w \models p \to \Diamond p$ ssi $\F[x \leftarrow w] \models x   \Ro x$.\\
+On a aussi:$
+\begin{array}{ll}
+ \F \models p \to \Diamond p &$ ssi $\forall w, \F[x\leftarrow w] \models x  \Ro x\\
+			    &$ ssi $\F \models \forall x, x  \Ro x 
+\end{array}
+$
 \end{ex}
-
-1)Traduire $\chi \leftarrow POS$ en second ordre de la forme
+Algo pour trouver l'équivalent 1\ier ordre sur les cadres de $\chi \rightarrow POS$: \\
+1)Traduire $\chi \rightarrow POS$ en second ordre de la forme\\
 $\forall \vec p, \forall \vec y, [(REL \wedge BOX) \leftarrow ST_x(POS)$
-où RES est une conjoniotn de $y_i R_k y_j x R_k y_i$
-   BOX est une conjonction de la forme $\forall s, y_i R_{\beta} s \leftarrow p(s)$
-2) Retourne la formule $\forall \vec y, REL \leftarrow ST_x(POS)$ dans laquelle on a remplacé les occurences de p par 
-$\sigma(p)$ par $\lambda a . y_{i_1} R_{\beta_1} a \vee \cdots \vee y_{i_k} R_{\beta_k} a$\\
-où chaque $y_{i_j} R_{\beta_j} a$ provient d'une formule $\forall s y_{i_j} R_{\beta_j} s \leftarrow p(s)$ qui apparaît dans BOX.
+où $
+\begin{array}{l}
+ RES$ est une conjonction de $y_i   \Ro_k y_j \;\; x   \Ro_k y_i\\
+ BOX$ est une conjonction de la forme $\forall s, y_i R_{\beta} s \leftarrow p(s)
+\end{array}$
 
-\subsection{Théorème de complétude}
+
+2) Retourne la formule $\forall \vec y, REL \rightarrow ST_x(POS)$ dans laquelle on a remplacé les occurences de $p$ par 
+$\sigma(p)=\lambda a . y_{i_1} R_{\beta_1} a \vee \cdots \vee y_{i_k} R_{\beta_k} a$\\
+où chaque $y_{i_j} R_{\beta_j} a$ provient d'une formule $\forall s \; y_{i_j} R_{\beta_j} s \rightarrow p(s)$ qui apparaît dans BOX.
+
+\section{Théorème de complétude}
 
 Soit S un ensemble de formules . On écrit $\vdash_S \Phi$ pour dire que $\Phi$ est prouvable en utilisant 
 \begin{itemize}
@@ -265,22 +868,34 @@ Soit S un ensemble de formules . On écrit $\vdash_S \Phi$ pour dire que $\Phi$ 
  \item le modus ponens
  \item la nécéssitation
 \end{itemize}
-Rem : $\vdash \Phi; \vdash_{\empty} \Phi$
-Soit $\mathcal{C}$ une classe de cadres.
-$\models_{\mathcal{C}} \Phi$ ssi $\forall \F \in \mathcal{C}, \F \models \Phi$
-$\Sigma \models_{\mathcal{C}} \Phi$ ssi pour tout modèle $\mathcal{M}, w$ basé sur un cadre de $\mathcal{C}$, on a :
-Si $\mathcal{M}, w \models \Sigma alors \mathcal{M}, w \models \Phi$
+\begin{rem}
+% $\vdash \Phi; \vdash_{\empty} \Phi$
 
-\begin{thm}{de complétude de Sahlquist}
-Soit S un ensemble de formules de Sahlquist, soit $C_s$ la classe de cadres qui vérifient les propriétés du 1er ordre correspondantes aux formules de S sur les cadres.
-Alors  $\Sigma \vdash_S \Phi$ ssi $\Sigma \models_{\mathcal{C}} \Phi$ (complétude forte)
-(complétude faible : $\vdash_S \Phi$ ssi $\models_S \Phi$.)
+De la même façon, on définit :
+
+$\Sigma \vdash_S \Phi$ ssi $\exists \Psi_1, \dots, \Psi_n \in \Sigma \tq[s] \vdash_S ( \Psi_1 \wedge \dots \wedge \Psi_n) \rightarrow \Phi$.\\
+Soit $\mathcal{C}$ une classe de cadres:
+\begin{itemize}
+ \item $\models_{\mathcal{C}} \Phi$ ssi $\forall \F \in \mathcal{C}, \F \models \Phi$.
+ \item $\Sigma \models_{\mathcal{C}} \Phi$ ssi pour tout modèle $\mathcal{M}, w$ basé sur un cadre de $\mathcal{C}$, on a :\\
+$\mathcal{M}, w \models \Sigma \Rightarrow \mathcal{M}, w \models \Phi$
+\end{itemize}
+\end{rem}
+
+\begin{thm}[de complétude de Sahlquist]
+Soit $S$ un ensemble de formules de Sahlquist, soit $C_s$ la classe de cadres qui vérifient les propriétés du 1er ordre correspondantes aux formules de $S$ sur les cadres.
+
+On a:  $\Sigma \vdash_S \Phi$ ssi $\Sigma \models_{\mathcal{C}} \Phi$ (complétude forte).
 \end{thm}
+\begin{rem} [complétude faible]
+$\vdash_S \Phi$ ssi $\models_S \Phi$.
+\end{rem}
 
-Trois techniques pour montrer la décidabilité/compléxité du problème de logique modale.
+\part{Trois techniques pour montrer la décidabilité/compléxité du problème SAT de logique modale}
+\section{cf TD}
 
 \subsection{Logique modale S5}
-\begin{tabular}{c | c  }
+\begin{tabular}{c |  c  }
  axiomatique & propriété sur les cadres \\
  $\Box p \leftarrow p$ & réfléxivité\\
  $\Box p \leftarrow \Box \Box p$ & transitivité\\
@@ -292,34 +907,36 @@ Trois techniques pour montrer la décidabilité/compléxité du problème de log
 euclidianité : $\forall x, y, z, (x R y \wedge xRz) \leftarrow y R z$
 
 \begin{prop}
- Si R est réfléxive, transitive, alors R euclidienne ssi R symétrique
+ Si $R$ est réfléxive, transitive, alors $R$ euclidienne ssi $R$ symétrique
 \end{prop}
 \begin{prop}
-Soit $\Phi$ satisfiable dans un modèle où R est une rel d'équivalence 
-$\Leftrightarrow \Phi$ satisfiable dans un modèle M = (W, R, V) où $R = W \times W$
+$\begin{array}{ll}\\
+             &\Phi$ satisfiable dans un modèle où R est une relation d'équivalence$ \\
+\Leftrightarrow & \Phi$ satisfiable dans un modèle M = (W, R, V) où $R = W \times W
+\end{array}$
 \end{prop}
-Dem \fbox{$\Leftarrow$} : trivial
-\fbox{$\Rightarrow$} Si il existe M, w où M  = (W, R, V) tq
+\begin{dem}
+ \fbox{$\Leftarrow$} : trivial\\
+\fbox{$\Rightarrow$} Si il existe $M, w$ où $\M  = (W, R, V)$ tq
 \begin{itemize}
- \item R est une relation d'équivalence
- \item $M, w \models \Phi$
+ \item $R$ est une relation d'équivalence
+ \item $\M, w \models \Phi$
 \end{itemize}
+\end{dem}
 
 
-
-
-
-\subsection{Méthodes de tableau}
-
-KT = logique des cadres réflexifs.
-S5 = logique des cadres où R est une relation d'équivalence.
-S4 = logique des cadres où R est réflexive et transitive.
+\section{Méthodes de tableau (algo PSPACE)}
+\begin{description}
+ \item[KT] = logique des cadres réflexifs.
+ \item[S5] = logique des cadres où R est une relation d'équivalence.
+ \item[S4] = logique des cadres où R est réflexive et transitive.
+\end{description}
 
 On écrit les formules sous forme normale négative avec la logique suivante :\\
- $ \Phi := p | \lnot p | \perp | \top | \Phi \vee \Phi | \Phi \wedge \Phi | \Diamond \Phi | \Box \Phi $
+ $ \Phi := p  |  \lnot p  |  \bot  |  \top  |  \Phi \vee \Phi  |  \Phi \wedge \Phi  |  \Diamond \Phi  |  \Box \Phi $
 
-\begin{definition}
- Soit $\Sigma$ un sous-ensemble de formules en FNN clos par sous-formules. Un ensemble de S4-Hintickka H sur $\Sigma$ est un ensemble qui satisfait:
+\begin{definition}[ensemble de S4-Hintikka]
+ Soit $\Sigma$ un sous-ensemble de formules en FNN clos par sous-formules. Un ensemble de S4-Hintikka H sur $\Sigma$ est un ensemble qui satisfait:
 \begin{itemize}
  \item $H \subseteq \Sigma$
  \item $\perp \not \in H$
@@ -332,14 +949,14 @@ On note $H^{\Box} = \{\Box \Psi \in H \}$
 \end{definition}
 
 
-Idée : Pour tester si $\Phi$ est S4-satisfiable, on appelle satS4$(\{\Phi\}, [])$
-$\Phi = $
+Idée : Pour tester si $\Phi$ est S4-satisfiable, on appelle satS4$(\{\Phi\}, [\,])$
 
-\begin{thm}{}
+\begin{thm}
  L'appel S4$(\{\Phi\}, [\,])$ termine et utilise un espace polynomial en la taille de $\Phi$
 \end{thm}
 \begin{dem}
  Tous les $\Gamma$ des différents appels sont de la forme $\{\Psi\} \cup \Box)$
+
 Invariant à chaque appel : 
 \begin{itemize}
  \item Si $L = [ \Gamma_1, \cdots, \Gamma_k]$ alors $\Gamma_1^{\Box} \subseteq \cdots \subseteq \Gamma_k^{\Box} \subseteq \Gamma^{\Box}$
@@ -348,36 +965,37 @@ Invariant à chaque appel :
  \item Tous les ensembles ($\Gamma$, les $\Gamma_i$ sont des sous-ensembles de $SF(\Phi)$
 \end{itemize}
 
-But : $|L| \leq |\Phi|^2 + |\Phi| +1$
+But : $ | L |  \leq  | \Phi | ^2 +  | \Phi |  +1$
 $\Gamma_1^{\Box} \subseteq \cdots \subseteq \Gamma_k^{\Box} \subseteq  SF(\Phi)$
-$SF(\Phi)$ est de cardinal $|\Phi|$ : Il y a au plus $|\Phi|$ inclusions strictes.
+$SF(\Phi)$ est de cardinal $ | \Phi | $ : il y a au plus $ | \Phi | $ inclusions strictes.
 
-Soient $i_1, i_2, \dots$ les indices tq $\Gamma_{i_j-1}^{\Box} \varsubsetneq \Gamma_{i_j}^{\Box}$
-On a $i_{j+1} - i_j \leq |\Phi|$ car sinon il y aurait deux fois la même formule $\Psi_i$ et donc 2 éléments de la liste L seraient égaux.
+Soient $i_1, i_2, \dots$ les indices tq $\Gamma_{i_j-1}^{\Box} \varsubsetneq \Gamma_{i_j}^{\Box}$.\\
+On a $i_{j+1} - i_j \leq  | \Phi | $ car sinon il y aurait deux fois la même formule $\Psi_i$ et donc 2 éléments de la liste L seraient égaux.
 
-$k = \sum^J_{j=0} i_{j+1} - i_j \leq |\Phi|^2$
+$k = \sum^J_{j=0} i_{j+1} - i_j \leq  | \Phi | ^2$
 \end{dem}
 
-\begin{thm}{}
- Si $\Phi$ est satisfiable, alors satS4$(\{\Phi\}, [])$ réussit
+\begin{thm}
+ Si $\Phi$ est satisfiable, alors satS4$(\{\Phi\}, [\,])$ réussit
 \end{thm}
-\begin{dem}{}
- Par récurrence sur $|\Phi|^2 - L$, on montre que le sous-appel satS4$(\Gamma, L)$ réussit :
-Si $\Gamma \in L$, l'appel réussit
-Sinon,$H = \{\Psi \in SF(\Phi) / M, w \models \Psi \}$ et on considère l'exécution qui s'occupe de ce H là.
-Pour tout $\Diamond \Psi \in H, \{ \Psi \} \cup H^{\Box}$ est sat en $M,u$.
-$\Rightarrow$ Par récurrence, les sous appels réussissent $\Rightarrow$ Cet appel réussit
+\begin{dem}
+ Par récurrence sur $ | \Phi | ^2 - L$, on montre que le sous-appel satS4$(\Gamma, L)$ réussit :\\
+Si $\Gamma \in L$, l'appel réussit.\\
+Sinon,$H = \{\Psi \in SF(\Phi) \tq M, w \models \Psi \}$ et on considère l'exécution qui s'occupe de ce H là.\\
+Pour tout $\Diamond \Psi \in H, \; \{ \Psi \} \cup H^{\Box}$ est sat en $M,u$.\\
+$\Rightarrow$ Par récurrence, les sous appels réussissent.\\
+ $\Rightarrow$ Cet appel réussit.
 \end{dem}
 
-\begin{thm}{}
- Si satS4$(\{\Phi\}, [])$ réussit, alors $\Phi$ satisfiable.
+\begin{thm}
+ Si satS4$(\{\Phi\}, [\,])$ réussit, alors $\Phi$ satisfiable.
 \end{thm}
 
-\begin{dem}{}
- \fbox{1} On montre que si  satS4$(\Gamma, L)$ réussit, alors il existe une structure $\mathcal{S} = (S, T, F)$ /
+\begin{dem}
+ \fbox{1} On montre que si  satS4$(\Gamma, L)$ réussit, alors il existe une structure $\mathcal{S} = (S, T, F)$ \tq[le]
 \begin{itemize}
  \item $(S,T)$ est un ordre
- \item F etiquette les noeuds de l'ordre avec des ensembles S4-Hintikka, et les feuilles sont étiquetées par des ensembles $\Gamma$ tels que
+ \item $F$ etiquette les noeuds de l'ordre avec des ensembles S4-Hintikka, et les feuilles sont étiquetées par des ensembles $\Gamma$ tels que
 \begin{itemize}
  \item soit $\Gamma$ ne contient pas de $\Diamond \Psi_i$
  \item soit $\Gamma \in L$
@@ -388,64 +1006,199 @@ $\Rightarrow$ Par récurrence, les sous appels réussissent $\Rightarrow$ Cet ap
 \item La racine est étiquetée par un S4-hintikka incluant $\Gamma$
 \end{itemize}
 
-\fbox{2} On transforme $\mathcal{S} = (S, T, F)$ qui correspond à satS4$(\Gamma, L)$ en un modèle de Kripke.
+\fbox{2} On transforme $\mathcal{S} = (S, T, F)$ qui correspond à satS4$(\Gamma, [\,])$ en un modèle de Kripke.
+
 Soit $\mathcal{M} = (W, R^*, V)$ défini par 
 \begin{itemize}
- \item $W = S I$ où $I$ est l'ensemble des feuilles incluses dans un prédécesseur
- \item $R = T_{|_W} \cup \{ (w,u) \in W / \exists l \in I / (w,l) \in T et F(l) \subseteq F(u)$
- \item $V(p) =  \{w \in W, / p \in F(w) \}$
+ \item $W = S \setminus I$ où $I$ est l'ensemble des feuilles incluses dans un prédécesseur
+ \item $R = T | _W \cup \{ (w,u) \in W$ tels qu'il existe $ l \in I \tq (w,l) \in T$ et $F(l) \subseteq F(u)$
+ \item $V(p) =  \{w \in W, \tq[s] p \in F(w) \}$
+ \item $R^*$ : fermeture réflexive et transitive de R
 \end{itemize}
-Et $R^*$ : fermeture réflexive et transitive de R
+On montre par induction sur $\Phi \in SF(\Phi)$ que 
 
-On montre par induction sur $\Phi \in SF(\Phi)$ qui $\forall w \in W$, 
-$\Psi \in F(w) ssi M,w \models \Psi$
+$\forall w \in W, \;\Psi \in F(w)$ ssi $\M,w \models \Psi$
 \end{dem}
 
-\begin{thm}{}
- S4-SAT est dans PSPACE
+\begin{thm}
+ S4-SAT est dans $PSPACE$
 \end{thm}
-\begin{thm}{}
- S4-SAT est PSPACE-hard
+\begin{thm}
+ S4-SAT est $PSPACE$-hard
 \end{thm}
 
-\subsection{Filtration} 
-But : Si $M, w \models \Phi$, trouver $M^f, u / $
+\section{Filtration} 
+But : Si $\M, w \models \Phi$, trouver $M^f, u \tq $
 \begin{itemize}
  \item $M^f$ fini
  \item $M^f, u \models \Phi$
 \end{itemize}
 
-\begin{definition}{}
- Soit $\Phi$ une formule. Soit $M = (W, R, V)$. On définit $w \leftrightsquigarrow u$ ssi $\forall \Psi \in SF(\Phi),$
-$M, w \models \Psi$ ssi $M, u \models \Phi$
+\begin{definition}
+ Soit $\Phi$ une formule, soit $\M = (W, R, V)$. On définit $w \leftrightsquigarrow u$ ssi $\forall \Psi \in SF(\Phi),$
+$M, w \models \Psi$ ssi $M, u \models \Phi$.\\
 On dit que $M^f = (W^f, R^f, V^f)$ est une filtration si 
 \begin{enumerate}
- \item $W = W_{| \leftrightsquigarrow}$
- \item Si $w R v$ alors $|w| R^f |v|$
- \item Si $|w| R^f |v|$ alors $\forall \Box \Psi \in SF(\Phi), $
-	si M, w $\models \Box Phi$, alors $M,u \models \Psi$
-\item $V^f(p) \{ [ w | in W^f / M,w models p \}$ pour $p$ qui apparait dans $\Phi$
+ \item $W = W_{ |  \leftrightsquigarrow}$
+ \item Si $w   \Ro v$ alors $ | w |    \Ro^f  | v | $
+ \item Si $ | w |    \Ro^f  | v | $ alors $\forall \Box \Psi \in SF(\Phi), $
+	si $\M, w \models \Box Phi$, alors $M,u \models \Psi$
+\item $V^f(p) = \{ [ w  |  \in W^f \tq[s] \M,w \models p \}$ pour $p$ qui apparait dans $\Phi$
 \end{enumerate}
 
 \end{definition}
 
-\begin{prop}{}
-$|W^f| leq 2^{|Phi|}$
-\begin{dem}{}
- $i : W^f \rightarrow 2^{SF(Phi)}$
- $|w| \mapsto Psi \in SF(Phi) / M, w\ models Psi_i$
+\begin{prop}
+$ | W^f |  \leq 2^{ | Phi | }$
+\end{prop}
+\begin{dem}$
+i:
+\begin{array}{lcl}
+ W^f & \rightarrow & 2^{SF(Phi)}\\
+  | w |  & \mapsto&  \{ Psi \in SF(Phi) \tq \M, w \models Psi \}
+\end{array}$
+
 est bien définie et injective.
 \end{dem}
 
-\begin{thm}{}
- $\forall \Psi \in SF(Phi)$,
-$M,w \models \Psi$ ssi $M^f , |w| \models Psi$
+\begin{thm}
+ $\forall \Psi \in SF(Phi),\; \M,w \models \Psi$ ssi $M^f ,  | w |  \models \Psi$
 \end{thm}
-Dem : par induction
+\begin{dem}
+ par induction
+\end{dem}
 
 Logiques candidates pour la filtration : 
 les logiques dont le problème SAT est NEXPTIME-complet
 Pour celles là, la filtration donne un algo optimal.
  
+
+\part{Logiques temporelles}
+
+\section{Présentation de $CTL^*$ et de ses fragments}
+\subsection{Syntaxe}
+
+Soit ATM un ensemble de propositions.
+
+Le langage de $CTL^*$ est défini par:
+
+$\Phi ::= \bot  |  p  |  \lnot \Phi  |  \Phi \vee \Psi  |   \Oo \Phi  |  F \Phi  |  \Go \Phi  |  \Phi \Uo \Phi  |  \exists \Phi  |  \forall \Phi$ où $p \in ATM$
+
+Opérateurs temporels linéaires :
+\begin{itemize}
+ \item $ \Oo \Phi$ : au prochain instant, on a $\Phi$
+ \item  $\Fo \Phi$ : un jour, $\Phi$ est vraie
+ \item $\Go \Phi$ : $\Phi$ est toujours vraie
+ \item $\Phi \Uo \Psi$ : $\Phi$ reste vraie jusqu'à ce que $\Psi$ le soit
+\end{itemize}
+
+Opérateurs de quantification sur les chemins : 
+\begin{itemize}
+ \item $\exists \Phi$ : il existe une exécution telle que $\Phi$
+ \item $\forall \Phi$ : pour toute exécution, on a $\Phi$
+\end{itemize}
+
+\subsection{Sémantique}
+Soit $\M = (W,R,V)$ un modèle de Kripke sériel ( $\forall w in W, R(w) \not = \empty$)
+
+Un chemin $\Pi$ est une séquence infinie $\Pi_0 \Pi_1 \dots \tq[le] \forall i, \Pi_i \in W$ et $\Pi_i   \Ro \Pi_{i+1}$
+
+\begin{definition}
+ On définit $M, \Pi \models \Phi$ par induction sur $\Phi$ :
+\begin{itemize}
+ \item $\M, \Pi \models p$ ssi $\Pi_0 \in V(p)$
+ \item $\M, \Pi \models  \Oo Phi$ ssi $\M, \Pi [ 1 \dots ] \models \Phi$
+ \item $\M, \Pi \models \Fo \Phi$ ssi $\exists i \geq 0 \tq \M, \Pi [ i \dots ] \models \Phi$
+ \item $\M, \Pi \models \Go \Phi$ ssi $\forall i \geq 0 \tq \M, Pi [ i \dots ] \models \Phi$
+ \item $\M, \Pi \models \Phi \Uo \Psi$ ssi \\$\exists i \geq 0 \tq \M, \Pi [ i \dots ] \models \Psi$ et $\forall j < i, M, \Pi[j \dots] \models \Phi$
+ \item $\M, \Pi \models \forall \Phi$ ssi \\pour tout chemin $\Pi'$ dans $\M \tq \Pi'_0 = \Pi_0,$ on a $\M, \Pi' \models \Phi$
+ \item $\M, \Pi \models \forall \Phi$ ssi \\il existe un chemin $\Pi'$ dans $\M \tq \Pi'_0 = \Pi_0$ et $\M, \Pi' \models \Phi$
+\end{itemize}
+On définit aussi :
+\begin{itemize}
+ \item $\M, s \models_{\forall} \Phi$ ssi pour tout chemin $\Pi \tq \Pi_0 = s,$ on a $\M, \Pi \models \Phi$
+ \item $\M, s \models_{\exists} \Phi$ ssi il existe un chemin $\Pi \tq \Pi_0 = s,$ on a $\M, \Pi \models \Phi$
+\end{itemize}
+
+\end{definition}
+
+\subsection{Fragments syntaxiques}
+\begin{itemize}
+ \item $LTL$ : formules sans $\exists$ ni $\forall$
+ \item $CTL$ : formules où tout opérateur temporel ($  \Oo, \Fo, \Go, \Uo$) est précédé d'un opérateur $\exists$ ou $\forall$
+\end{itemize}
+\begin{ex}[pour CTL]
+ $\forall \Fo p \exists ( \forall \Fo q \Uo \exists \Go q)\\
+ $\st{$ \forall  \Oo p \wedge  \Oo  \Oo p)$}
+\end{ex}
+
+\section{LTL : Logique temporelle linéaire}
+
+\begin{prop}
+ Avec $LTL$, on n'arrive pas à dire \og $p$ est vraie dans les états $\Pi_{2k}$ où $k \in \Ns$\fg en n'utilisant qu'une seule variable.
 \end{prop}
+
+\begin{definition}[Axiomatisation de $LTL$]
+ \begin{itemize}
+  \item axiomes :
+\begin{itemize}
+ \item tautologies du calcul propositionnel
+ \item $\Fo p \leftrightarrow \lnot \Go \lnot p$
+ \item $ \Oo ( p \rightarrow q) \rightarrow (  \Oo p  \Oo q)$ (axiome K pour $ \Oo$)
+ \item $\Go ( p \rightarrow q) \rightarrow ( \Go p \Go q) $ (axiome K pour $\Go$)
+ \item $ \Oo p \leftrightarrow \lnot  \Oo \lnot p$
+ \item $\Go p \leftrightarrow p \wedge  \Oo \Go p$
+ \item $\Go ( p \rightarrow  \Oo p) \rightarrow (p \rightarrow \Go p)$ (induction)
+ \item $p \Uo q \leftrightarrow q \vee (p \wedge  \Oo (p \Uo q))$
+ \item $p \Uo q \rightarrow \Fo q$
+\end{itemize}
+\item règles :
+\begin{itemize}
+ \item modus ponens
+ \item $\dfrac{\Phi}{ \Oo \Phi} \dfrac{\Phi}{\Go \Phi}$
+\end{itemize}
+ \end{itemize}
+\end{definition}
+
+\begin{definition}[Satisfiabilité pour $LTL$]
+Ici, un chemin $\Pi$ est considéré comme un mot sur $2^{ATM}$
+
+Le problème de satisfiabilité est défini par
+\begin{description}
+ \item [entrée] : formule $\Phi$ de $LTL$
+ \item[sortie] : oui ssi $\exists \Pi \tq \Pi \models \Phi$
+\end{description}
+\end{definition}
+
+\begin{prop}
+ Soit $\Phi$ une formule satisfiable, $\exists \Pi \tq \Pi \models \Phi$
+On note $[i]_{\Pi} = \{\Psi \in SF(\Phi) \tq \Pi[i \dots] \models \Psi \}$
+\end{prop}
+
+\begin{lem}[1]
+ Si $i < j$ et $[i]_{\Pi} = [j]$, on définit $\Pi' = \Pi_0 \dots \Pi_{i-1} \Pi_j \Pi_{j+1} \dots$. On a alors 
+$\forall k \in \Ns \setminus { i \dots j-1}, [k]_{\Pi} = [k]_{\Pi'}$
+\end{lem}
+\begin{dem}
+ Par induction sur les formules.
+\end{dem}
+\begin{definition}
+ Soit $\infty_{\Pi}$ l'ensemble des $S \subseteq SF(\Phi)$ tels qu'il existe une infinité de $k \tq [k]_{\Pi} = S$. On dira qy'un chemin $\Pi$ est ultimement périodique à partir de $i$ et de période $p$ ssi $\forall k \geq i$, on a $\Pi_k = \Pi_{k+p}$
+\end{definition}
+
+\begin{lem}[2]
+ Soient $i, p \in \Ns tq [i]_{\Pi} = [i+p]_{\Pi}$ et $\forall S \in \infty_{Pi}, \exists k \in \{i, dots, i+p-1 \} \tq [k]_{\Pi} = S$
+Soit $\Pi'$ le chemin ultimement périodique à partir de $i$ et de période $p$, défini par $\forall k < i+p, \Pi'_k = \Pi_k$
+On a : $\forall k < i+p, [k]_{\Pi} = [k]_{\Pi'} et \forall k \geq i, [k]_{\Pi'} = [k+p]_{\Pi'}$
+\end{lem}
+
+\begin{thm}
+ $\Phi$ est satisfiable ssi $\Phi$ satisfiable dans un chemin $\Pi$ ultimement périodique de point de départ $i$ et de période $p$ tels que $\begin{array}{ll}
+    i \leq 2^{ | \Phi | }\\
+    p \leq (2^{ | \Phi | })^2 = 4^{ | \Phi | }
+ \end{array}$
+
+\end{thm}
+
+
 \end{document}
