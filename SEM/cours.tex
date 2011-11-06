@@ -6,7 +6,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{array}
-%\usepackage{hyperref}
+\usepackage{hyperref}
 \usepackage{multirow}
 
 %\hypersetup{colorlinks, linkcolor=black, urlcolor=black,%
@@ -15,8 +15,7 @@
 %pdfsubject={{Titre ou sous-titre}},%
 %pdfcreator={LaTeX},%
 %}	 
-
-\usepackage{pstricks}
+\usepackage{concrete}
  
 
 
@@ -28,8 +27,8 @@
 \newcommand{\sem}[1]{$\left[| #1 | \right]$}
 \newcommand{\semm}[1]{\left[| #1 | \right]}
 
-\newcommand{\V}{\mathbb{V}}
-
+\newcommand{\Vs}{\mathbb{V}}
+\newcommand{\Ps}{\mathbb{P}}
 
 \input{../nthmdefs}
 
@@ -84,7 +83,7 @@ $\semm{P} = \semm{Q} \rightarrow$ quelle déf pour \sem{P} ?\\
 \subsection{Equivalence contextuelle}
 $P \sim Q$ si $\semm{\mathcal{C}(P)} = \semm{\mathcal{C}(Q)}$
 \begin{propriete}[Compostionnalité] 
-$\semm P = \semm Q  \Rightarrow P \sim Q$
+$\semm{P} = \semm{Q}  \Rightarrow P \sim Q$
 \end{propriete}
 \paragraph{Biblio} :
 The formal semantic of programming languages
@@ -205,7 +204,7 @@ Dans le cas 2, on pose $\semm{ c }_{res} \sigma  = \sigma'$\\
 \end{thm}
 
 
-On étends $Etat_{\perp} = (\V \rightarrow \Z) \cup \{ \perp \}$
+On étends $Etat_{\perp} = (\Vs \rightarrow \Zs) \cup \{ \perp \}$
 $\semm{ c }_{res}$ est une fonction de $Etat$ dans $Etat_{\perp}$
 \begin{rem} c'est une définition non effective (fonction non calculable)
 \end{rem}
@@ -219,7 +218,7 @@ $\semm{ c }_{res}$ est une fonction de $Etat$ dans $Etat_{\perp}$
 ex : tmp := y ; y := x; x := tmp $\not \equiv$ aux := y; y := x ; x := aux
 
 
-\begin{definition}[Equivalence modulo V] Soit $V \subseteq \V$, \\
+\begin{definition}[Equivalence modulo V] Soit $V \subseteq \Vs$, \\
 $c \sim^V_{res} c'$ ssi $\forall \sigma, \quad \semm{c}_{res} \sigma \sim^V \semm{c'}_{res} \sigma$, \quad
 avec $\sigma_1 \sim^V \sigma_2$ ssi : 
 $\left\{ \begin{array}{c}
@@ -403,7 +402,58 @@ Etat = Label $\times$ Environnement\\
 \paragraph{idée:} la sémantique d'un programme est une fonction (partielle) ``état initial $\mapsto$ état final''\\
 On va définir proprement cette fonction.
 
-On garde \sem{a} : Etat $rightarrow \Z$, \sem{b} : Etat $\rightarrow \{tt, ff \}$
+On garde \sem{a} : Etat $rightarrow \Zs$, \sem{b} : Etat $\rightarrow \{tt, ff \}$
+
+\section{Définition de la sémantique dénotationnelle}
+Notation :\begin{itemize}
+           \item $x$ : variables
+           \item $lambda x . f : x$  argument de la fonction tel que f est le corps de la fonction
+           \item $(f g)$ : application de la fonction f à l'argument g
+          \end{itemize}
+
+\begin{definition}[variables libres, liées]
+ \begin{itemize}
+  \item toutes les occurences de $x$ sont liées dans $\lambda x . f$
+  \item les occurences non liées sont libres
+  \item une variable est libre dans $f$ si elle a au moins une occurence libre dans $f$
+ \end{itemize}
+\end{definition}
+
+\begin{definition}[renommage ou $\alpha$ conversion]
+ $\lambda x . f →_{\alpha} \lambda y . f[y / x]$ : on substitue dans f toutes les occurences libres de y par x
+\end{definition}
+\begin{definition}[$\beta$ reduction]
+ $(\lambda x . f ) t →_{\beta} f[t/x]$
+\end{definition}
+\begin{rem}
+ Attention aux variables libres de $t$ : il ne faut pas qu'elles se fassent piéger par un $\lambda$ présent dans $f$: il faut faire un renommage avant d'appliquer la fonction.
+Si $f→_{\beta} g$, on notera $f = g$
+\end{rem}
+
+\paragraph{Sémantique des expressions}
+$\semm{a_1 + a_2} = \lambda \sigma.((\semm{a_1} \sigma) + (\semm{a_2}\sigma))$ par exemple
+\paragraph{Sémantique des commandes}
+\begin{itemize}
+ \item $\semm{skip} = \lambda x . x$
+ \item $\semm{x := a} = \lambda \sigma . \sigma[ x ← (\semm{a} \sigma)]$
+ \item $\semm{\text{if $b$ then $c_1$ else $c_2$}} \begin{array}{ll}
+					  = \lambda \sigma . &$ si $(\semm{b} sigma) = tt$ alors $(\semm{c_1} \sigma)\\
+                                                           &$ sinon $(\semm{c_2} sigma)\\
+					  = Cond( \semm{b} , \semm{c_1}, \semm{c_2})
+                                         \end{array}$
+
+\end{itemize}
+\begin{rem}
+\begin{itemize}
+ \item on peut démontrer que l'on peut exprimer $Cond$ en notation $\lambda$
+ \item on admet aussi que l'on peut exprimer en $\lambda$ calcul tous les calculs arithmétiques
+\end{itemize}
+
+\end{rem}
+
+\begin{prop}
+$ \semm{while b do c} = \semm{\text{ if $b$ then $c$; while $b$ do $c$ else skip}}$
+\end{prop}
 
 
 \section{Points fixes}
@@ -434,8 +484,6 @@ Notation : $p = \sqcup X$
  \end{itemize}
 
 \end{exs}
-
-
 
 \subsection{Points fixes dans un CPO}
 
@@ -532,14 +580,30 @@ On a alors $\Rightarrow \subseteq R$, ce qui nous donne $(<c, \sigma> \Rightarro
 \section{Sémantique dénotationnelle par continuation}
 
 La sémantique dénotationnelle vue jusqu'à présent est dite directe : $ \sigma \stackrel{\semm{c}}{\rightsquigarrow} \sigma'$\\
-$c_1;c_2$ : exécuter $c_1$ puis $c_2$ (composition de fonctions) : on ne peut pas changer le flôt de contrôle.\\
+$c_1;c_2$ :\og  exécuter $c_1$ puis $c_2$ \fg (composition de fonctions) : on ne peut pas changer le flôt de contrôle.\\
 $\hookrightarrow $ pb avec les exceptions.\\
 Lever une exception = changer de futur.\\
 Futur = continuation.
 
+$\left.\begin{array}{r l l}
+  \sigma & \\
+ \left.\fbox{
+ \begin{minipage}{3cm}
+ \centering x:= 1
+ \end{minipage}} \hspace{0.2cm}\right\downarrow& \\
+ \sigma' & \\
+\left.\fbox{
+ \begin{minipage}{3cm}
+\vspace{0.5cm}
+\centering futur
+\vspace{0.5cm} \quad
+ \end{minipage}}\hspace{0.2cm}\right\downarrow &   c& \\
+ \sigma'' & \\
+\end{array}\right\downarrow c'$\qquad \qquad \qquad  \textcolor{red}{\fbox{\color{black}programme = transformateur de futur}}
+
 On reprend les domaines sémantiques : 
 \begin{itemize}
- \item $\sigma \in Etat = \V \to \N$
+ \item $\sigma \in Etat = \Vs \to \Ns$
  \item $c \in Cont = Etat \to Etat_{\perp}$
  \item $\mathcal{C} \semm{P} \in Cont \to Cont$
 \end{itemize}
@@ -553,7 +617,7 @@ On reprend les domaines sémantiques :
  \item affectations :  $\mathcal{C}\semm{x:=a} c = c'$ avec $c' \sigma = \sigma'' = c \sigma' = c \sigma[x \leftarrow \semm{a} \sigma])$\\
  \item choix : 
 $\begin{array}{ll}
-\mathcal{C}\semm{\text{if v then P else Q}} c = c'\text{ avec }c' \sigma =&\text{si }\semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} c) \sigma \\
+\mathcal{C}\semm{\text{if $v$ then $P$ else $Q$}} c = c'\text{ avec }c' \sigma =&\text{si }\semm{b} \sigma = tt \text{ alors } (\mathcal{C}\semm{P} c) \sigma \\
  &\text{sinon } (\mathcal{C}\semm{Q} c) \sigma\\
    \mathcal{C}\semm{\text{if v then P else Q}} = \lambda c. \lambda \sigma. &\text{si } \semm{b} \sigma = tt\text{ alors } \mathcal{C}\semm{P} c \sigma  \\
  &\text{sinon } \mathcal{C}\semm{Q} c \sigma\\
@@ -580,7 +644,7 @@ On regarde ce qui se passe avec $x:=a$:
  \item affectation proprement dite
  \item $k$ : continuation d'expression \begin{tabular}{l}
                                         arguments : une valeur et un état \\
-					$ECont : \Z \rightarrow Etat \rightarrow Etat_{\perp}$\\
+					$ECont : \Zs \rightarrow Etat \rightarrow Etat_{\perp}$\\
 					$\mathcal{C}\semm{x:=a} = \mathcal{E}\semm{a} k$\\
 					avec $k = \lambda v. \lambda \sigma' . (c \sigma'[x\leftarrow v])$
                                        \end{tabular}
@@ -589,68 +653,119 @@ On regarde ce qui se passe avec $x:=a$:
 
 
 \begin{definition}[$\mathcal{E}\semm{a}$]
- \begin{tabular}{c l}
-    & $\sigma$ \\
+~~\\
+
+$ \left.\begin{array}{r l}
+     \sigma \\
+ \left. \fbox{
+ \begin{minipage}{2cm}
+ \centering $n$
+ \end{minipage}} \hspace{0.2cm} \right\downarrow  & \\
+    n, \sigma\\
+ \left.\fbox{ \begin{minipage}{2cm}
+ \vspace{2cm} \quad
+ \end{minipage}} \hspace{0.2cm} \right\downarrow& k \\
+  \sigma''
+\end{array}\right\downarrow c$\qquad
+\begin{minipage}{200pt}
+$\E\semm{n} k \, \sigma =  c \sigma = k n \sigma$\\
+$\Leftrightarrow \E\semm{n} k = k \sigma$
+\end{minipage}
+$ \left.\begin{array}{r l}
+     \sigma \\
+ \left. \fbox{
+ \begin{minipage}{2cm}
+ \centering $n$
+ \end{minipage}} \hspace{0.2cm} \right\downarrow  & \\
+    \sigma(x), \sigma\\
+ \left.\fbox{ \begin{minipage}{2cm}
+ \vspace{2cm} \quad
+ \end{minipage}} \hspace{0.2cm} \right\downarrow& k \\
+  \sigma''
+\end{array}\right\downarrow c$\qquad
+\begin{minipage}{200pt}
+$\E\semm{x} k \, \sigma = \sigma'' = c \sigma = k \,\sigma(x)\, \sigma$\\
+$\E\semm{x} = \lambda k. \lambda \sigma .(k \, \sigma(x) \, \sigma)$\\
+\end{minipage}
+
+$ \left.\begin{array}{r l}
+     \sigma \\
   \fbox{
- \begin{minipage}{3cm}
- \centering a
- \end{minipage}} & \\
-   & $n, \sigma$\\
- \fbox{ \begin{minipage}{3cm}
- \vspace{3cm} \quad
- \end{minipage}} & $\downarrow k$ \\
- & $\sigma``$ 
-\end{tabular}
-
-
-$\E\semm{x} k \sigma = \sigma' = c \sigma = k \sigma(x) \sigma$
-$\E\semm{x} = \lambda k. \lambda \sigma (k \sigma(x) \sigma)$
-$\E\semm{a_1 + a_2} k \sigma = $
-
+ \begin{minipage}{2cm}
+ \centering $a_1$
+ \end{minipage}} \hspace{0.2cm}  \\
+    v_1, \sigma\\
+      \left.\begin{array}{r l}
+       \fbox{ \begin{minipage}{2cm}
+	\centering$a_2$
+	 \end{minipage}} \hspace{0.2cm}  \\
+	 v_2, \sigma\\
+		\left.\begin{array}{r l}
+		\fbox{ \begin{minipage}{2cm}
+		\centering$+$
+		\end{minipage}} \hspace{0.2cm}  \\
+		v_1 + v_2, \sigma\\
+ \left.\fbox{ \begin{minipage}{2cm}
+ \vspace{2cm} \quad
+ \end{minipage}} \hspace{0.2cm} \right\downarrow& k \\
+  \sigma''
+\end{array}\right\downarrow k'\end{array}\right\downarrow k''\end{array}\right\downarrow c$\qquad
+\begin{minipage}{200pt}
+$\E\semm{a_1 + a_2} k \, \sigma = \E\semm{a_1} k'' \sigma$\\
+avec $\begin{array}{l}
+      k'' \; v_1 \; \sigma_1 = E \semm{a_2} k' \;\sigma_1\\
+      k' \;v_2\; \sigma_2 = k \;(v_1 + v_2) \;\sigma_2
+     \end{array}$\\
+d'où $\E\semm{a_1 + a_2} = \\ \lambda k . ( \E\semm{a_1} \; \lambda v_1 . (\E\semm{a_2} \; \lambda v_2. ( k \; v_1 + v_2)))$
+\end{minipage}
 
 \end{definition}
 
-
-Effet de bord : 
-
-\begin{tabular}{c l l}
- & $\sigma$ & \multirow{5}{*}{  \psline{->}(0,1)(0,-3.5) \quad c } \\
+\begin{ex}[Effet de bord :]
+ 
+$\left.\begin{array}{c l l}
+ & \sigma & \\
  \fbox{
  \begin{minipage}{3cm}
- \centering $x++$
+ \centering x++
  \end{minipage}} & \\
-& $\sigma(x), \sigma[x \leftarrow \sigma(x)+1]$ & \\
-\fbox{
+& \sigma(x), \sigma[x \leftarrow \sigma(x)+1] & \\
+\left.\fbox{
  \begin{minipage}{3cm}
 \vspace{3cm} \quad
- \end{minipage}} & \psline{->}(0,1.5	)(0,-1.5) \quad  k& \\
-& $\sigma''$ & \\
-\end{tabular}
+ \end{minipage}}\right\downarrow &   k& \\
+& \sigma'' & \\
+\end{array}\right\downarrow$ c
 
-$\E\semm{x++} = \lambda k \lambda \sigma . (k \sigma(x) \sigma[x \leftarrow \sigma(x) +1])$
+$\E\semm{x++} = \lambda k. \lambda \sigma . (k \sigma(x) \sigma[x \leftarrow \sigma(x) +1])$
 
 affectation avec effet de bord
 $\mathcal{C}\semm{x:=a} c \sigma = \E\semm{c} k \sigma$ avec $k \, v\,  \sigma' = c \, \sigma'[x \leftarrow v]$ 
+\end{ex}
 
-Tests : on définit $\E \semm{b}$ e la même façon que  $\E \semm{a}$
+Tests : on définit $\E \semm{b}$ de la même façon que  $\E \semm{a}$
+
+\subsection{Exceptions}
 
 \subsection{Portée des variables}
 Ajouter des variables locales : notion de bloc \\
 $P ::=$ $begin$ $var$ $x; P$ $end$
 
-\begin{tabular}{c c c c}
- var x \\
+
+$\left.\begin{array}{c c c c}
+ \text{var }x \\
 & \fbox{
  \begin{minipage}{3cm}
  P \vspace{1cm}
  \end{minipage}}\\
-restorer x & &$\sigma'$ & \multirow{2}{*}{\psline{->}(0,1.5)(0,-1.5) \quad  c' } \\
-& \fbox{
- \begin{minipage}{3cm}
+\text{restorer }x & &\sigma' & \\
+&  \left.\fbox{
+\begin{minipage}{3cm}
 \vspace{3cm} \quad
- \end{minipage}} & \psline{->}(0,1.5)(0,-1.5) \quad  c \\
-\end{tabular}
-$\mathcal{C}\semm{\text{begin var x; P end}} c \sigma =  \mathcal{C}\semm{P} c' \sigma[x \leftarrow default]$ avec $c' \sigma'  = c \sigma'[x \leftarrow \sigma(x)]$
+ \end{minipage}} \right\downarrow  &  c \\
+\end{array}\right\downarrow c$
+
+$\mathcal{C}\semm{\text{begin var $x$; $P$ end}} c \sigma =  \mathcal{C}\semm{P} c' \sigma[x \leftarrow default]$ avec $c' \sigma'  = c \sigma'[x \leftarrow \sigma(x)]$
 
 
 
@@ -666,7 +781,7 @@ Cas généralisé : $Ccont : Etat \leftarrow R\acute{e}ponse$
 
 \begin{ex}[1] état final, Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
 \end{ex}
-\begin{ex}[2]  Réponse = $\Z \quad \mathcal{C}\semm{P} ( \lambda \sigma . \sigma(x)$
+\begin{ex}[2]  Réponse = $\Zs \quad \mathcal{C}\semm{P} ( \lambda \sigma . \sigma(x)$
 \end{ex}
 \begin{ex}[3]  Réponse = \{ok, erreur\} $\E\semm{\text{sqrt a}} = \E\semm{a} k' \sigma$ 
 \begin{tabular}{ll}
@@ -676,15 +791,167 @@ Cas généralisé : $Ccont : Etat \leftarrow R\acute{e}ponse$
 On calcule $\mathcal{C}\semm{P} c_p$ avec $c_p = \lambda \sigma . OK$
 \end{ex}
 \begin{ex}[4 : affichage] On ajoute P ::= print a\\
-Réponse : ensemble des suites d'entiers : $\Z^*$
+Réponse : ensemble des suites d'entiers : $\Zs^*$
 $\mathcal{C}\semm{print a} c \sigma = \E\semm{a} k \sigma$ avec $k v \sigma' = v::(c \sigma')$
 On calcule ${C}\semm{P} (\lambda \sigma [])$
 
-, Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
+ Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
 \end{ex}
 
 
 
+\part{Sémantique axiomatique}
+
+Décrire et prouver des propriétés de programme.
+
+\begin{ex}
+ $P \equiv y=1;$while $\lnot (x=1)$ do $(y:=y \times x; x := x-1)$\\
+\begin{minipage}[c]{150pt}
+ \begin{propriete}\og si $x \geq 1$, $P$ calcule la factorielle de $x$ dans la variable $y$ \fg\end{propriete}
+\end{minipage}\begin{minipage}[c]{150pt}
+\begin{dem}
+ rec sur la longueur $n$ de $<P, \sigma> →^n \sigma'$
+\end{dem}\end{minipage}\hspace{1cm}\begin{minipage}[b]{100pt}
+                        $\longrightarrow$ pénible
+                       \end{minipage}
+
+
+\begin{itemize}
+ \item avec $SOS$ (directe, sans continuation) : $\forall \sigma, \sigma',$ si $<P, \sigma> →^*$ alors $\sigma'(y) = \sigma(x)$!\\
+problème : n'assure pas que $\sigma(x) \geq 1$
+\item avec $SD$ (directe, sans continuation) : $\Ps(Phi) = \forall \sigma, \sigma',$ si $\Phi \sigma = \sigma'$ alors $\sigma'(y) = \sigma(x)$ !\\
+On veut montrer $\Ps(\semm{P})$ → il faut montrer que $\Ps$ passe à la borne sup + induction de point fixe → compliqué.
+\end{itemize}
+\end{ex}
+
+
+$\Rightarrow$ On va dissocier la partie programme de la partie logique.
+
+\section{Language d'assertions}
+On va écrire les triplets de Hoare : $\{A\}P\{B\}$
+A : précondition
+B : postcondition
+\og Si A est vraie avant l'exécution de P, alors B est vraie après \fg → ils sont écrits dans le language d'assertions.
+
+\subsection{Syntaxe}
+\begin{itemize}
+ \item expressions : on garde les mêmes que pour WHILE, mais sur un ensemble de variables plus grand : $\Vs \cup \Vs_L $(variables logiques) $(\Vs \cap \Vs_L = \empty)$\\
+On continue à noter les expressions arithmétiques.
+\item assertions : $Assn \ni A ::= true | false | a_1 = a_2 | a_1 < a_2 | \dots | A_1 \vee A_2 | \lnot A | \forall u A | \exists u A$
+\end{itemize}
+\begin{rem}
+ Il existe une traduction directe de $Bexp$ vers $Assn : \lceil b_1 and b_2 \rceil =  \lceil b_1 \rceil \wedge \lceil b_2 \rceil$ \\
+→ On notera b pour une assertion issue d'une expression booléenne.
+\end{rem}
+Notation de substitution dans les assertions :
+\begin{itemize}
+ \item $A[a/x]\; (x \in \Vs)$ : remplacer dans $A$ toutes les occurences de $x$ par $a$\\
+ ($x$ ne peut être liée car les quantificateurs ne portent que sur $\Vs_L$).
+ \item $A[a/x] \;(x \in \Vs_L)$ : remplacer dans $A$ toutes les occurences libres de $x$ par $a$.
+\end{itemize}
+
+
+\subsection{Sémantique des assertions}
+Les états sont étendus avec les variables logiques :
+$\sigma \in Etat (\Vs \cup \Vs_L) → \Zs$\\
+
+On définit la sémantique des expressions \sem{a} comme d'hab.\\
+Notation pour la validité d'une assertion $\sigma \models A$ : \og A est vraie dans $\sigma$ \fg.\\
+→ Validité définie par induction sur la syntaxe de A
+
+$\forall \sigma \in Etat$:
+\begin{itemize}
+ \item $\sigma \models true$
+\item $\sigma \not \models false$
+\item $\sigma \models (a_1 = a_2)$ ssi $\semm{a_1} \sigma  = \semm{a_2} \sigma  $
+\item $\sigma \models (A \vee B )$ ssi $\sigma \models A$ ou $\sigma  \models B$
+\item $\sigma \models \exists u A$ ssi $\exists n \in \Zs \tq \sigma[u←n] \models A$
+\item $\sigma \models \forall u A$ ssi $\forall n \in \Zs, \sigma[u←n] \models A$
+\end{itemize}
+\begin{prop}
+ pour tout $b \in Bexp, \semm{b} \sigma = tt$ ssi $\sigma \models \lceil b \rceil$
+\end{prop}
+\begin{definition}[tautologie]
+$\models A$ ssi $\forall \sigma, \sigma \models A $
+\end{definition}
+
+\section{Triplets de Hoare}
+Donner une sémantique à $\{A\}P\{B\}$
+
+\begin{definition}
+ $\sigma \models \{A\}P\{B\}$ ssi $(\sigma \models A$ et $\semm{P} \sigma = \sigma')$ implique $\sigma' = B$\\
+(on utilise la sémantique dénotationnelle mais on pourrait aussi utiliser SOS)
+\end{definition}
+
+\paragraph{Validité d'un triplet :} (correction partielle)
+\begin{definition}
+ $\models \{A\}P\{B\}$ ssi $\forall \sigma, \sigma \models \{A\}P\{B\}$
+\end{definition}
+\begin{rem}
+ Si on adopte la convention $\bot \models A$ pour tout $A$, on peut définir $\sigma \models \{A\}P\{B\}$ par :\\
+si $\sigma \models A$ alors $\semm{P} \sigma \models B$
+\end{rem}
+
+\begin{exs}
+ \begin{itemize}
+  \item Soient $u \in \Vs_L, x \in \Vs,$ et  $P \equiv x := x+1$\\
+ $\models \{ u < x \} P \{ u < x\}$ ?\\
+\begin{minipage}{400pt}\begin{dem}
+ Soit $\sigma \tq \sigma \models u<x$. On a donc $\sigma(u) < \sigma(x)$, \\or $\semm{x := x+1} \sigma = \sigma [x ← \sigma(x) +1] = \sigma'$\\
+$\begin{array}{llc}
+ \sigma' \models u< x&$ssi $\sigma'(u) < \sigma'(x)\\
+		    &$ssi $\sigma'(u)<\sigma(x)+1$ ssi $vrai&\quad \Rightarrow$ le triplet est valide$
+\end{array}$
+
+\end{dem}\end{minipage}
+\item $\models \{true\} P \{true\}$
+\item $\models \{false\} P \{false\}$
+\item $\models \{false\} P \{true\}$
+\item $\not \models \{true\} P \{false\}$
+\item $\models \{true\} loop \{false\}$ (car ne s'arrête pas)
+ \end{itemize}
+
+\end{exs}
+
+\begin{prop}
+ P diverge à partir de $\{ \sigma  \tq \sigma \models A \}$ ssi $\models \{A\}P\{false\}$
+\end{prop}
+
+Notion de correction totale ( Attention notations diverses)
+
+$\sigma \models [A]P[B]$ ssi $\sigma \models A$ implique $( \exists \sigma' \in Etat, \semm{P} \sigma = \sigma' et \sigma' \models B)$
+
+\begin{thm}
+ Il n'existe pas d'algo pour décider la validité de $\{A\}P\{B\}$ (que ce soit en correction partielle ou totale)
+\end{thm}
+
+Comment savoir si un triplet est valide?\\
+→ on va construire une preuve $\vdash \{A\}P\{B\}$ telle que $\vdash \{A\}P\{B\}$ implique $\models \{A\}P\{B\}$\\
+→ système de déduction
+
+\section{Logique de Hoare}
+\subsection{Règles de preuve pour la correction totale}
+Induction sur la structure de P
+\begin{itemize}
+ \item $\dfrac{}{\{A\}skip\{A\}}$\\
+ \item $\dfrac{\{A\}P\{B\} \quad \{B\}Q\{C\}}{\{A\}P;Q\{C\}}$\\
+ \item $\dfrac{\{A \wedge b\}P\{B\} \quad \{A \wedge \lnot b\}Q\{B\}}{\{A\}\text{ if $b$ then $P$ else $Q$ }\{B\}}$\\
+ \item non pas $ \dfrac{}{\{A\}x := a\{A[x/a]\}}\text{ mais }\dfrac{}{\{B[a/x]\}x := a\{B\}}$ axiome\\
+ \item $\dfrac{\models A \Rightarrow A' \quad \{A'\}P\{B\} \quad \models B \Rightarrow B'}{\{A\}P\{B\}}$\\
+ \item $\dfrac{\{I \wedge b \}P\{I\}}{\{I\}while b do P\{I \wedge \lnot b\}} I$ : invariant de boucle\\
+\end{itemize}
+
+\subsection{Correction totale}
+correction partielle + terminaison (à prouver)
+
+notation $\models_{tot} \{A\}P\{B\}$
+
+$\dfrac{ \{I \wedge b \wedge u = t\}P\{I \wedge t<u\}}{\{I\}\text{while $b$ do $P$}\{I \wedge \lnot b\}}$ avec 
+$\left\{\begin{array}{lcl}
+ u & \in&  \Vs_L\\
+t & = & \text{expression (variant de boucle)}\\
+< & =& \text{ordre bien fondé : relation d'ordre sans chaîne infinie décroissante}
+\end{array}\right.$
 
 
 
