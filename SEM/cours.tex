@@ -402,12 +402,12 @@ Etat = Label $\times$ Environnement\\
 \paragraph{idée:} la sémantique d'un programme est une fonction (partielle) ``état initial $\mapsto$ état final''\\
 On va définir proprement cette fonction.
 
-On garde \sem{a} : Etat $rightarrow \Zs$, \sem{b} : Etat $\rightarrow \{tt, ff \}$
+On garde \sem{a} : Etat $\rightarrow \Zs$, \sem{b} : Etat $\rightarrow \{tt, ff \}$
 
 \section{Définition de la sémantique dénotationnelle}
 Notation :\begin{itemize}
            \item $x$ : variables
-           \item $lambda x . f : x$  argument de la fonction tel que f est le corps de la fonction
+           \item $\lambda x . f : x$  argument de la fonction tel que f est le corps de la fonction
            \item $(f g)$ : application de la fonction f à l'argument g
           \end{itemize}
 
@@ -422,7 +422,7 @@ Notation :\begin{itemize}
 \begin{definition}[renommage ou $\alpha$ conversion]
  $\lambda x . f →_{\alpha} \lambda y . f[y / x]$ : on substitue dans f toutes les occurences libres de y par x
 \end{definition}
-\begin{definition}[$\beta$ reduction]
+\begin{definition}[$\beta$ réduction]
  $(\lambda x . f ) t →_{\beta} f[t/x]$
 \end{definition}
 \begin{rem}
@@ -436,10 +436,10 @@ $\semm{a_1 + a_2} = \lambda \sigma.((\semm{a_1} \sigma) + (\semm{a_2}\sigma))$ p
 \begin{itemize}
  \item $\semm{skip} = \lambda x . x$
  \item $\semm{x := a} = \lambda \sigma . \sigma[ x ← (\semm{a} \sigma)]$
- \item $\semm{\text{if $b$ then $c_1$ else $c_2$}} \begin{array}{ll}
+ \item $\begin{array} {lll}\semm{\text{if $b$ then $c_1$ else $c_2$}}&
 					  = \lambda \sigma . &$ si $(\semm{b} sigma) = tt$ alors $(\semm{c_1} \sigma)\\
-                                                           &$ sinon $(\semm{c_2} sigma)\\
-					  = Cond( \semm{b} , \semm{c_1}, \semm{c_2})
+                                                         &  &$ sinon $(\semm{c_2} sigma)\\
+					 & = Cond( \semm{b} , \semm{c_1}, \semm{c_2})
                                          \end{array}$
 
 \end{itemize}
@@ -452,7 +452,7 @@ $\semm{a_1 + a_2} = \lambda \sigma.((\semm{a_1} \sigma) + (\semm{a_2}\sigma))$ p
 \end{rem}
 
 \begin{prop}
-$ \semm{while b do c} = \semm{\text{ if $b$ then $c$; while $b$ do $c$ else skip}}$
+$ \semm{\text{while }b\text{ do }c} = \semm{\text{ if $b$ then $c$; while $b$ do $c$ else skip}}$
 \end{prop}
 
 
@@ -501,11 +501,11 @@ $\Phi \sqsubseteq \Phi' : \Phi$ contient plus d'information que $\Phi'$.
 
 \begin{definition}
  $\Phi \sqsubseteq \Phi'$ ssi $\forall \sigma, \; \Phi(\sigma) \sqsubseteq \Phi'(\sigma).$\\
-On peut voir $\Phi$ comme un ensemble de couples \\
-$\begin{array}{ll}
- (\sigma, \sigma')$ avec $& \sigma \in Etat\\
-& \sigma' \in Etat \\
-& \Phi(\sigma) = \sigma'\\
+On peut voir $\Phi$ comme un ensemble de couples $(\sigma, \sigma')$ avec $
+\begin{array}{l}
+  \sigma \in Etat\\
+ \sigma' \in Etat \\
+ \Phi(\sigma) = \sigma'\\
 \end{array}\\
 \begin{array}{l l l}
 \Phi \sqsubseteq \Phi'$ ssi $\forall \sigma \in Etat,&$  si $\Phi(\sigma) = \sigma' \in Etat,&$ alors $\Phi'(\sigma) = \sigma'\\
@@ -669,13 +669,13 @@ $ \left.\begin{array}{r l}
 \end{array}\right\downarrow c$\qquad
 \begin{minipage}{200pt}
 $\E\semm{n} k \, \sigma =  c \sigma = k n \sigma$\\
-$\Leftrightarrow \E\semm{n} k = k \sigma$
+$\Leftrightarrow \E\semm{n} k = \lambda \sigma. k \sigma$
 \end{minipage}
 $ \left.\begin{array}{r l}
      \sigma \\
  \left. \fbox{
  \begin{minipage}{2cm}
- \centering $n$
+ \centering $x$
  \end{minipage}} \hspace{0.2cm} \right\downarrow  & \\
     \sigma(x), \sigma\\
  \left.\fbox{ \begin{minipage}{2cm}
@@ -713,7 +713,7 @@ $ \left.\begin{array}{r l}
 \begin{minipage}{200pt}
 $\E\semm{a_1 + a_2} k \, \sigma = \E\semm{a_1} k'' \sigma$\\
 avec $\begin{array}{l}
-      k'' \; v_1 \; \sigma_1 = E \semm{a_2} k' \;\sigma_1\\
+      k'' \; v_1 \; \sigma_1 = \E \semm{a_2} k' \;\sigma_1\\
       k' \;v_2\; \sigma_2 = k \;(v_1 + v_2) \;\sigma_2
      \end{array}$\\
 d'où $\E\semm{a_1 + a_2} = \\ \lambda k . ( \E\semm{a_1} \; \lambda v_1 . (\E\semm{a_2} \; \lambda v_2. ( k \; v_1 + v_2)))$
@@ -739,7 +739,7 @@ $\left.\begin{array}{c l l}
 
 $\E\semm{x++} = \lambda k. \lambda \sigma . (k \sigma(x) \sigma[x \leftarrow \sigma(x) +1])$
 
-affectation avec effet de bord
+affectation avec effet de bord :\\
 $\mathcal{C}\semm{x:=a} c \sigma = \E\semm{c} k \sigma$ avec $k \, v\,  \sigma' = c \, \sigma'[x \leftarrow v]$ 
 \end{ex}
 
@@ -747,21 +747,32 @@ Tests : on définit $\E \semm{b}$ de la même façon que  $\E \semm{a}$
 
 \subsection{Exceptions}
 
+$\mathcal{C} \semm{\text{throw }e}\, c \,\sigma = c_e \,\sigma$ \qquad $e \mapsto c_e$ : on stocke cette information \begin{tabular}{l}
+                                                                                                     soit dans $\sigma$\\
+                                                                                                     soit dans un nouvel environnement
+                                                                                                    \end{tabular}\\
+Environnement d'exception : $E \in Exn → Ccont$\\
+$\mathcal{C}  \semm{\text{throw }e}\, E \,c \,\sigma = E(e) \, \sigma$\\
+$\mathcal{C}  \semm{\text{try $P$ catch $e;Q$}} = \mathcal{C}\semm{P} \,E[e ← \mathcal{C}\semm{Q}\, E \,c] \,e \,\sigma$
+
+Il faut réécrire la sémantique $\mathcal{C}  \semm{ .}$ pour tenir compte de $E$:\\
+$\mathcal{C}  \semm{P_1;P_2} E = (\mathcal{C}  \semm{P_1}E \circ \mathcal{C}  \semm{P_2}E)$ → assure que s'il y a 
+un $try$ dans $P_1$ on retrouve bien $E$ dans $P_2$.
 \subsection{Portée des variables}
 Ajouter des variables locales : notion de bloc \\
 $P ::=$ $begin$ $var$ $x; P$ $end$
 
 
-$\left.\begin{array}{c c c c}
+$\left.\begin{array}{c r c c}
  \text{var }x \\
 & \fbox{
- \begin{minipage}{3cm}
- P \vspace{1cm}
+ \begin{minipage}{3cm}\centering
+ \vspace{0.3cm}P \vspace{0.3cm}
  \end{minipage}}\\
-\text{restorer }x & &\sigma' & \\
+\text{restorer }x  &\sigma' & \\
 &  \left.\fbox{
 \begin{minipage}{3cm}
-\vspace{3cm} \quad
+\vspace{2cm} \quad
  \end{minipage}} \right\downarrow  &  c \\
 \end{array}\right\downarrow c$
 
@@ -770,32 +781,33 @@ $\mathcal{C}\semm{\text{begin var $x$; $P$ end}} c \sigma =  \mathcal{C}\semm{P}
 
 
 \subsection{Notion de réponse}
-Pour l'instant :  $\begin{array}{cl}
-                   Ccont &= Etat \leftarrow Etat_{\perp}\\
-		    & $résultat = état final$\\
-		    &\downarrow \\
-		    & $réponse$\\
+Pour l'instant :  $\begin{array}{ccc}
+                   Ccont &=& Etat \rightarrow Etat_{\perp}\\
+		    $résultat$ &=&$état final$\\
+		    \downarrow \\
+		     $réponse$\\
                   \end{array}$
 
-Cas généralisé : $Ccont : Etat \leftarrow R\acute{e}ponse$
+Cas généralisé : $Ccont : Etat \rightarrow R\acute{e}ponse$
 
 \begin{ex}[1] état final, Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
 \end{ex}
 \begin{ex}[2]  Réponse = $\Zs \quad \mathcal{C}\semm{P} ( \lambda \sigma . \sigma(x)$
 \end{ex}
-\begin{ex}[3]  Réponse = \{ok, erreur\} $\E\semm{\text{sqrt a}} = \E\semm{a} k' \sigma$ 
+\begin{ex}[3]  Réponse = \{ok, erreur\} $\E\semm{\text{sqrt a}} = \E\semm{a} k' \sigma$ \\
 \begin{tabular}{ll}
  avec $k' v \sigma' = $ & si $v \geq 0$ alors $ k \sqrt{v} \sigma'$\\
-  & sinon erreur\\
+  & sinon erreur.\\
 \end{tabular}
 On calcule $\mathcal{C}\semm{P} c_p$ avec $c_p = \lambda \sigma . OK$
 \end{ex}
-\begin{ex}[4 : affichage] On ajoute P ::= print a\\
-Réponse : ensemble des suites d'entiers : $\Zs^*$
-$\mathcal{C}\semm{print a} c \sigma = \E\semm{a} k \sigma$ avec $k v \sigma' = v::(c \sigma')$
+\begin{ex}[4 : affichage] On ajoute P ::= print a.\\
+Réponse : ensemble des suites d'entiers : $\Zs^*$.
+
+$\mathcal{C}\semm{print a} c \sigma = \E\semm{a} k \sigma$ avec $k v \sigma' = v::(c \sigma')$.
 On calcule ${C}\semm{P} (\lambda \sigma [])$
 
- Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$
+ Réponse = $Etat_{\perp} \quad \mathcal{C}\semm{P} Id$ avec $Id = \lambda \sigma . \sigma$.
 \end{ex}
 
 
