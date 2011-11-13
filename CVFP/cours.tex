@@ -1200,4 +1200,200 @@ On a : $\forall k < i+p, [k]_{\Pi} = [k]_{\Pi'} et \forall k \geq i, [k]_{\Pi'} 
 \end{thm}
 
 
+\begin{thm}
+ LTL-SAT est PSPACE
+\end{thm}
+
+
+\begin{definition}
+ Un ensemble de Hinikka sur Sigma est un ensemble saturé de la façon suivante :
+\begin{itemize}
+ \item Sigma subseteq H
+ \item S Phi vee Osi in H, Phi in h ou Psi in H
+ \item Si lnot Phi vee psi in H, Phi not in H et Psi not in H
+ \item si lnot lnot Phi in H, Phi in H
+ \item Si lnot O Psi in H, O lnot Psi in H
+ \item Si Psi U Phi in H, Psi in H ou (Phi in H et O (Phi U Psi ) in H
+ \item Si lnot (Phi U Psi) in H
+\end{itemize}
+
+\end{definition}
+
+\begin{thm}
+ Model checking de LTL est PSPACE-hard.
+\end{thm}
+\begin{thm}
+ Le model checking de LTL est réductible en temps polynomial à LTL-SAT.
+\end{thm}
+\begin{thm}
+ Le model checking de LTL est dans PSPACE.
+\end{thm}
+\begin{cor}
+ LTL-SAT est PSPACE-hard (et du coup PSPACE complet).
+\end{cor}
+
+\begin{thm}
+ Le model checking de CTL^* est PSPACE-complet.
+\end{thm}
+
+\begin{thm}
+ Le model checking de CTL est dans P
+\end{thm}
+
+
+
+\begin{rem}
+ Si Phi est une formule de CTL, 
+M, Pi models Phi ssi M, Pi_0 models_exists Phi
+		 ssi M, Pi_0 models_forall Phi
+\end{rem}
+
+\begin{thm}
+ Le model checking de CTL sur M = W,R,V et Phi prend O(|Phi|  times ( | X| + |R|) opérations.
+\end{thm}
+
+\begin{ex}
+ Phi_G = \bigvee_{sigma permutation de 1 n} Phi_sigma
+où phi_sigma = 
+\end{ex}
+
+
+
+
+\begin{thm}
+ Si on arrive à trouver une formule alternative Phi pour Phi_G de taille polynomiale alors P = NP
+\end{thm}
+
+\part{Expressivité}
+
+\section{Comparaison de LTL, CTL, CTL^*}
+
+\begin{definition}
+ Soient Phi_1, Phi_2 deux formules de CTL*
+Phi_1 equivalente à Phi_2 ssi pour tout modèle M,s, on a 
+	    M,s models_forall Phi_1 ssi M,s models_forall Phi_2
+
+\end{definition}
+
+\begin{thm}
+ Soit Phi une formule de CTL*
+ 
+Soit Phi est equivalente à Psi où Psi est Phi dans laquelle on a retité les quantificateurs de chemin exists, forall
+Soit Phi n'est équivalente à aucune formule de LTL.
+\end{thm}
+
+\begin{lem}
+forall n, forall M,
+ forall Phi LTL, si Phi leq n, exists x, y subseteq Pi tq
+M, Pi models Phi ssi M, xy^omega models Phi
+\end{lem}
+
+\begin{dem}[du théorème]
+ Supposons Phi equivalent à chi formmule de LTL.
+ Montrons que Phi est équivalente à Psi du théorème.
+ M,s models_exists Phi ssi forall Pi qui part de s, on a M, Pi models chi
+		       ssi forall Pi' = wy^omega qui part de s, on a M, Pi' models chi
+		       ssi forall Pi' = wy^omega qui part de s, on a M^Pi', 0 models chi
+		       où M^Pi' = (W', R', V') avec W' = {0, dots |xy|}
+						    R' = {(n, n+1) tq n < |xy|} cup {(|xy|, |x|)}
+						    V'(i) = V(Pi_i)
+		       ssi forall Pi' dots on a M^Pi', 0 models_exists Phi
+		       ssi forall Pi' dots on a M^Pi', 0 models_exists Psi (comme M^Pi déterministe, on peut supprimer les forall et exists de Phi)
+		       ssi forall Pi' = x y ^omega, M, Pi' models Psi
+		       ssi forall Pi chemin quelconque, M, Pi models_forall Psi (en utilisant le lemme)
+\end{dem}
+
+\begin{ex}
+ forall G, forall F, p est équivalente à G F p 
+\end{ex}
+
+\begin{thm}
+ Il existe une formule CTL qui n'a pas d'équivalent LTL.
+(par exemple forall G  exists F p).
+\end{thm}
+
+\begin{dem}
+ Si forall G exists F p a un équivalent LTL, cela serait G F p.
+M, w not models_forall G F p
+M, w not models_exists forall G exists F p
+\end{dem}
+
+\begin{ex}
+ forall F forall G p n'a pas d'équivalent LTL.
+\end{ex}
+
+\begin{thm}
+ Il existe une formule LTL qui n'a pas d'équivalent CTL.
+Par exemple FGp.
+\end{thm}
+
+Pour tout n in N,
+M, n s_n not models forall FGp
+M'n, s'n models_forall F G p
+
+\begin{lem}
+ forall n in N, pour toute formmule de CTl, Phi tq | Phi | leq n, Mn, sn models Phi ssi M'n s'n models Phi
+\end{lem}
+
+\begin{thm}
+ Il existe une formmule CTL^* qui n'est équivalente ni à une formule de LTL,, ni à une formmule de CTL.
+Par exemple, forall F G p vee forall G exists F q.
+\end{thm}
+
+\subsection{Comparaison de CTL avec K et S4}
+
+\begin{prop}
+ Soit tr une traduction de K dans CTL définie par 
+tr(Box Phi) = forall O tr(Phi)
+Alrs si M, w est un modèle, on a 
+M,w models_K Phi ssi M,w models_forall,exists tr(Phi)
+
+\begin{array}{cc}
+ K & CTL\\
+ Box & forall O
+ \\ Diamond & exists O
+\end{array}
+\end{prop}
+
+\begin{prop}
+  Soit tr une traduction de S4 dans CTL définie par
+tr(Box Phi ) = forall G tr(Phi)
+Soit M = W R V un modèle, M* = W R* V un modèle
+M* , w models_S4 Phi ssi M,w models tr(Phi)
+\end{prop}
+
+\subsection{Bisimulations}
+
+\begin{definition}
+ On dit que M, Pi et M', Pi' sont bissimilaires  ssi forall n in N, 
+M, Pi_n bissim M', Pi_n'
+\end{definition}
+
+\begin{prop}
+ Soient M, w bisim M',w, soit Pi un chemin qui part de w dans M.
+ Alors exists Pi' chemin partant de w' tq M, Pi bisim M', Pi'
+\end{prop}
+\begin{dem}
+ 
+\end{dem}
+\begin{prop}
+ Si m,Pi bisim M', Pi' alors forall Phi de CTL*, on a 
+M, Pi models Phi ssi M', Pi' models Phi
+\end{prop}
+\begin{dem}
+ Par induction.
+\end{dem}
+\begin{thm}
+ Soient M,w et M', w' des modèles à images finies.
+On a équivalence entre :
+  \begin{enumerate}
+   \item M, w bisim M', w'
+   \item forall Phi de CTL*, M,w models_exists Phi ssi M', w' models_exists Phi
+   \item forall Phi de CTL, M,w models_exists Phi ssi M', w' models_exists Phi
+  \end{enumerate}
+
+\end{thm}
+
+
+
 \end{document}

@@ -26,6 +26,8 @@
 
 \newcommand{\sem}[1]{$\left[| #1 | \right]$}
 \newcommand{\semm}[1]{\left[| #1 | \right]}
+\newcommand{\semh}[3]{\{#1\}#2\{#3\}}
+
 
 \newcommand{\Vs}{\mathbb{V}}
 \newcommand{\Ps}{\mathbb{P}}
@@ -937,7 +939,7 @@ Induction sur la structure de P
  \item $\dfrac{\{A\}P\{B\} \quad \{B\}Q\{C\}}{\{A\}P;Q\{C\}}$\\
  \item $\dfrac{\{A \wedge b\}P\{B\} \quad \{A \wedge \lnot b\}Q\{B\}}{\{A\}\text{ if $b$ then $P$ else $Q$ }\{B\}}$\\
  \item non pas $ \dfrac{}{\{A\}x := a\{A[x/a]\}}\text{ mais }\dfrac{}{\{B[a/x]\}x := a\{B\}}$ axiome\\
- \item $\dfrac{\models A \Rightarrow A' \quad \{A'\}P\{B\} \quad \models B \Rightarrow B'}{\{A\}P\{B\}}$\\
+ \item $\dfrac{\models A \Rightarrow A' \quad \{A'\}P\{B\} \quad \models B \Rightarrow B'}{\{A\}P\{B\}}$ : affaiblissement\\
  \item $\dfrac{\{I \wedge b \}P\{I\}}{\{I\}while b do P\{I \wedge \lnot b\}} I$ : invariant de boucle\\
 \end{itemize}
 
@@ -952,6 +954,206 @@ $\left\{\begin{array}{lcl}
 t & = & \text{expression (variant de boucle)}\\
 < & =& \text{ordre bien fondé : relation d'ordre sans chaîne infinie décroissante}
 \end{array}\right.$
+
+\subsection{Arbre de preuve}
+
+Arbre de preuve : \begin{itemize}
+                   \item les feuilles : axiomes.
+                   \item chaque noeud est la conclusion d'une règle de preuve, ses fils étant les prémisses de cette même règle.
+                   \item la racine est le théorème.
+                  \end{itemize}
+
+$\vdash \semh{A}{P}{B}$ : il existe un arbre de preuve de racine $\semh{A}{P}{B}$
+
+\begin{ex}
+$ p \equiv y := 1;$ while $x > 0$ do $(y := y \times x; x := x-1)$
+
+\begin{description}
+ \item [postcondition] $B \equiv y = n!$  \quad  (← on a ajouté la fonction $(!)$ au language d'assertions)
+ \item[précondition] $A \equiv x \geq 0 \wedge n = x$
+ \item[invariant] $I \equiv 0 \leq x \leq n \wedge y = \frac{n!}{x!}$
+\end{description}
+\end{ex}
+
+
+\section{Lien entre preuve et validité sémantique}
+
+\begin{array}{lcrr}
+$\vdash \semh{A}{P}{B} & \xrightarrow{\text{correction}}& \models \semh{A}{P}{B} &  ← \text{indispensable, facile à prouver}\\
+                       & \xleftarrow{\text{complétude}} & & ← \text{plus difficile à prouver sous certaines hypothèses}
+\end{array}$
+
+\begin{thm}
+ Si $\vdash \semh{A}{P}{B}$ alors $\models \semh{A}{P}{B}$
+\end{thm}
+\begin{dem}
+ vérifier que la relation $val(A,P,B) =^{def} \models \semh{A}{P}{B}$ est un modèle pour toutes les règles de preuve de la logique de Hoare.
+\end{dem}
+
+\dfrac{}{\semh{A}{skip}{A}} : vérifier \og si \og rien \ fg alors val(A, skip, A)
+			      pour tout sigma in Etat, si sigma models A alors semm{skip} sigma models A
+
+\dfrac{}{\semh{B[a/x]}{x := a}{B}} vérifier : pour tout sigma in Etat, si sigma models  B[a/x] alors sigma[x ← semm{a} sigma] models B
+
+\begin{lem}[fondamental]
+ forall a in Aexp, forall x in V , forall B in Assn, forall sigma in Etat,
+sigma models  B[a/x] Leftrightarrow sigma[x ← semm{a} sigma] models B
+\end{lem}
+
+séquence : on suppose models \models \semh{A}{P}{C}^{(1)} et \models \semh{C}{Q}{B}^{(2)}; on vérifie \models \semh{A}{P;Q}{B}  
+	soit \sigma \tq \sigma \models A et \semm{P;Q} \sigma \not = \bot
+	on a \semm{P} \sigma = \sigma' \not = \bot , et \sigma' \models C (par (1))
+	     \semm{Q} \sigma' = \sigma'' \not = \bot , et \sigma'' \models B (par (2))
+	     or \semm{P;Q} \sigma = \sigma''
+
+conditionnelle : à compléter
+
+boucle : on suppose \models \semh{I \wedge B}{P}{I}
+	 on vérifie \models \semh{I}{while b do P}{I \wedge \lnot B}
+	 W = \semm{while b do P} = \sqcup_n F^n( \bot)
+	 on montre par récurrence sur n que 
+	      \sigma \models I et (F^n( \bot))(\sigma) = \sigma' et \sigma' \not = \perp alors \sigma' \models I \wedge \lnot B
+\begin{dem}
+ cf Winskel
+\end{dem}
+
+affaiblissement : facile
+
+Th inverse ? difficultés : \begin{tabular}{ll}
+                            difficultés : &trouver les invariants\\
+                                          & trouver les tautologies dans les affaiblissements
+                           \end{tabular}
+
+\section{Preuves par annotations}
+
+notation à la Floyd
+
+\begin{ex}
+ \{x geq 0 wedge n := x \}
+ y := 1
+ \{ x geq 0 wedge n = x wedge y = 1\}
+ while x > 0 do \{inv : 0 leq x leq n wedge y = \frac{n!}{x!}\}
+      \{ 0 leq x leq n wedge y = \frac{n!}{x!}\}
+      y:= y \times x
+      \{0 leq x leq n wedge y = \frac{n!}{(x-1)!}\}
+      x :=x-1 
+ \{y = n!\}
+\end{ex}
+
+
+Notion de programme annoté : P^*
+formation de triplets \semh{A}{P^*}{B}
+\begin{ex}
+ \frac{\semh{A}{P^*}{C} \quad \semh{C}{Q^*}{B}}{\semh{A}{P^*;\{C\} Q^*}{B}} ← texte linéaire
+\end{ex}
+Les invariants sont des assertions spéciales \{inv: dots \}
+A partir d'un programme annoté P^*, on peut retrer toute assertion non étiqutée par inv
+
+\begin{thm}
+ Il existe une preuve par annotations \semh{A}{P^*}{B} ssi models \semh{A}{P}{B}
+\end{thm}
+
+
+\section{Plus faibles préconditions[Dijkstra]}
+
+Preuve à la Hoare : en arrière
+		    substitution (syntaxe)
+	→ mécanisation 
+
+\semh{A}{P;Q}{B} il faut trouver C : en remontant à partir de B
+
+? models \semh{A}{x:=a}{B} ça revient à prouver models A Rightarrow B[a/x]
+					      si sigma models A alors sigma models B[a/x]
+					      \{sigma tq sigma models A \} subseteq \{sigma tq sigma models B[a /x]\}
+→ le plus grand ensemble d'états possibles = la plus faible précondition
+
+On va identifier assertions et ensembles d'état
+		    A          \semm{A} = \{sigma in Etat_bot tq sigma models A \}
+				    avec la convention bot in A forall A
+
+\begin{definition}
+ soit P un programme, B une assertion
+ WP(P,B) = \{ sigma in Etat_bot tq semm{P} sigma models B \}
+\end{definition}
+
+\begin{prop}
+ models \semh{A}{P}{B} ssi semm{A} subseteq WP(P,B) (on note aussi WLP, weakst libéral precondition)
+\end{prop}
+
+\begin{cor}
+ si il existe A_0 tel que WP(P,B) = \semm{A_0}, alors models \semh{A}{P}{B} ssi models A Rightarrow A_0
+\end{cor}
+
+Question : un tel A_0 existe-t-il toujours ? → définissabilité
+
+WP(skip,B) = \semm{B}
+WP(x:=a,B) = \{ sigma in Etat_bot tq \semm{x := a} sigma models B\}
+	   = \{ sigma in Etat tq \semm{x := a} sigma models B\} \cup \{bot\} = \semm{B[a/x]}
+WP(P;Q,B) = WP(P, WP(Q,B)) → ça marche si WP(Q,B) est une assertion
+WP(if b then P else Q, B) = (WP(P,B) \cap \{sigma in Etat, semm b sigma = tt \})
+			\cup (WP(Q,B) \cap \{sigma in Etat, semm b sigma = ff \})
+			\cup \{bot\}
+Si on suppose WP(P,B) = semm{A_1} et WP(Q,B) = semm{A_2} alors WP(if dots) = semm{ ( A_1 wedge b) vee (A_2 wedge lnot b)}
+
+WP(while b do P; Q) = (WP(P, WP(while dots , B)) cap \{sigma in Etat tq semm{b} = tt \})
+		      cup (semm{B} cap \{sigma in Etat tq semm b sigma ) ff \}
+		      cup {bot}
+
+Il faut exprimer les itérations : 
+sigma in WP(while dot, B) ssi forall k in N , forall sigma_0, dots, sigma_k in Etat, 
+				    (sigma = sigma_0) wedge forall i ( 0 leq i < k) Rightarrow (semm{b} sigma_i = tt wedge semm{P} sigma_i = sigma i+1
+				    Rightarrow sigma_k models b vee B
+
+formule avec états et semm{.} rightsquigarrow assertion ?
+
+miracle ! c'est définissable : Gödel : on code tout avec des entiers.
+
+\begin{thm}
+ pour tout programme P et toute assertion B, il existe une assertion W(P,B) tq semm{W(P,B)} = WP(P,B)
+\end{thm}
+
+\section{Complétude}
+On veut prouver models \semh{A}{P}{B} alors vdash \semh{A}{P}{B}
+
+\begin{lem}
+ Pour tous P et B, vdash \semh{W(P,b)}{P}{B}
+\end{lem}
+\begin{dem}[par induction sur la syntaxe de P :]
+P equiv skip : on va montrer vdash \semh{W(skip,B)}{skip}{B}
+	on a vdash \semh{B}{skip}{B}
+    on utilise l'affaiblissement, avec models W(skip,B) Leftrightarrow B
+
+P equiv P_1; P_2
+	sigma models W(P_1;P_2,B) ssi sigma models W(P_1,W(P_2,B))
+      donc sigma models W(P_1;P_2,B) Leftrightarrow sigma models W(P_1,W(P_2,B))
+Par hypothèse d'induction, vdash \semh{W(P_1,B)}{P_2}{B}
+			   vdash \semh{W(P_1,W(P_2,B)}{P_1}{W(P_2,B)}
+	  donc vdash \semh{W(P_1,W(P_2,B)}{P_1;P_2}{B}
+	  donc(affaibl) vdash \semh{W(P_1;P_2,B)}{P_1;P_2}{B}
+
+
+P equiv while b do P_1
+      soit I = W(P,B)
+       il faut vérifier (1) models \semh{I wedge b}{P_1}{I}
+			(2) models I wedge lnot b Rightarrow B
+	par hypothèse d'induction, vdash \semh{I wedge b}{P_1}{I}
+		      donc (affaibl) models \semh{I}{P}{B}
+
+
+\begin{thm}[de complétude]
+ Si models \semh{A}{P}{B} alors vdash \semh{A}{P}{B}
+\end{thm}
+\begin{rem}
+ On ne s'intéresse pas à la façon dont sont prouvées les tautologie.
+\begin{thm}[d'incomplétude de Gödel]
+ Il n'existe pas d'algo pour construire une preuve de toute les tautologies en Assn.
+\end{thm}
+
+→ On parle de complétude relative (complétude au sens de Cook)
+
+\end{rem}
+
+\end{dem}
 
 
 
