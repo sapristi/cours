@@ -8,6 +8,7 @@
 \usepackage{array}
 \usepackage{hyperref}
 \usepackage{multirow}
+\usepackage{stmaryrd}
 
 %\hypersetup{colorlinks, linkcolor=black, urlcolor=black,%
 %pdfauthor={Jean Dupond},%
@@ -24,8 +25,9 @@
 
 \newcommand{\E}{\mathcal{E}}
 
-\newcommand{\sem}[1]{$\left[| #1 | \right]$}
-\newcommand{\semm}[1]{\left[| #1 | \right]}
+\newcommand{\sem}[1]{$\llbracket #1 \rrbracket$}
+\newcommand{\semm}[1]{\llbracket #1 \rrbracket }
+\newcommand{\semd}[1]{\mathcal{C} \semm{#1}}
 \newcommand{\semh}[3]{\{#1\}#2\{#3\}}
 
 
@@ -842,19 +844,22 @@ On veut montrer $\Ps(\semm{P})$ → il faut montrer que $\Ps$ passe à la borne 
 $\Rightarrow$ On va dissocier la partie programme de la partie logique.
 
 \section{Language d'assertions}
-On va écrire les triplets de Hoare : $\{A\}P\{B\}$
-A : précondition
-B : postcondition
-\og Si A est vraie avant l'exécution de P, alors B est vraie après \fg → ils sont écrits dans le language d'assertions.
+On va écrire les triplets de Hoare : $\{A\}P\{B\}$ \begin{tabular}{l}
+                                                    A : précondition\\B : postcondition
+                                                   \end{tabular}
+
+\og Si A est vraie avant l'exécution de P, alors B est vraie après \fg 
+
+\quad→ ils sont écrits dans le language d'assertions.
 
 \subsection{Syntaxe}
 \begin{itemize}
- \item expressions : on garde les mêmes que pour WHILE, mais sur un ensemble de variables plus grand : $\Vs \cup \Vs_L $(variables logiques) $(\Vs \cap \Vs_L = \empty)$\\
+ \item expressions : on garde les mêmes que pour WHILE, mais sur un ensemble de variables plus grand : $\Vs \cup \Vs_L $(variables logiques) $(\Vs \cap \Vs_L = \varnothing)$\\
 On continue à noter les expressions arithmétiques.
 \item assertions : $Assn \ni A ::= true | false | a_1 = a_2 | a_1 < a_2 | \dots | A_1 \vee A_2 | \lnot A | \forall u A | \exists u A$
 \end{itemize}
 \begin{rem}
- Il existe une traduction directe de $Bexp$ vers $Assn : \lceil b_1 and b_2 \rceil =  \lceil b_1 \rceil \wedge \lceil b_2 \rceil$ \\
+ Il existe une traduction directe de $Bexp$ vers $Assn : \lceil b_1$ and $b_2 \rceil =  \lceil b_1 \rceil \wedge \lceil b_2 \rceil$ \\
 → On notera b pour une assertion issue d'une expression booléenne.
 \end{rem}
 Notation de substitution dans les assertions :
@@ -952,7 +957,7 @@ Induction sur la structure de P
  \item $\dfrac{\{A \wedge b\}P\{B\} \quad \{A \wedge \lnot b\}Q\{B\}}{\{A\}\text{ if $b$ then $P$ else $Q$ }\{B\}}$\\
  \item non pas $ \dfrac{}{\{A\}x := a\{A[x/a]\}}\text{ mais }\dfrac{}{\{B[a/x]\}x := a\{B\}}$ axiome\\
  \item $\dfrac{\models A \Rightarrow A' \quad \{A'\}P\{B\} \quad \models B \Rightarrow B'}{\{A\}P\{B\}}$ : affaiblissement\\
- \item $\dfrac{\{I \wedge b \}P\{I\}}{\{I\}while b do P\{I \wedge \lnot b\}} I$ : invariant de boucle\\
+ \item $\dfrac{\{I \wedge b \}P\{I\}}{\{I\}\text{while $b$ do }P\{I \wedge \lnot b\}} I$ : invariant de boucle\\
 \end{itemize}
 
 \subsection{Correction totale}
@@ -1008,8 +1013,9 @@ $\dfrac{}{\semh{A}{skip}{A}}$ : vérifier \og si \og rien \fg alors $val(A, skip
 $\dfrac{}{\semh{B[a/x]}{x := a}{B}}$ vérifier : pour tout $\sigma \in Etat$, si $\sigma \models  B[a/x]$ alors $\sigma[x ← \semm{a} \sigma] \models B$
 
 \begin{lem}[fondamental]
- $\forall a \in Aexp, \forall x \in V , \forall B \in Assn, \forall \sigma \in Etat,
-\sigma \models  B[a/x] \Leftrightarrow \sigma[x ← \semm{a} \sigma] \models B$
+ $\forall a \in Aexp, \forall x \in V , \forall B \in Assn, \forall \sigma \in Etat,$
+
+$\sigma \models  B[a/x] \Leftrightarrow \sigma[x ← \semm{a} \sigma] \models B$
 \end{lem}
 
 séquence : on suppose $\models \semh{A}{P}{C}^{(1)}$ et $\models \semh{C}{Q}{B}^{(2)}$; on vérifie $\models \semh{A}{P;Q}{B}$
@@ -1031,9 +1037,9 @@ boucle : on suppose $\models \semh{I \wedge B}{P}{I}$
 
 affaiblissement : facile
 
-Th inverse ? difficultés : \begin{tabular}{ll}
-                            difficultés : &trouver les invariants\\
-                                          & trouver les tautologies dans les affaiblissements
+Th inverse ? difficultés : \begin{tabular}{l}
+                            trouver les invariants\\
+                           trouver les tautologies dans les affaiblissements
                            \end{tabular}
 
 \section{Preuves par annotations}

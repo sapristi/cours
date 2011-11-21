@@ -1206,194 +1206,357 @@ On a : $\forall k < i+p, [k]_{\Pi} = [k]_{\Pi'} et \forall k \geq i, [k]_{\Pi'} 
 
 
 \begin{definition}
- Un ensemble de Hinikka sur Sigma est un ensemble saturé de la façon suivante :
+ Un ensemble de Hinikka sur $\Sigma$ est un ensemble saturé de la façon suivante :
 \begin{itemize}
- \item Sigma subseteq H
- \item S Phi vee Osi in H, Phi in h ou Psi in H
- \item Si lnot Phi vee psi in H, Phi not in H et Psi not in H
- \item si lnot lnot Phi in H, Phi in H
- \item Si lnot O Psi in H, O lnot Psi in H
- \item Si Psi U Phi in H, Psi in H ou (Phi in H et O (Phi U Psi ) in H
- \item Si lnot (Phi U Psi) in H
+ \item $\Sigma \subseteq H$
+ \item Si $\Phi \vee \Psi \in H, \Phi \in H$ ou $\Psi \in H$
+ \item Si $\lnot (\Phi \vee \psi) \in H, \Phi \not \in H$ et $\Psi \not \in H$
+ \item Si $\lnot \lnot \Phi \in H, \Phi in H$
+ \item Si $\lnot O \Psi \in H, O \lnot \Psi in H$
+ \item Si $\Psi U \Phi \in H, \Psi \in H$ ou $(\Phi \in H$ et $O (\Phi U \Psi ) \in H$
+ \item Si $\lnot (\Phi U \Psi) \in H$
 \end{itemize}
 
 \end{definition}
 
 \begin{thm}
- Model checking de LTL est PSPACE-hard.
+ Model checking de $LTL$ est $PSPACE$-hard.
 \end{thm}
 \begin{thm}
- Le model checking de LTL est réductible en temps polynomial à LTL-SAT.
+ Le model checking de $LTL$ est réductible en temps polynomial à $LTL-SAT$.
 \end{thm}
 \begin{thm}
- Le model checking de LTL est dans PSPACE.
+ Le model checking de $LTL$ est dans $PSPACE$.
 \end{thm}
 \begin{cor}
- LTL-SAT est PSPACE-hard (et du coup PSPACE complet).
+ $LTL-SAT$ est $PSPACE$-hard (et du coup $PSPACE$-complet).
 \end{cor}
 
 \begin{thm}
- Le model checking de CTL^* est PSPACE-complet.
+ Le model checking de $CTL^*$ est $PSPACE$-complet.
 \end{thm}
 
 \begin{thm}
- Le model checking de CTL est dans P
+ Le model checking de $CTL$ est dans $P$
 \end{thm}
 
 
 
 \begin{rem}
- Si Phi est une formule de CTL, 
-M, Pi models Phi ssi M, Pi_0 models_exists Phi
-		 ssi M, Pi_0 models_forall Phi
+ Si $\Phi$ est une formule de $CTL$, 
+$\begin{array}{ll}
+M, \Pi \models \Phi & $ ssi $M, \Pi_0 \models_{\exists} Phi\\
+		 & $ ssi $M, \Pi_0 \models_{\forall} Phi
+\end{array}$
+
+
 \end{rem}
 
 \begin{thm}
- Le model checking de CTL sur M = W,R,V et Phi prend O(|Phi|  times ( | X| + |R|) opérations.
+ Le model checking de $CTL$ sur $M = W,R,V$ et $\Phi$ prend $O(|\Phi|  \times ( | X| + |R|))$ opérations.
 \end{thm}
 
 \begin{ex}
- Phi_G = \bigvee_{sigma permutation de 1 n} Phi_sigma
-où phi_sigma = 
+ $\Phi_G = \bigvee_{\sigma\text{ permutation de }1 n} \Phi_\sigma$
+où $\phi_{\sigma}$ = 
 \end{ex}
 
 
 
 
 \begin{thm}
- Si on arrive à trouver une formule alternative Phi pour Phi_G de taille polynomiale alors P = NP
+ Si on arrive à trouver une formule alternative $\Phi$ pour $\Phi_G$ de taille polynomiale alors $P = NP$
 \end{thm}
 
 \part{Expressivité}
 
-\section{Comparaison de LTL, CTL, CTL^*}
+\section{Comparaison de $LTL, CTL, CTL^*$}
 
 \begin{definition}
- Soient Phi_1, Phi_2 deux formules de CTL*
-Phi_1 equivalente à Phi_2 ssi pour tout modèle M,s, on a 
-	    M,s models_forall Phi_1 ssi M,s models_forall Phi_2
+ Soient $\Phi_1, \Phi_2$ deux formules de $CTL^*$
+$\Phi_1$ equivalente à $\Phi_2$ ssi pour tout modèle $M,s$, on a 
+	    $M,s \models_\forall \Phi_1$ ssi $M,s \models_\forall \Phi_2$
 
 \end{definition}
 
 \begin{thm}
- Soit Phi une formule de CTL*
+ Soit $\Phi$ une formule de $CT^L*$
  
-Soit Phi est equivalente à Psi où Psi est Phi dans laquelle on a retité les quantificateurs de chemin exists, forall
-Soit Phi n'est équivalente à aucune formule de LTL.
+Soit $\Phi$ est equivalente à $\Psi$ où $\Psi$ est $\Phi$ dans laquelle on a retité les quantificateurs de chemin $\exists, \forall$
+Soit $\Phi$ n'est équivalente à aucune formule de $LTL$.
 \end{thm}
 
 \begin{lem}
-forall n, forall M,
- forall Phi LTL, si Phi leq n, exists x, y subseteq Pi tq
-M, Pi models Phi ssi M, xy^omega models Phi
+$\forall n, \forall M,
+ \forall \Phi LTL, si \Phi \leq n, \exists x, y \subseteq \Pi \tq
+M, \Pi \models \Phi ssi M, xy^\omega \models \Phi$
 \end{lem}
 
 \begin{dem}[du théorème]
- Supposons Phi equivalent à chi formmule de LTL.
- Montrons que Phi est équivalente à Psi du théorème.
- M,s models_exists Phi ssi forall Pi qui part de s, on a M, Pi models chi
-		       ssi forall Pi' = wy^omega qui part de s, on a M, Pi' models chi
-		       ssi forall Pi' = wy^omega qui part de s, on a M^Pi', 0 models chi
-		       où M^Pi' = (W', R', V') avec W' = {0, dots |xy|}
-						    R' = {(n, n+1) tq n < |xy|} cup {(|xy|, |x|)}
-						    V'(i) = V(Pi_i)
-		       ssi forall Pi' dots on a M^Pi', 0 models_exists Phi
-		       ssi forall Pi' dots on a M^Pi', 0 models_exists Psi (comme M^Pi déterministe, on peut supprimer les forall et exists de Phi)
-		       ssi forall Pi' = x y ^omega, M, Pi' models Psi
-		       ssi forall Pi chemin quelconque, M, Pi models_forall Psi (en utilisant le lemme)
+ Supposons $\Phi$ equivalent à $\chi$ formmule de $LTL$.
+ Montrons que $\Phi$ est équivalente à $\Psi$ du théorème.
+ $M,s \models_\exists \Phi ssi \forall Pi qui part de s, on a M, \Pi \models \chi
+		       ssi \forall Pi' = wy^{\omega}$ qui part de s, on a $M, \Pi' \models \chi
+		       ssi \forall Pi' = wy^{\omega}$ qui part de s, on a $M^{\Pi'}, 0 \models \chi
+		      $ où $M^{\Pi'} = (W', R', V')$ avec $W' = {0, \dots |xy|}
+						    R' = {(n, n+1) \tq n < |xy|} \cup {(|xy|, |x|)}
+						    V'(i) = V(\Pi_i)
+		       ssi \forall \Pi' \dots$ on a $M^{\Pi'}, 0 \models_\exists \Phi
+		       ssi \forall \Pi' \dots$ on a $M^{\Pi'}, 0 \models_\exists \Psi ($comme $M^\Pi$ déterministe, on peut supprimer les $\forall et \exists de \Phi)
+		       ssi \forall \Pi' = x y ^{\omega}, M, \Pi' \models \Psi
+		       ssi \forall \Pi$ chemin quelconque$, M, \Pi \models_\forall \Psi$ (en utilisant le lemme)
 \end{dem}
 
 \begin{ex}
- forall G, forall F, p est équivalente à G F p 
+ $\forall G, \forall F, p$ est équivalente à $G F p $
 \end{ex}
 
 \begin{thm}
- Il existe une formule CTL qui n'a pas d'équivalent LTL.
-(par exemple forall G  exists F p).
+ Il existe une formule $CTL$ qui n'a pas d'équivalent $LTL$.
+(par exemple $\forall G  \exists F p$).
 \end{thm}
 
 \begin{dem}
- Si forall G exists F p a un équivalent LTL, cela serait G F p.
-M, w not models_forall G F p
-M, w not models_exists forall G exists F p
+ Si $\forall G \exists F p$ a un équivalent $LTL$, cela serait $G F p$.
+$M, w \not \models_\forall G F p
+M, w \not \models_\exists \forall G \exists F p$
 \end{dem}
 
 \begin{ex}
- forall F forall G p n'a pas d'équivalent LTL.
+ $\forall F \forall G p$ n'a pas d'équivalent $LTL$.
 \end{ex}
 
 \begin{thm}
- Il existe une formule LTL qui n'a pas d'équivalent CTL.
-Par exemple FGp.
+ Il existe une formule $LTL$ qui n'a pas d'équivalent $CTL$.
+Par exemple $FGp$.
 \end{thm}
 
-Pour tout n in N,
-M, n s_n not models forall FGp
-M'n, s'n models_forall F G p
+Pour tout $n \in N,
+M, n s_n \not \models \forall FGp
+M'n, s'n \models_\forall F G p$
 
 \begin{lem}
- forall n in N, pour toute formmule de CTl, Phi tq | Phi | leq n, Mn, sn models Phi ssi M'n s'n models Phi
+ $\forall n \in \Ns,$ pour toute formule de $CTL, \Phi \tq | \Phi | \leq n, Mn, sn \models \Phi ssi M'n s'n \models \Phi$
 \end{lem}
 
 \begin{thm}
- Il existe une formmule CTL^* qui n'est équivalente ni à une formule de LTL,, ni à une formmule de CTL.
-Par exemple, forall F G p vee forall G exists F q.
+ Il existe une formmule $CTL^*$ qui n'est équivalente ni à une formule de $LTL$, ni à une formmule de $CTL$.
+Par exemple, $\forall F G p \vee \forall G \exists F q$.
 \end{thm}
 
 \subsection{Comparaison de CTL avec K et S4}
 
 \begin{prop}
  Soit tr une traduction de K dans CTL définie par 
-tr(Box Phi) = forall O tr(Phi)
+$tr(\Box \Phi) = \forall O tr(\Phi)$
 Alrs si M, w est un modèle, on a 
-M,w models_K Phi ssi M,w models_forall,exists tr(Phi)
-
+$M,w \models_K \Phi ssi M,w \models_\forall,\exists tr(\Phi)$
+$
 \begin{array}{cc}
  K & CTL\\
- Box & forall O
- \\ Diamond & exists O
-\end{array}
+ \Box & \forall O
+ \\ \Diamond & \exists O
+\end{array}$
 \end{prop}
 
 \begin{prop}
   Soit tr une traduction de S4 dans CTL définie par
-tr(Box Phi ) = forall G tr(Phi)
-Soit M = W R V un modèle, M* = W R* V un modèle
-M* , w models_S4 Phi ssi M,w models tr(Phi)
+$tr(\Box \Phi ) = \forall G tr(\Phi)$
+Soit $M = W R V$ un modèle, $M^* = W R^* V$ un modèle
+$M* , w \models_S4 \Phi$ ssi $M,w \models tr(\Phi)$
 \end{prop}
 
 \subsection{Bisimulations}
 
 \begin{definition}
- On dit que M, Pi et M', Pi' sont bissimilaires  ssi forall n in N, 
-M, Pi_n bissim M', Pi_n'
+ On dit que $M, \Pi$ et $M', \Pi'$ sont bissimilaires  ssi $\forall n in \Ns, $
+$M, \Pi_n \bisim M', \Pi_n'$
 \end{definition}
 
 \begin{prop}
- Soient M, w bisim M',w, soit Pi un chemin qui part de w dans M.
- Alors exists Pi' chemin partant de w' tq M, Pi bisim M', Pi'
+ Soient $M, w \bisim M',w,$ soit $\Pi$ un chemin qui part de $w$ dans $M$.
+ Alors $\exists \Pi'$ chemin partant de $w' \tq M, \Pi \bisim M', \Pi'$
 \end{prop}
 \begin{dem}
  
 \end{dem}
 \begin{prop}
- Si m,Pi bisim M', Pi' alors forall Phi de CTL*, on a 
-M, Pi models Phi ssi M', Pi' models Phi
+ Si $M,\Pi \bisim M', \Pi'$ alors $\forall \Phi$ de $CTL^*$, on a 
+$M, \Pi \models \Phi$ ssi $M', \Pi' \models \Phi$
 \end{prop}
 \begin{dem}
  Par induction.
 \end{dem}
 \begin{thm}
- Soient M,w et M', w' des modèles à images finies.
+ Soient $M,w$ et $M', w$' des modèles à images finies.
 On a équivalence entre :
   \begin{enumerate}
-   \item M, w bisim M', w'
-   \item forall Phi de CTL*, M,w models_exists Phi ssi M', w' models_exists Phi
-   \item forall Phi de CTL, M,w models_exists Phi ssi M', w' models_exists Phi
+   \item $M, w \bisim M', w'$
+   \item $\forall \Phi de CTL*, M,w \models_\exists \Phi$ ssi $M', w' \models_\exists \Phi$
+   \item $\forall \Phi de CTL, M,w \models_\exists \Phi$ ssi $M', w' \models_\exists \Phi$
   \end{enumerate}
 
 \end{thm}
 
+
+\part{Demain, toujours \dots et le problème SAT devient EXPTIME}
+
+\section{Musée}
+
+\subsection{Propositional Dynamic Logic}
+
+\subsubsection{Syntaxe}
+Soit ATM un ensemble de propositions
+Soit PRG un ensemble de programmes atomiques
+
+Le language de PDL est le suivant : 
+ Phi := p | lnot Phi | Phi vee Phi | [Pi] Phi		où p in ATM
+ Pi := a | Pi;Pi | Pi cup Pi | Pi* | Phi ?		où a in PRG
+
+\subsection{Sémantique}
+
+On appelle PROG l'ensemble des programmes.
+
+\begin{definition}
+ Un modèle dM = (W, (R_{\Pi})_{Pi in PROG}, V) est un modèle de PDL : 
+\begin{itemize}
+ \item W est un ensemble de mondes
+ \item R_{Psi ? } = \{ (w,w) in W², M, w models Phi\}
+ \item R_{Pi_1 ; Pi_2} = R_{Pi_1}\circ R_{Pi_2}
+ \item R_{Pi_1 cup Pi_2} = R_{Pi_1} \cup R_{Pi_2}
+ \item R_{Pi^*} = R_{Pi}^* (cloture réflexive transitive)
+\end{itemize}
+
+\end{definition}
+
+\begin{definition}
+ M,w models [Pi] ssi forall u in R_Pi(w), on a M, u models Phi
+\end{definition}
+
+\subsection{Connaissance commune}
+
+\subsubsection{Syntaxe}
+
+Soit AGT un ensemble d'agents.
+
+Phi := p | lnot Phi | Phi vee Phi | K_, Phi | CK_j Phi		où j in ATM, J \subseteq AGT
+K_j Phi = j sait que Phi
+CK_J Phi = un groupe J a la connaissance commune que Phi_
+
+\subsubsection{Sémantique}
+
+\begin{definition}
+ 
+Un modèle M pour cette logique est (W, (R_j)_{j in AGT }, V)
+\begin{itemize}
+ \item W est un ensemble non vide de mondes
+ \item forall j, R_j est une relation d'équivalence
+ \item V valuation
+\end{itemize}
+
+\end{definition}
+
+
+\begin{definition}
+ M, w models K, Phi ssi forall u in R_j(w), on a M,u models Phi
+ M, w models CK_J Phi ssi forall u in (\bigcup_{j in J} R_j)^*, on a M, u models Phi
+\end{definition}
+
+\subsection{Conséquence globale dans K}
+
+Jusqu'à présent, on a Sigma models_C^{local} Phi qui signifie : 
+pour tout modèle pointé (M, w), on a 
+M, w models Sigma implique M, w models Phi
+
+On peut aussi introduire la conséquence globale : Sigma models_C^{global} Phi ssi pour tout modèle M de C, M models Sigma implique M models Phi
+
+\begin{rem}
+ Sigma models_K^{globale} Phi ssi \{ Box^n Psi tq Psi in Sigma, n in Ns \} models_K^{local} Phi
+Sigma' models_{S4}^{globale} Phi ssi \{ Box^n Psi tq Psi in Sigma \} models_{S4}^{local} Phi
+\end{rem}
+
+\begin{prop}
+ Le problème suivant :
+entrée Sigma fini, Phi
+sortie Sigma models_{S4}^{globale} Phi
+est PSPACE complet
+\end{prop}
+
+
+\section{Machines alternantes}
+
+\subsection{Définitions}
+
+\begin{definition}
+ Une machine de Turing alternante est M = (Q, U, delta, s) avec
+\begin{itemize}
+ \item Q ensemble fini d'états
+ \item U subseteq Q (états universels)
+ \item delta subseteq (Q times Sigma) times (Q cup \{no, yes \} times Sigma times \{-1,0,1\}
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+ configuration (q,k,w) 
+\begin{itemize}
+ \item q état
+ \item k position
+ \item w not
+\end{itemize}
+
+\end{definition}
+
+\subsection{Calculs}
+
+mathcal{C} = ensemble de configurations.
+
+\begin{definition}
+ Un arbre de calcul de M sur x est un arbre (pt infini) tel que chaque noeud est une configuration et les enfants de c sont les c' tels que c →^u c'
+Formellement, i est une fonction partielle de \{0,1,dots \} ^* → C
+\end{definition}
+
+\begin{definition}
+ Une étiquette : \{0,1,dots \} ^* → \{0,1\} d'un arbre A est acceptante ssi 
+\begin{itemize}
+ \item L(u) = 1 si A(u) est acceptante
+ \item L(u) = bigvee_{n.k} L(n.k) si A(u) est existentiel (exists)
+ \item L(u) = bigwedge_{n.k} L(n.k) si A(u) est universel (forall)
+\end{itemize}
+\end{definition}
+
+\begin{definition}
+ M accepte x ssi L(epsilon) = 1 pour toute étiquette L de l'unité de calcul où la configuration à la racine est (s,0,x)
+\end{definition}
+\begin{rem}
+ Il peut y avoir plusieurs étiquettes si l'arbre est infini
+\end{rem}
+
+\begin{definition}
+ M accepte L ssi (x in L Leftrightarrow M accepte x)
+\end{definition}
+
+\begin{definition}
+ M accepte L en temps f ssi M accepte L et la profondeur de l'arbre issu de (s,0,x) est de profondeur bornée par  f(|x|) pour tout x
+\end{definition}
+
+\begin{definition}
+ M accepte L en espace f ssi M accepte L et la taille des rubans des configurations de l'arbre issu de (s,0,x) est de profondeur bornée par f(|x|) pour tout x
+\end{definition}
+
+\begin{definition}
+ AP = classe des langages reconnus par une MTA en temps polynomial
+APSPACE = classe des langages reconnus par une MTA en espace polynomial
+\end{definition}
+
+\subsection{Comparaison des classes de compléxité}
+
+\begin{thm}
+ AP = PSPACE
+\end{thm}
+
+\begin{thm}
+ APSPACE = EXPTIME
+\end{thm}
 
 
 \end{document}
