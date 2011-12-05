@@ -1173,6 +1173,128 @@ $
 
 
 
+\subsection{Preuves}
+$
+\Gamma \vdash \underbrace{\lambda x : \tau . t}_{\text{programme}} : \underbrace{\tau → \sigma}_{\text{propriété sur le programme}}$
+
+Si on me donne un preuve (x) de la propriété $\tau$, alors je sais construire une preuve t de la propriété $\sigma$.
+
+fonction = transformateur de propriétés (programme)
+
+$\Gamma \vdash t  : \tau$  : il existe une preuve de la propriété $\tau$; le type  $\tau$ est habité; je sais construire un objet t qui vérifie les spécifications données par $\tau$.
+
+Isomorphisme de Curry-Howard :
+$\Phi
+\begin{array}{lll}
+\text{propriété}& → & \text{type} \\
+\text{preuve} &\mapsto&  \text{programme}
+\end{array}$
+
+$\Phi(A \Rightarrow B) = \Phi(A) → \Phi(B)$
+
+Comment construire une preuve ?
+axiomes et règles de déduction : déduction naturelle pour la logique minimale.
+
+axiome $\dfrac{(x,P) \in \Gamma}{\Gamma \vdash x: P}$
+
+abst. $\dfrac{\Gamma, (x:P) \vdash t:Q}{\Gamma  \vdash \lambda x:P.t : P \Rightarrow Q} \text{intro}_{\Rightarrow}$
+
+application $\dfrac{\Gamma \vdash t : P \Rightarrow Q \quad \Gamma \vdash u:P}{\Gamma \vdash (t u) Q}\text{elim}_{\Rightarrow}$
+
+\begin{ex}
+ une preuve de (A Rightarrow (B Rightarrow C) Rightarrow (( A Rightarrow B) Rightarrow (A Rightarrow C)) est \\
+$\lambda x : A → B → C . (\lambda y : A → B. ( \lambda z : A . (x z) (y z)))$
+\end{ex}
+
+A quoi ça sert ? 
+\begin{itemize}
+ \item \og typed programs can't go wrong \fg
+ \item types plus riches \begin{ex}
+                          fonction $\Phi$ qui prend f et qui retourne un 0 de f.
+                          $\Phi: (nat → nat ) → nat$
+                          $\Phi: (nat → nat ) → \{ x : nat | f x = 0 \}$ Si je sais construire un programme de ce type, j'ai prouvé en même temps qu'il renvoie bien un zéro de f.
+                          Le programme est une preuve de sa spécification.
+                         \end{ex}
+ \item un programme va contenir : \begin{itemize}
+                          \item une partie logique : construction de preuve
+                          \item une partie calcul : calculer des \og vraies valeurs \fg
+                         \end{itemize}
+On peut nettoyer le programme pour ne garder que les calculs utiles : extraction.
+
+\end{itemize}
+
+
+Conjonction et disjonction
+
+conjonction 
+$\dfrac{\Gamma \vdash u:P  \quad \Gamma \vdash v:Q }{\Gamma \vdash <u,v> : P \wedge Q}\text{intro}_{\wedge}$
+
+$\dfrac{\Gamma \vdash r : P \wedge Q}{\Gamma \vdash \Pi_1 r :P }\text{elim}_{\wedge 1}$
+disjonction
+$\dfrac{\Gamma \vdash u : P \vee Q \quad \Gamma \vdash f: P \Rightarrow R \quad \Gamma \vdash g : Q \Rightarrow R}{\Gamma \vdash case u f g : R}\text{elim}_{\vee}$
+
+$\frac{\Gamma \vdash r: P}{\Gamma \vdash inl r : P \vee Q}\text{intro}_{\vee 1}
+\frac{\Gamma \vdash r: Q}{\Gamma \vdash inr r : P \vee Q}\text{intro}_{\vee 1}$
+
+$\begin{array}{l}
+case (inl r) f g →_{\beta} f r\\
+case (intr r) f g  →_{\beta} g r
+\end{array}$ nouvelles \beta réductions
+
+
+\subsection{Preuves et calculs}
+La \beta réduction ( = le calcul) conserve le type.
+Si t : \tau et t →^*_{\beta} u alors u : \tau
+t et u sont deux preuves de la même propriété.
+effet de la réduction : notion de coupure.
+
+\subsection{Enrichir la logique}
+
+Pouvoir prouver (programmer) plus de choses.
+
+\subsubsection{Polymorphisme et $\forall$}
+
+idée : \lambda x . x a le type \alpha → \alpha pour tout \alpha
+on va typer  : \lambda x .x : \forall \alpha.( \alpha → \alpha) 
+\alpha : variable de type.
+
+élimination de \forall.
+
+$\frac{\Gamma \vdash u :\forall \alpha . \sigma}{\Gamma \vdash u :\sigma[ \alpha ← \tau]}$
+On remplace toutes les occurences libres de \alpha par un type \tau quelconque.
+
+introduction de \forall
+
+\alpha \not \in VarLibres(\Gamma)
+$\dfrac{\Gamma \vdash u : \sigma}{\Gamma \vdash u : \forall \alpha \sigma}$
+avantage de \forall : on va pouvoir typer certaines fonctions récursives.
+
+\subsubsection{Des types qui dépendent de types : \lambda \undeline{\omega}}
+On veut définir f : = \lambda \alpha : Type . \alpha → \alpha language pour construire des types.\\
+Les types font partie du language : il faut typer les types.
+
+\alpha * \beta * \vdash (\alpha → \beta) * : si \alpha et \beta sont des types, alors (\alpha → \beta) est un type.
+
+Notion de sorte : type de type (* est une sorte, * → * \dots → * est une sorte)
+On ajoute un niveau : * : \box, *→* : \box
+
+\subsubsection{Des types qui dépendent de termes : \lambda P (LF)}
+Fonctions de type A^n → B (type qui dépend de n)
+Tableaux de taille n : \Pi n : int(vect n) = pour tout n, je sais construire des tableaux de taille n.
+
+En général, : si pour tout a de type A, il existe un type B_a non vide, on veut former la fonction \lambda a : A . b_a : B_a. Son type est \Pi a : A.B_a produit cartésien des B_a.
+Si B_a ne dépend pas de a : B_a = B.   \Pi a : A. B = A → B.
+
+\subsubsection{Cube de Barendregt}
+
+Questions générales sur les sytèmes de types : 
+\begin{itemize}
+ \item expressivité
+ \item cohérence ?( paradoxes)
+ \item calculabilité
+ \item peut-on calculer dedans ?
+ \item efficacité
+\end{itemize}
 
 
 \end{document}
