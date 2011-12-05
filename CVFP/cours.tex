@@ -10,7 +10,7 @@
 \usepackage{mathrsfs}
 \usepackage{soul}
 \usepackage{newalg}
-
+\usepackage{fullpage}
 
 \usepackage{concrete}
 %\usepackage[mathcal,mathbf]{euler}
@@ -38,6 +38,7 @@
 \DeclareMathOperator{\Fo}{F}
 \DeclareMathOperator{\Go}{G}
 \DeclareMathOperator{\Uo}{U}
+\DeclareMathOperator{\Tr}{tr}
 
 \title{Conception et vérification de programmes}
 \author{François Schwartzentrüber\\
@@ -54,9 +55,9 @@
 
 \section{Machines de Turing}
 
-\begin{definition}[Machine de Turing] $M = ( \Sigma , Q , \delta, s)$ tel que \begin{itemize}
-\item $\Sigma$ : alphabet fini
-\item Q : ensemble d'états fini non vide
+\begin{definition}[Machine de Turing] Une machine de Turing est un $M = ( \Sigma , Q , \delta, s)$ tel que \begin{itemize}
+\item $\Sigma$ est un alphabet fini
+\item Q est un ensemble d'états fini non vide
 \item $\delta \subseteq (Q \times \Sigma) \times (Q \cup \{yes \} \times \Sigma \times \{-1, 0, 1\}$
 \item $s \in Q$
 \end{itemize}
@@ -97,15 +98,15 @@ $\forall x \in \Sigma^*, x \in L$ ssi $\exists k \geq 0, w \in \Sigma^* \tq[s] (
   \end{definition}
 
  \begin{definition}
- Soit $f : \Ns\to \Ns$, $M$ décide $L$ en temps $f$ ssi $M$ décide $L$ et 
+ Soit $f : \Ns\to \Ns$, \quad $M$ décide $L$ en temps $f$ ssi $M$ décide $L$ et 
 
 $\forall t \in \Ns, \forall x \in \sigma^*, \quad (s, 0, x) \rightarrow ^t (q, k, w) \Rightarrow t \leq f( | x | )$\\
  \end{definition}
 
 \begin{prop}
- Soit $M$ qui décide $L$ en temps $f$, si $(s, 0, x \rightarrow^* (q, k, w)$, alors 
+ Soit $M$ qui décide $L$ en temps $f$, 
 
-$ | w |  \leq max (  | x | , f( | x | )$
+si $(s, 0, x \rightarrow^* (q, k, w)$, alors $ | w |  \leq max (  | x | , f( | x | )$
 \end{prop}
  \begin{dem}
   Au temps $t$, $\forall k' > max (  | x | , t), w[k'] )$ est vide et le curseur courant $k \leq t$\\
@@ -123,7 +124,9 @@ $ | w |  \leq max (  | x | , f( | x | )$
 
 
  \subsection{Difficultés}
- \begin{definition}{}$L'$ réductible en temps polynomial à $L$ ssi il existe $f$, calculable en temps polynomial $\tq[le] \forall x \in \Sigma ^*, \; x \in L' \Leftrightarrow f(x) \in L$
+ \begin{definition}{}$L'$ réductible en temps polynomial à $L$ ssi il existe $f$, calculable en temps polynomial $\tq[le]$
+
+$\forall x \in \Sigma ^*, \; x \in L' \Leftrightarrow f(x) \in L$
  \end{definition}
  \begin{definition}{}$L$ est $NP$-dur ssi pour tout $L' \in NP$, on a $L'$ réductble en temps polyomial à~$L$.\\
  $L$ est $NP$-complet ssi $L \in NP$ et $L$ est $NP$-hard.
@@ -137,7 +140,7 @@ Si $L$ est $NP$-hard et  $L \in P$, alors $NP = P$
 Soit $L' \in NP$, $L$ réductible à $L' \Leftrightarrow L \in NP$
 \end{prop}
  
- \begin{definition}$CONP$ est l'ensemble des $L \tq \Sigma^* \setminus L \in NP$
+ \begin{definition}$CO\,NP$ est l'ensemble des $L \tq \Sigma^* \setminus L \in NP$
  \end{definition}
  \section{Pavages et logique proportionnelle}
  
@@ -248,18 +251,18 @@ t_1 &\dots & t_n \\
 \end{dem}
 
 \section{Logique proportionnelle quantifiée}
-SAT : est ce qu'il existe une valuation $\mu$ telle que $\mu \models \Phi$ ?
+Problème SAT : est ce qu'il existe une valuation $\mu$ telle que $\mu \models \Phi$ ?
 
-VALID : est ce que pour toute valuation $\mu$ on a $\mu \models \Phi$ ?
+Problème VALID : est ce que pour toute valuation $\mu$ on a $\mu \models \Phi$ ?
 
 \begin{definition}
  
  Une formule de la logique prop quantifiée (QBF, quantifiable binary formula) est une formule de la forme :
 
- $\exists p1, \forall p2, \exists p3 ... Q_np_n \Phi$ où
+ $\exists p_1, \forall p_2, \exists p_3 ... Q_np_n \Phi$ où
 $\begin{array}{l}
 Q_n \in \{ \exists, \forall \}\\
-\Phi$ est formule de la logique propositionnelle.$
+\Phi$ est une formule de la logique propositionnelle.$
 \end{array}$
 
 \end{definition}
@@ -404,7 +407,7 @@ $ \Sigma \vdash \Phi$ ssi $ \exists \Psi_1, \cdots, \Psi_n \in \Sigma \tq \\
  Un cadre de Kripke est un couple $\F = (W, R)$ où :
 \begin{itemize}
  \item $W$ est un ensemble non vide de mondes possibles
- \item $ R \subseteq W \times W$
+ \item $ R \subseteq W \times W$ est une relation entre les mondes
 \end{itemize}
 \end{definition}
 
@@ -500,7 +503,7 @@ $ \mathcal{P}( \Phi)= $ \og Si $ \M,w \bisim \M', w'$ alors $ \M,w \models \Phi$
 \end{dem}
 
 \begin{definition}[modèle à images finies]
- Soit $ \M = (W,R,V), \M$ est à images finies ssi $ \forall w \in W, R(w)$ est fini.
+ Soit $ \M = (W,R,V), \quad\M$ est à images finies ssi $ \forall w \in W, R(w)$ est fini.
 \end{definition}
 
 \begin{prop}
@@ -547,7 +550,7 @@ On a $ \M,w \models \Phi$ ssi $ \M [x \Leftarrow w] \models_{\text{ \tiny{1\ier 
 
 \begin{rem}
  Le problème de la satisfiabilité du 1\ier ordre avec deux variables est décidable et $NEXPTIME$-complet.\\
-$ \hookrightarrow$ le problème $sat$ de K est décidable.
+$ \hookrightarrow$ le problème $SAT$ de K est décidable.
 \end{rem}
 
 \begin{thm}[caractérisation de Von Benthem]
@@ -584,7 +587,7 @@ On note $\Cl(\Gamma)$ le plus petit ensemble clos contenant $ \Gamma$.
 \end{definition}
 
 \begin{prop}
- $\displaystyle \Cl(\Gamma) \leq 2 \sum_{\Phi \in \Gamma}  |  \Phi  | $  
+ $\displaystyle  | \Cl(\Gamma) | \leq 2 \sum_{\Phi \in \Gamma}  |  \Phi  | $  
 \end{prop}
 
 \begin{definition}[ensemble de Hinitkka]
@@ -694,7 +697,8 @@ $\Phi$ définit $C$ ssi pour tout cadre $\F,\F \in C \Leftrightarrow \F \models 
 \section{Premier / Second ordre}
 
 \begin{prop}
- Soit $Phi$ une formule modale
+ Soit $\Phi$ une formule modale.
+
 $\F,w \models Phi$ ssi $\F[x \leftarrow w] \models \forall p_1, \dots, p_n ST_x (\Phi)$
 \end{prop}
 
@@ -733,7 +737,7 @@ $\F \in C_{\text{Löb}} \Leftrightarrow \F \models \alpha$
 
 \subsection{Formule de Mc Kinsey}
 \begin{prop}
- Soit $\Phi = \Box \Diamond p \rightarrow \Diamond \Box p, \Phi$ ne correspond à aucune propriété du 1 ier ordre \\( $\not \exists \alpha  \tq \forall \F, \F \models \Phi$ ssi $\F \models \alpha$)
+ Soit $\Phi = \Box \Diamond p \rightarrow \Diamond \Box p, \Phi$ ne correspond à aucune propriété du 1\ier ordre \\( $\not \exists \alpha  \tq \forall \F, \F \models \Phi$ ssi $\F \models \alpha$)
 \end{prop}
 
 \begin{dem}
@@ -1004,9 +1008,7 @@ $\Rightarrow$ Par récurrence, les sous appels réussissent.\\
 \item Si $\Diamond \Psi \in F(s)$, alors $\exists t \in T(s),  \Psi \in F(t)$
 \item La racine est étiquetée par un S4-hintikka incluant $\Gamma$
 \end{itemize}
-
-\fbox{2} On transforme $\mathcal{S} = (S, T, F)$ qui correspond à satS4$(\Gamma, [\,])$ en un modèle de Kripke.
-
+\fbox{2} On transforme $\mathcal{S} = (S, T, F)$ qui correspond à satS4$(\Gamma, [\,])$ en un modèle de Kripke.\\
 Soit $\mathcal{M} = (W, R^*, V)$ défini par 
 \begin{itemize}
  \item $W = S \setminus I$ où $I$ est l'ensemble des feuilles incluses dans un prédécesseur
@@ -1041,22 +1043,21 @@ On dit que $M^f = (W^f, R^f, V^f)$ est une filtration si
  \item $W = W_{ |  \leftrightsquigarrow}$
  \item Si $w   \Ro v$ alors $ | w |    \Ro^f  | v | $
  \item Si $ | w |    \Ro^f  | v | $ alors $\forall \Box \Psi \in SF(\Phi), $
-	si $\M, w \models \Box Phi$, alors $M,u \models \Psi$
+	si $\M, w \models \Box \Phi$, alors $M,u \models \Psi$
 \item $V^f(p) = \{ [ w  |  \in W^f \tq[s] \M,w \models p \}$ pour $p$ qui apparait dans $\Phi$
 \end{enumerate}
 
 \end{definition}
 
 \begin{prop}
-$ | W^f |  \leq 2^{ | Phi | }$
+$ | W^f |  \leq 2^{ | \Phi | }$
 \end{prop}
-\begin{dem}$
+\begin{dem}$ \, \\
 i:
 \begin{array}{lcl}
  W^f & \rightarrow & 2^{SF(Phi)}\\
   | w |  & \mapsto&  \{ Psi \in SF(Phi) \tq \M, w \models Psi \}
 \end{array}$
-
 est bien définie et injective.
 \end{dem}
 
@@ -1068,7 +1069,8 @@ est bien définie et injective.
 \end{dem}
 
 Logiques candidates pour la filtration : 
-les logiques dont le problème SAT est NEXPTIME-complet
+les logiques dont le problème SAT est NEXPTIME-complet.
+
 Pour celles là, la filtration donne un algo optimal.
  
 
@@ -1106,7 +1108,7 @@ Un chemin $\Pi$ est une séquence infinie $\Pi_0 \Pi_1 \dots \tq[le] \forall i, 
  On définit $M, \Pi \models \Phi$ par induction sur $\Phi$ :
 \begin{itemize}
  \item $\M, \Pi \models p$ ssi $\Pi_0 \in V(p)$
- \item $\M, \Pi \models  \Oo Phi$ ssi $\M, \Pi [ 1 \dots ] \models \Phi$
+ \item $\M, \Pi \models  \Oo \Phi$ ssi $\M, \Pi [ 1 \dots ] \models \Phi$
  \item $\M, \Pi \models \Fo \Phi$ ssi $\exists i \geq 0 \tq \M, \Pi [ i \dots ] \models \Phi$
  \item $\M, \Pi \models \Go \Phi$ ssi $\forall i \geq 0 \tq \M, Pi [ i \dots ] \models \Phi$
  \item $\M, \Pi \models \Phi \Uo \Psi$ ssi \\$\exists i \geq 0 \tq \M, \Pi [ i \dots ] \models \Psi$ et $\forall j < i, M, \Pi[j \dots] \models \Phi$
@@ -1182,12 +1184,12 @@ $\forall k \in \Ns \setminus { i \dots j-1}, [k]_{\Pi} = [k]_{\Pi'}$
  Par induction sur les formules.
 \end{dem}
 \begin{definition}
- Soit $\infty_{\Pi}$ l'ensemble des $S \subseteq SF(\Phi)$ tels qu'il existe une infinité de $k \tq [k]_{\Pi} = S$. On dira qy'un chemin $\Pi$ est ultimement périodique à partir de $i$ et de période $p$ ssi $\forall k \geq i$, on a $\Pi_k = \Pi_{k+p}$
+ Soit $\infty_{\Pi}$ l'ensemble des $S \subseteq SF(\Phi)$ tels qu'il existe une infinité de $k \tq[s] [k]_{\Pi} = S$. On dira qu'un chemin $\Pi$ est ultimement périodique à partir de $i$ et de période $p$ ssi $\forall k \geq i$, on a $\Pi_k = \Pi_{k+p}$
 \end{definition}
 
 \begin{lem}[2]
- Soient $i, p \in \Ns tq [i]_{\Pi} = [i+p]_{\Pi}$ et $\forall S \in \infty_{Pi}, \exists k \in \{i, dots, i+p-1 \} \tq [k]_{\Pi} = S$
-Soit $\Pi'$ le chemin ultimement périodique à partir de $i$ et de période $p$, défini par $\forall k < i+p, \Pi'_k = \Pi_k$
+ Soient $i, p \in \Ns \tq[s] [i]_{\Pi} = [i+p]_{\Pi}$ et $\forall S \in \infty_{\Pi}, \exists k \in \{i, \dots, i+p-1 \} \tq[s] [k]_{\Pi} = S$.\\
+Soit $\Pi'$ le chemin ultimement périodique à partir de $i$ et de période $p$, défini par $\forall k < i+p, \Pi'_k = \Pi_k$.\\
 On a : $\forall k < i+p, [k]_{\Pi} = [k]_{\Pi'} et \forall k \geq i, [k]_{\Pi'} = [k+p]_{\Pi'}$
 \end{lem}
 
@@ -1209,12 +1211,12 @@ On a : $\forall k < i+p, [k]_{\Pi} = [k]_{\Pi'} et \forall k \geq i, [k]_{\Pi'} 
  Un ensemble de Hinikka sur $\Sigma$ est un ensemble saturé de la façon suivante :
 \begin{itemize}
  \item $\Sigma \subseteq H$
- \item Si $\Phi \vee \Psi \in H, \Phi \in H$ ou $\Psi \in H$
- \item Si $\lnot (\Phi \vee \psi) \in H, \Phi \not \in H$ et $\Psi \not \in H$
- \item Si $\lnot \lnot \Phi \in H, \Phi in H$
- \item Si $\lnot O \Psi \in H, O \lnot \Psi in H$
- \item Si $\Psi U \Phi \in H, \Psi \in H$ ou $(\Phi \in H$ et $O (\Phi U \Psi ) \in H$
- \item Si $\lnot (\Phi U \Psi) \in H$
+ \item Si $\Phi \vee \Psi \in H, \quad \Phi \in H$ ou $\Psi \in H$
+ \item Si $\lnot (\Phi \vee \psi) \in H, \quad \Phi \not \in H$ et $\Psi \not \in H$
+ \item Si $\lnot \lnot \Phi \in H, \quad \Phi \in H$
+ \item Si $\lnot \Oo \Psi \in H, \quad \Oo \lnot \Psi \in H$
+ \item Si $\Psi \Uo \Phi \in H, \quad \Psi \in H$ ou $(\Phi \in H$ et $O (\Phi \Uo \Psi ) \in H$
+ \item Si $\lnot (\Phi \Uo \Psi) \in H$
 \end{itemize}
 
 \end{definition}
@@ -1243,17 +1245,17 @@ On a : $\forall k < i+p, [k]_{\Pi} = [k]_{\Pi'} et \forall k \geq i, [k]_{\Pi'} 
 
 
 \begin{rem}
- Si $\Phi$ est une formule de $CTL$, 
+
 $\begin{array}{ll}
-M, \Pi \models \Phi & $ ssi $M, \Pi_0 \models_{\exists} Phi\\
-		 & $ ssi $M, \Pi_0 \models_{\forall} Phi
+  $Si $\Phi$ est une formule de $CTL, \quad \M, \Pi \models \Phi & $ ssi $\M, \Pi_0 \models_{\exists} Phi\\
+ & $ ssi $\M, \Pi_0 \models_{\forall} Phi
 \end{array}$
 
 
 \end{rem}
 
 \begin{thm}
- Le model checking de $CTL$ sur $M = W,R,V$ et $\Phi$ prend $O(|\Phi|  \times ( | X| + |R|))$ opérations.
+ Le model checking de $CTL$ sur $\M = W,R,V$ et $\Phi$ prend $O(|\Phi|  \times ( | X| + |R|))$ opérations.
 \end{thm}
 
 \begin{ex}
@@ -1273,38 +1275,45 @@ où $\phi_{\sigma}$ =
 \section{Comparaison de $LTL, CTL, CTL^*$}
 
 \begin{definition}
- Soient $\Phi_1, \Phi_2$ deux formules de $CTL^*$
-$\Phi_1$ equivalente à $\Phi_2$ ssi pour tout modèle $M,s$, on a 
-	    $M,s \models_\forall \Phi_1$ ssi $M,s \models_\forall \Phi_2$
+ Soient $\Phi_1, \Phi_2$ deux formules de $CTL^*$.\\
+$\Phi_1$ equivalente à $\Phi_2$ ssi pour tout modèle $\M,s$, on a 
+	    $\M,s \models_\forall \Phi_1$ ssi $\M,s \models_\forall \Phi_2$
 
 \end{definition}
 
 \begin{thm}
- Soit $\Phi$ une formule de $CT^L*$
- 
-Soit $\Phi$ est equivalente à $\Psi$ où $\Psi$ est $\Phi$ dans laquelle on a retité les quantificateurs de chemin $\exists, \forall$
-Soit $\Phi$ n'est équivalente à aucune formule de $LTL$.
+ Soit $\Phi$ une formule de $CTL^*$.
+\begin{itemize}
+ \item Soit $\Phi$ est equivalente à $\Psi$ où $\Psi$ est $\Phi$ dans laquelle on a retité les quantificateurs de chemin $\exists, \forall$.
+ \item Soit $\Phi$ n'est équivalente à aucune formule de $LTL$.
+\end{itemize}
+
 \end{thm}
 
 \begin{lem}
 $\forall n, \forall M,
- \forall \Phi LTL, si \Phi \leq n, \exists x, y \subseteq \Pi \tq
-M, \Pi \models \Phi ssi M, xy^\omega \models \Phi$
-\end{lem}
+ \forall \Phi LTL,$ si $\Phi \leq n, \exists x, y \subseteq \Pi \tq[s]$
 
+$\M, \Pi \models \Phi$ ssi $\M, xy^\omega \models \Phi$
+\end{lem}
+\pagebreak
 \begin{dem}[du théorème]
- Supposons $\Phi$ equivalent à $\chi$ formmule de $LTL$.
- Montrons que $\Phi$ est équivalente à $\Psi$ du théorème.
- $M,s \models_\exists \Phi ssi \forall Pi qui part de s, on a M, \Pi \models \chi
-		       ssi \forall Pi' = wy^{\omega}$ qui part de s, on a $M, \Pi' \models \chi
-		       ssi \forall Pi' = wy^{\omega}$ qui part de s, on a $M^{\Pi'}, 0 \models \chi
-		      $ où $M^{\Pi'} = (W', R', V')$ avec $W' = {0, \dots |xy|}
-						    R' = {(n, n+1) \tq n < |xy|} \cup {(|xy|, |x|)}
-						    V'(i) = V(\Pi_i)
-		       ssi \forall \Pi' \dots$ on a $M^{\Pi'}, 0 \models_\exists \Phi
-		       ssi \forall \Pi' \dots$ on a $M^{\Pi'}, 0 \models_\exists \Psi ($comme $M^\Pi$ déterministe, on peut supprimer les $\forall et \exists de \Phi)
-		       ssi \forall \Pi' = x y ^{\omega}, M, \Pi' \models \Psi
-		       ssi \forall \Pi$ chemin quelconque$, M, \Pi \models_\forall \Psi$ (en utilisant le lemme)
+ Supposons $\Phi$ equivalent à $\chi$ formmule de $LTL$. \\
+ Montrons que $\Phi$ est équivalente à $\Psi$ du théorème.\\
+$\begin{array}{ll}
+ M,s \models_\exists \Phi & \ssi \forall \Pi$ qui part de $s$, on a $M, \Pi \models \chi \\
+		     &  \ssi \forall \Pi' = wy^{\omega}$ qui part de $s$, on a $M, \Pi' \models \chi\\
+		      & \ssi \forall \Pi' = wy^{\omega}$ qui part de $s$, on a $M^{\Pi'}, 0 \models \chi\\
+		     & $ où $M^{\Pi'} = (W', R', V') $ avec $\begin{array}{l}
+		                                     W' = {0, \dots |xy|}\\
+						    R' = {(n, n+1) \tq n < |xy|} \cup {(|xy|, |x|)}\\
+						   V'(i) = V(\Pi_i)\\
+		                                       \end{array}\\
+		     &  \ssi \forall \Pi' \dots,$ on a $M^{\Pi'}, 0 \models_\exists \Phi\\
+		      & \ssi \forall \Pi' \dots,$ on a $M^{\Pi'}, 0 \models_\exists \Psi ($comme $M^\Pi$ déterministe, on peut supprimer les $\forall$ et $\exists$ de $\Phi)\\
+		      & \ssi \forall \Pi' = x y ^{\omega}, M, \Pi' \models \Psi\\
+		      & \ssi \forall \Pi$ chemin quelconque, $M, \Pi \models_\forall \Psi$ (en utilisant le lemme)$\\
+\end{array}$
 \end{dem}
 
 \begin{ex}
@@ -1347,42 +1356,44 @@ Par exemple, $\forall F G p \vee \forall G \exists F q$.
 \subsection{Comparaison de CTL avec K et S4}
 
 \begin{prop}
- Soit tr une traduction de K dans CTL définie par 
-$tr(\Box \Phi) = \forall O tr(\Phi)$
-Alrs si M, w est un modèle, on a 
-$M,w \models_K \Phi ssi M,w \models_\forall,\exists tr(\Phi)$
-$
-\begin{array}{cc}
+ Soit tr une traduction de K dans CTL définie par :
+$\Tr(\Box \Phi) = \forall \Oo \Tr(\Phi)$\\
+Alors si $M, w$ est un modèle, on a 
+$M,w \models_K \Phi \ssi M,w \models_\forall,\exists \Tr(\Phi)$\\
+
+$\begin{array}{cc}
  K & CTL\\
- \Box & \forall O
- \\ \Diamond & \exists O
+ \Box & \forall \Oo
+ \\ \Diamond & \exists \Oo
 \end{array}$
 \end{prop}
 
 \begin{prop}
   Soit tr une traduction de S4 dans CTL définie par
-$tr(\Box \Phi ) = \forall G tr(\Phi)$
-Soit $M = W R V$ un modèle, $M^* = W R^* V$ un modèle
-$M* , w \models_S4 \Phi$ ssi $M,w \models tr(\Phi)$
+$tr(\Box \Phi ) = \forall G \Tr(\Phi)$.\\
+Soient $M = (W, R ,V)$ et $M^* = (W, R^*, V)$ deux modèles.
+
+$M* , w \models_S4 \Phi$ ssi $M,w \models \Tr(\Phi)$
 \end{prop}
 
 \subsection{Bisimulations}
 
 \begin{definition}
- On dit que $M, \Pi$ et $M', \Pi'$ sont bissimilaires  ssi $\forall n in \Ns, $
+ On dit que $M, \Pi$ et $M', \Pi'$ sont bissimilaires  ssi $\forall n \in \Ns, $
+
 $M, \Pi_n \bisim M', \Pi_n'$
 \end{definition}
 
 \begin{prop}
- Soient $M, w \bisim M',w,$ soit $\Pi$ un chemin qui part de $w$ dans $M$.
- Alors $\exists \Pi'$ chemin partant de $w' \tq M, \Pi \bisim M', \Pi'$
+ Soient $M, w \bisim M',w,$ soit $\Pi$ un chemin qui part de $w$ dans $M$.\\
+ Alors il existe un chemin $\Pi'$ partant de $w' \tq M, \Pi \bisim M', \Pi'$.
 \end{prop}
 \begin{dem}
  
 \end{dem}
 \begin{prop}
  Si $M,\Pi \bisim M', \Pi'$ alors $\forall \Phi$ de $CTL^*$, on a 
-$M, \Pi \models \Phi$ ssi $M', \Pi' \models \Phi$
+$M, \Pi \models \Phi$ ssi $M', \Pi' \models \Phi$.
 \end{prop}
 \begin{dem}
  Par induction.
@@ -1392,8 +1403,8 @@ $M, \Pi \models \Phi$ ssi $M', \Pi' \models \Phi$
 On a équivalence entre :
   \begin{enumerate}
    \item $M, w \bisim M', w'$
-   \item $\forall \Phi de CTL*, M,w \models_\exists \Phi$ ssi $M', w' \models_\exists \Phi$
-   \item $\forall \Phi de CTL, M,w \models_\exists \Phi$ ssi $M', w' \models_\exists \Phi$
+   \item $\forall \Phi \in CTL^*, \quad M,w \models_\exists \Phi$ ssi $M', w' \models_\exists \Phi$
+   \item $\forall \Phi \in CTL,  \quad M,w \models_\exists \Phi$ ssi $M', w' \models_\exists \Phi$
   \end{enumerate}
 
 \end{thm}
@@ -1406,80 +1417,86 @@ On a équivalence entre :
 \subsection{Propositional Dynamic Logic}
 
 \subsubsection{Syntaxe}
-Soit ATM un ensemble de propositions
-Soit PRG un ensemble de programmes atomiques
+Soit $ATM$ un ensemble de propositions
+Soit $PRG$ un ensemble de programmes atomiques
 
-Le language de PDL est le suivant : 
- Phi := p | lnot Phi | Phi vee Phi | [Pi] Phi		où p in ATM
- Pi := a | Pi;Pi | Pi cup Pi | Pi* | Phi ?		où a in PRG
+Le language de $PDL$ est le suivant : $
+\begin{array}{ll}
+ \Phi := p | \lnot \Phi | \Phi \vee \Phi | [\Pi] \Phi		&$où $p \in ATM \\
+ \Pi := a | \Pi;\Pi | \Pi \cup \Pi | \Pi* | \Phi ?	&$où $a \in PRG
+\end{array}$
 
 \subsection{Sémantique}
 
-On appelle PROG l'ensemble des programmes.
+On appelle $PROG$ l'ensemble des programmes.
 
 \begin{definition}
- Un modèle dM = (W, (R_{\Pi})_{Pi in PROG}, V) est un modèle de PDL : 
+ Un modèle $M = (W, (R_{\Pi})_{\Pi \in PROG}, V)$ est un modèle de $PDL$ si : 
 \begin{itemize}
- \item W est un ensemble de mondes
- \item R_{Psi ? } = \{ (w,w) in W², M, w models Phi\}
- \item R_{Pi_1 ; Pi_2} = R_{Pi_1}\circ R_{Pi_2}
- \item R_{Pi_1 cup Pi_2} = R_{Pi_1} \cup R_{Pi_2}
- \item R_{Pi^*} = R_{Pi}^* (cloture réflexive transitive)
+ \item $W$ est un ensemble de mondes
+ \item $R_{\Psi ? }$ = $\{ (w,w) \in W², M, w \models \Phi\}$
+ \item $R_{\Pi_1 ; \Pi_2} = R_{\Pi_1}\circ R_{\Pi_2}$
+ \item $R_{\Pi_1 \cup \Pi_2} = R_{\Pi_1} \cup R_{\Pi_2}$
+ \item $R_{\Pi^*} = (R_{\Pi})^*$ (cloture réflexive transitive)
 \end{itemize}
 
 \end{definition}
 
 \begin{definition}
- M,w models [Pi] ssi forall u in R_Pi(w), on a M, u models Phi
+$ M,w \models [\Pi]$ ssi $\forall u \in R_{\Pi(w)},$ on a $M, u \models \Phi$
 \end{definition}
 
 \subsection{Connaissance commune}
 
 \subsubsection{Syntaxe}
 
-Soit AGT un ensemble d'agents.
+Soit $AGT$ un ensemble d'agents.
 
-Phi := p | lnot Phi | Phi vee Phi | K_, Phi | CK_j Phi		où j in ATM, J \subseteq AGT
-K_j Phi = j sait que Phi
-CK_J Phi = un groupe J a la connaissance commune que Phi_
+$\Phi := p | \lnot \Phi | \Phi \vee \Phi | K_j \Phi | CK_J \Phi$	où $j \in ATM, J \subseteq AGT$\\
+$K_j \Phi$ = $j$ sait que $\Phi$\\
+$CK_J \Phi$ = un groupe $J$ a la connaissance commune que $\Phi$\\
 
 \subsubsection{Sémantique}
 
 \begin{definition}
  
-Un modèle M pour cette logique est (W, (R_j)_{j in AGT }, V)
+Un modèle $M$ pour cette logique est $(W, (R_j)_{j \in AGT }, V)$ où
 \begin{itemize}
- \item W est un ensemble non vide de mondes
- \item forall j, R_j est une relation d'équivalence
- \item V valuation
+ \item $W$ est un ensemble non vide de mondes
+ \item $\forall j, R_j$ est une relation d'équivalence
+ \item $V$ est une valuation
 \end{itemize}
 
 \end{definition}
 
 
 \begin{definition}
- M, w models K, Phi ssi forall u in R_j(w), on a M,u models Phi
- M, w models CK_J Phi ssi forall u in (\bigcup_{j in J} R_j)^*, on a M, u models Phi
+ $M, w \models K, \Phi \ssi \forall u \in R_j(w), M,u \models \Phi\\
+ M, w \models CK_J \Phi \ssi \forall u \in (\bigcup_{j \in J} R_j)^*, M, u \models \Phi$
 \end{definition}
 
 \subsection{Conséquence globale dans K}
 
-Jusqu'à présent, on a Sigma models_C^{local} Phi qui signifie : 
-pour tout modèle pointé (M, w), on a 
-M, w models Sigma implique M, w models Phi
+Jusqu'à présent, on a $\Sigma \models_C^{local} \Phi$ qui signifie : \\
+pour tout modèle pointé $(M, w)$, on a:
 
-On peut aussi introduire la conséquence globale : Sigma models_C^{global} Phi ssi pour tout modèle M de C, M models Sigma implique M models Phi
+$M, w \models \Sigma$ implique $M, w \models \Phi$.\\
+
+On peut aussi introduire la conséquence globale : $\Sigma \models_C^{global} \Phi$ ssi pour tout modèle $M$ de $C, \\M \models \Sigma$ implique $M \models \Phi.$
 
 \begin{rem}
- Sigma models_K^{globale} Phi ssi \{ Box^n Psi tq Psi in Sigma, n in Ns \} models_K^{local} Phi
-Sigma' models_{S4}^{globale} Phi ssi \{ Box^n Psi tq Psi in Sigma \} models_{S4}^{local} Phi
+ $\Sigma \models_K^{globale} \Phi \ssi \{ \Box^n \Psi \tq \Psi \in \Sigma, n \in \Ns \} \models_K^{local} \Phi$
+
+$\Sigma' \models_{S4}^{globale} \Phi \ssi \{ \Box^n \Psi \tq \Psi \in \Sigma \} \models_{S4}^{local} \Phi$
 \end{rem}
 
 \begin{prop}
  Le problème suivant :
-entrée Sigma fini, Phi
-sortie Sigma models_{S4}^{globale} Phi
-est PSPACE complet
+\begin{tabular}{l}
+entrée : $\Sigma$ fini, $\Phi$\\
+sortie : $\Sigma \models_{S4}^{globale} \Phi$
+\end{tabular}
+est $PSPACE$-complet
 \end{prop}
 
 
@@ -1488,74 +1505,74 @@ est PSPACE complet
 \subsection{Définitions}
 
 \begin{definition}
- Une machine de Turing alternante est M = (Q, U, delta, s) avec
+ Une machine de Turing alternante est $M = (Q, U, \delta, s)$ avec
 \begin{itemize}
- \item Q ensemble fini d'états
- \item U subseteq Q (états universels)
- \item delta subseteq (Q times Sigma) times (Q cup \{no, yes \} times Sigma times \{-1,0,1\}
+ \item $Q$ ensemble fini d'états
+ \item $U \subseteq Q$ (états universels)
+ \item $\delta \subseteq (Q \times \Sigma) \times (Q \cup \{no, yes \} \times \Sigma \times \{-1,0,1\}$
 \end{itemize}
 \end{definition}
 
 \begin{definition}
- configuration (q,k,w) 
+Une configuration est un triplet $(q,k,w)$ où: 
 \begin{itemize}
- \item q état
- \item k position
- \item w not
+ \item $q$ est un état
+ \item $k$ est une position
+ \item $w$ not
 \end{itemize}
 
 \end{definition}
 
 \subsection{Calculs}
 
-mathcal{C} = ensemble de configurations.
+$\mathcal{C}$ = ensemble de configurations.
 
 \begin{definition}
- Un arbre de calcul de M sur x est un arbre (pt infini) tel que chaque noeud est une configuration et les enfants de c sont les c' tels que c →^u c'
-Formellement, i est une fonction partielle de \{0,1,dots \} ^* → C
+ Un arbre de calcul de $M$ sur $x$ est un arbre (pt infini) tel que chaque noeud est une configuration et les enfants de $c$ sont les $c'$ tels que $c →^u c'$.\\
+Formellement, $i$ est une fonction partielle de $\{0,1,\dots \} ^* → C$
 \end{definition}
 
 \begin{definition}
- Une étiquette : \{0,1,dots \} ^* → \{0,1\} d'un arbre A est acceptante ssi 
+ Une étiquette : $\{0,1,\dots \} ^* → \{0,1\}$ d'un arbre $A$ est acceptante ssi 
 \begin{itemize}
- \item L(u) = 1 si A(u) est acceptante
- \item L(u) = bigvee_{n.k} L(n.k) si A(u) est existentiel (exists)
- \item L(u) = bigwedge_{n.k} L(n.k) si A(u) est universel (forall)
+ \item $L(u) = 1$ si $A(u)$ est acceptante
+ \item $\displaystyle L(u) = \bigvee_{n.k} L(n.k)$ si $A(u)$ est existentiel ($\exists$)
+ \item $\displaystyle L(u) = \bigwedge_{n.k} L(n.k)$ si $A(u)$ est universel ($\forall$)
 \end{itemize}
 \end{definition}
 
 \begin{definition}
- M accepte x ssi L(epsilon) = 1 pour toute étiquette L de l'unité de calcul où la configuration à la racine est (s,0,x)
+ $M$ accepte $x$ ssi $L(\epsilon) = 1$ pour toute étiquette $L$ de l'unité de calcul où la configuration à la racine est $(s,0,x)$.
 \end{definition}
 \begin{rem}
- Il peut y avoir plusieurs étiquettes si l'arbre est infini
+ Il peut y avoir plusieurs étiquettes si l'arbre est infini.
 \end{rem}
 
 \begin{definition}
- M accepte L ssi (x in L Leftrightarrow M accepte x)
+ $M$ accepte $L$ ssi $(x \in L \Leftrightarrow M$ accepte $x$).
 \end{definition}
 
 \begin{definition}
- M accepte L en temps f ssi M accepte L et la profondeur de l'arbre issu de (s,0,x) est de profondeur bornée par  f(|x|) pour tout x
+ $M$ accepte $L$ en temps $f$ ssi $M$ accepte $L$ et la profondeur de l'arbre issu de $(s,0,x)$ est de profondeur bornée par  $f(|x|)$ pour tout $x$.
 \end{definition}
 
 \begin{definition}
- M accepte L en espace f ssi M accepte L et la taille des rubans des configurations de l'arbre issu de (s,0,x) est de profondeur bornée par f(|x|) pour tout x
+ $M$ accepte $L$ en espace $f$ ssi $M$ accepte $L$ et la taille des rubans des configurations de l'arbre issu de $(s,0,x)$ est de profondeur bornée par $f(|x|)$ pour tout $x$.
 \end{definition}
 
 \begin{definition}
- AP = classe des langages reconnus par une MTA en temps polynomial
-APSPACE = classe des langages reconnus par une MTA en espace polynomial
+ $AP$ = classe des langages reconnus par une MTA en temps polynomial.\\
+$APSPACE$ = classe des langages reconnus par une MTA en espace polynomial.
 \end{definition}
 
 \subsection{Comparaison des classes de compléxité}
 
 \begin{thm}
- AP = PSPACE
+ $AP = PSPACE$
 \end{thm}
 
 \begin{thm}
- APSPACE = EXPTIME
+$ APSPACE = EXPTIME$
 \end{thm}
 
 
