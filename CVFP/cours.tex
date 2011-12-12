@@ -699,7 +699,7 @@ $\Phi$ définit $C$ ssi pour tout cadre $\F,\F \in C \Leftrightarrow \F \models 
 \begin{prop}
  Soit $\Phi$ une formule modale.
 
-$\F,w \models Phi$ ssi $\F[x \leftarrow w] \models \forall p_1, \dots, p_n ST_x (\Phi)$
+$\F,w \models \Phi$ ssi $\F[x \leftarrow w] \models \forall p_1, \dots, p_n ST_x (\Phi)$
 \end{prop}
 
 \begin{ex}
@@ -900,14 +900,14 @@ $\vdash_S \Phi$ ssi $\models_S \Phi$.
 \subsection{Logique modale S5}
 \begin{tabular}{c |  c  }
  axiomatique & propriété sur les cadres \\
- $\Box p \leftarrow p$ & réfléxivité\\
- $\Box p \leftarrow \Box \Box p$ & transitivité\\
- $\lnot\Box p \Box \lnot \Box p$ & euclidianité\\
- $(\Diamond \Box p \leftarrow \Box p)$\\
+ $\Box p \Ro p$ & réfléxivité\\
+ $\Box p \Ro \Box \Box p$ & transitivité\\
+ $\lnot\Box p \Ro \Box \lnot \Box p$ & euclidianité\\
+ $(\Diamond \Box p) \Ro \Box p$ euclidianité\\
 \end{tabular}
 \subparagraph{Application : } Logique epistémique
 
-euclidianité : $\forall x, y, z, (x R y \wedge xRz) \leftarrow y R z$
+euclidianité : $\forall x, y, z, (x R y \wedge xRz) \Ro y R z$
 
 \begin{prop}
  Si $R$ est réfléxive, transitive, alors $R$ euclidienne ssi $R$ symétrique
