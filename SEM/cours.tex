@@ -1181,52 +1181,56 @@ $
 
 Language REC :
 \begin{itemize}
- \item variables \Vs
- \item symboles des fonctions f_1, \dots, f_n in \Fs
- \item chaque symbole de fonction f_i est muni d'une arité a_i
- \item termes : t ::= n | x | t_1 + t_2 | t_1 * t_2 | t_1 - t_2 | if t_0 then t_1 else t_2 | f_i(t_1, \dots, t_{a_i})
+ \item variables $\Vs$
+ \item symboles des fonctions $f_1$, \dots, $f_n$ in $\Fs$
+ \item chaque symbole de fonction $f_i$ est muni d'une arité $a_i$
+ \item termes : $t$ ::= $n$ | $x$ | $t_1 + t_2$ | $t_1 * t_2$ | $t_1 - t_2$ | if $t_0$ then $t_1$ else $t_2$ | $f_i(t_1,\ \dots,\ t_{a_i}$)
 \end{itemize}
-Les booléens sont codés par des termes :  \begin{array}{lll}
-                                           0 & → & vrai
-					   n \not = 0 & → & faux
-                                          \end{array}
-Les fonctions sont définies par des déclarations right\{ \begin{array}{lll}
-                                                  f_1(x_1, \dots, x_{a_1}) & = & d_1\\
-						  f_k(x_1, \dots, x_{a_k}) & = & d_k
-                                                 \end{array} \left.
+Les booléens sont codés par des termes :  \begin{eqnarray}{rcl}
+                                           0 & \to & vrai\\
+					   n \neq 0 & \to & faux
+                                          \end{eqnarray}
+Les fonctions sont définies par des déclarations 
+\begin{eqnarray}{rcl}
+ f_1(x_1,\ \dots,\ x_{a_1}) & = & d_1\\
+ f_k(x_1,\ \dots,\ x_{a_k}) & = & d_k
+\end{eqnarray}
 
 
-Les d_i sont des termes; les variables de d_i sont dans \{ x_1 \dots x_n \}
-d_i peut contenir un appel à f_i.
+Les $d_i$ sont des termes; les variables de $d_i$ sont dans $\{ x_1 \dots x_n \}$
+$d_i$ peut contenir un appel à $f_i$.
 
 \section{Sémantique opérationnelle}
 
 \begin{ex}
-\begin{array}{l}
-  f_1(x) = f_1(x) +1
-  f_2(x) = 1
-\end{array} On veut évaluer f_2(f_1(x)) → résultat ?
+\begin{eqnarray}{rcl}
+  f_1(x) & = & f_1(x) +1\\
+  f_2(x) & = & 1
+\end{eqnarray}
+
+On veut évaluer $f_2(f_1(x))$ → résultat ?\\
 Dépend de l'ordre d'évaluation : \begin{itemize}
-                                  \item f_1 d'abord : appel par valeur
-                                  \item f_2 d'abord : appel par nom
+                                  \item $f_1$ d'abord : appel par valeur
+                                  \item $f_2$ d'abord : appel par nom
                                  \end{itemize}
 \end{ex}
 
 \subsection{Appel par valeur}
 programme : terme clos (sans variable). On se fixe une déclaration d
-règles t \xrightarrow[va]{d} n : \og le terme clos t s'évalue en la valeur n par rapport à la déclaration d avec une stratégie d'appel par valeur \fg
+règles $t \xrightarrow[va]{d} n$ : \og le terme clos t s'évalue en la valeur n par rapport à la déclaration d avec une stratégie d'appel par valeur \fg
 
 \subsection{Appel par nom}
 
-Règles t \xrightarrow[no]{d} n
+Règles $t \xrightarrow[no]{d} n$
 
 \begin{rem}
- \xrightarrow[no]{} et \xrightarrow[va]{} sont à grand pas.
+ $\xrightarrow[no]{}$ et $\xrightarrow[va]{}$ sont à grand pas.
 \end{rem}
 
 \begin{prop}
- \xrightarrow[no]{} et \xrightarrow[va]{}  sont compositionnelles et déterministes.
+ $\xrightarrow[no]{}$ et $\xrightarrow[va]{}$  sont compositionnelles et déterministes.
 \end{prop}
+
 
 \section{Sémantique dénotationnelle}
 
@@ -1238,51 +1242,54 @@ On procède en deux temps :
 
 \subsection{Appel par valeurs}
 
-Domaine sémantique : p in Env : \Vs → \Zs
-Chaque fonction f_i est associée à une fonction \Phi_i : \Zs^{a_i} → \Zs_{\bot}
-F\,Env_{va} = [ \Zs^{a_1} → \Zs_{\bot}] \times [ \Zs^{a_2} → \Zs_{\bot}] \times \dots \times [ \Zs^{a_k} → \Zs_{\bot}]
+Domaine sémantique : $p \in Env$ : $\Vs → \Zs$
+Chaque fonction $f_i$ est associée à une fonction $\Phi_i$ : $\Zs^{a_i} → \Zs_{\bot}$
+$F\,Env_{va} = [ \Zs^{a_1} → \Zs_{\bot}] \times [ \Zs^{a_2} → \Zs_{\bot}] \times \dots \times [ \Zs^{a_k} → \Zs_{\bot}]$
 
 \paragraph{Sémantique d'un terme}
 
-Notation : f : \Zs → \Zs_{\bot}
-Fonctions à une variable x : f = \lambda x . e
-\longrightarrow f^* : \Zs_{\bot} → \Zs_{\bot} tq f^*(n) = f(n) si n \not = \bot, f^*(n) = \bot sinon.
-f^* est notée let x \Leftarrow n,e
+Notation : f : $\Zs → \Zs_{\bot}$
+Fonctions à une variable x : $f = \lambda x . e$
+$\longrightarrow f^* : \Zs_{\bot} → \Zs_{\bot} tq f^*(n) = f(n) \text{ si } n \not = \bot,\ f^*(n) = \bot \text{ sinon}.$
+$f^*$ est notée $let x \Leftarrow n,e$
 
-\semm{t}_{va} \in [FEnv_{va} → [Env → \Zs_{\bot} ]]
-\semm{n}_{va} \Phi_f = n
-\semm{x}_{va} \Phi_f = f(x)
-\semm{t_1 op t_2}_{va} \Phi_f = (\semm{t_1}_{va} \Phi_f) op_{\bot} (\semm{t_2}_{va} \Phi_f) avec op_{\bot} = op étendu à \Zs_{\bot}
-\semm{f_i(t_1, \dots, t_{a_i}}_{va} \Phi_f = let x_1 \Leftarrow \semm{v_1}_{va} 
+$$\semm{t}_{va} \in [FEnv_{va} → [Env → \Zs_{\bot} ]]$$
+$$\semm{n}_{va} \Phi_f = n$$
+$$\semm{x}_{va} \Phi_f = f(x)$$
+$$\semm{t_1 op t_2}_{va} \Phi_f = (\semm{t_1}_{va} \Phi_f) op_{\bot} (\semm{t_2}_{va} \Phi_f) avec op_{\bot} = op \text{ étendu à } \Zs_{\bot}$$
+$$\semm{f_i(t_1, \dots, t_{a_i}}_{va} \Phi_f = let x_1 \Leftarrow \semm{v_1}_{va} $$
+
 \begin{prop}
- Pour tout teme t, \semm{t}_{va} est une fonction continue.
-\end{prop}
-\begin{prop}
- Si t est clos, \semm{t}_{va} \Phi_f ne dépend pas de f.
+ Pour tout teme t, $\semm{t}_{va}$ est une fonction continue.
 \end{prop}
 
-Construction de l'environnement \Phi :
-\Phi = (\Phi_1, \dots, \Phi_n) solution du système 
-\begin{array}{ll}
- \Phi_1(n_1, \dots, n_{a_1}) = \semm{d_1}_{va} \Phi_p [x_1 ← n_1, \dots, x_{a_1} ← n_{a_1}]
-\vdots
- \Phi_1(n_1, \dots, n_{a_k}) = \semm{d_1}_{va} \Phi_p [x_1 ← n_1, \dots, x_{a_1} ← n_{a_1}]
-\end{array}
-\Phi est le plus petit point fixe de Fd avec Fd(\Phi) =
-\begin{array}{ll}
-(\lambda n_1 \dots \lambda n_{a_1} \in \Zs . \semm{d_1}_{va} \Phi_f[x_1 ← n_1, \dots, x_{a_1} ← n_{a_1}]
-\vdots
+\begin{prop}
+ Si t est clos, $\semm{t}_{va}\ \Phi_f$ ne dépend pas de f.
+\end{prop}
+
+Construction de l'environnement $\Phi$ :
+$\Phi = (\Phi_1, \dots, \Phi_n)$ solution du système 
+\begin{eqnarray}{rcl}
+ \Phi_1(n_1, \dots, n_{a_1}) & = & \semm{d_1}_{va} \Phi_p [x_1 ← n_1, \dots, x_{a_1} ← n_{a_1}]\\
+\vdots\\
+ \Phi_1(n_1, \dots, n_{a_k}) & = & \semm{d_1}_{va} \Phi_p [x_1 ← n_1, \dots, x_{a_1} ← n_{a_1}]
+\end{eqnarray}
+
+$\Phi$ est le plus petit point fixe de $Fd$ avec $Fd(\Phi) =$
+\begin{eqnarray}{l}
+(\lambda n_1 \dots \lambda n_{a_1} \in \Zs . \semm{d_1}_{va} \Phi_f[x_1 ← n_1, \dots, x_{a_1} ← n_{a_1}]\\
+\vdots\\
 (\lambda n_1 \dots \lambda n_{a_k} \in \Zs . \semm{d_k}_{va} \Phi_f[x_1 ← n_1, \dots, x_{a_k} ← n_{a_k}]
-\end{array}
+\end{eqnarray}
 
 \begin{ex}
  
 \end{ex}
 
 
- \begin{thm}
+\begin{thm}
   Pour tout terme t clos et tout z \in \Zs, \semm{t}_{va} \Phi_{df} = z ssi t \xrightarrow[va]{d} z
- \end{thm}
+\end{thm}
 
 
 \subsection{Appel par nom}
