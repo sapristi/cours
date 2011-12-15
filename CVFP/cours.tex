@@ -919,7 +919,7 @@ $\begin{array}{ll}\\
 \end{array}$
 \end{prop}
 \begin{dem}
- \fbox{$\Leftarrow$} : trivial\\
+ \fbox{$\Leftarrow$} : trivial, $W\times W$ étant une relation d'équivalence\\
 \fbox{$\Rightarrow$} Si il existe $M, w$ où $\M  = (W, R, V)$ tq
 \begin{itemize}
  \item $R$ est une relation d'équivalence
@@ -930,9 +930,9 @@ $\begin{array}{ll}\\
 
 \section{Méthodes de tableau (algo PSPACE)}
 \begin{description}
- \item[KT] = logique des cadres réflexifs.
- \item[S5] = logique des cadres où R est une relation d'équivalence.
- \item[S4] = logique des cadres où R est réflexive et transitive.
+ \item[K  :] logique des cadres réflexifs.
+ \item[S5 :] logique des cadres où R est une relation d'équivalence.
+ \item[S4 :] logique des cadres où R est réflexive et transitive.
 \end{description}
 
 On écrit les formules sous forme normale négative avec la logique suivante :\\
@@ -1259,8 +1259,8 @@ $\begin{array}{ll}
 \end{thm}
 
 \begin{ex}
- $\Phi_G = \bigvee_{\sigma\text{ permutation de }1 n} \Phi_\sigma$
-où $\phi_{\sigma}$ = 
+ $\Phi_G = \bigvee_{\sigma\text{ permutation de }\[|1\dots n|\]} \Phi_\sigma$
+où $\phi_{\sigma} = in_\sigma(1) \land \exists \bigcirc (in_\sigma(2) \land \exists \bigcirc \cdots)$
 \end{ex}
 
 
