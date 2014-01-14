@@ -1,0 +1,10 @@
+*.aux
+*.dvi
+*.log
+*.out
+*.pdf
+*.dtx
+*.ins
+*.sty
+*.drv
+*.std
